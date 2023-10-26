@@ -1,0 +1,60 @@
+{
+    "name": "kiku",
+    "private": true,
+    "main": "electron/main.ts",
+    "version": "1.0.0",
+    "description": "Kiku",
+    "repository": "",
+    "license": "UNLICENSED",
+    "scripts": {
+        "start": "npm run dev",
+        "dev": "cross-env NODE_ENV=development vite",
+        "dev2": "vite dev --port=5201",
+        "build": "cross-env NODE_ENV=production vite build",
+        "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/",
+        "electron-start": "concurrently \"yarn dev2\" \"wait-on http://localhost:5201/index.html && electron --disable-gpu .\""
+    },
+    "browserslist": [
+        "IOS >= 15",
+        "Safari >= 15",
+        "last 5 Chrome versions",
+        "last 5 Firefox versions"
+    ],
+    "dependencies": {
+        "@types/jest": "^29.5.6",
+        "@types/node": "^20.8.7",
+        "@types/react": "^18.2.29",
+        "@types/react-dom": "^18.2.14",
+        "axios": "^1.5.1",
+        "dom7": "^4.0.6",
+        "framework7": "^8.3.0",
+        "framework7-icons": "^5.0.5",
+        "framework7-react": "^8.3.0",
+        "material-icons": "^1.13.12",
+        "prop-types": "^15.8.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "skeleton-elements": "^4.0.1",
+        "swiper": "^10.3.1",
+        "typescript": "^5.2.2",
+        "wavesurfer.js": "^7.4.2"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^4.1.0",
+        "autoprefixer": "^10.4.16",
+        "concurrently": "^8.2.2",
+        "cpy-cli": "^5.0.0",
+        "cross-env": "^7.0.3",
+        "electron": "^27.0.1",
+        "eslint": "^8.51.0",
+        "eslint-config-prettier": "^9.0.0",
+        "postcss": "^8.4.31",
+        "postcss-preset-env": "^9.2.0",
+        "prettier": "^3.0.3",
+        "tailwindcss": "^3.3.3",
+        "typescript-eslint": "^0.0.1-alpha.0",
+        "typescript-eslint-parser": "^22.0.0",
+        "vite": "^4.5.0",
+        "wait-on": "^7.0.1"
+    }
+}

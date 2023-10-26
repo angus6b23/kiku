@@ -1,0 +1,16 @@
+{
+    "cwd": "/media/Data/Web/kiku",
+    "type": ["web"],
+    "name": "Kiku",
+    "framework": "react",
+    "template": "split-view",
+    "bundler": "vite",
+    "cssPreProcessor": false,
+    "theming": {
+        "customColor": true,
+        "color": "#89a0c2",
+        "darkMode": true,
+        "iconFonts": true
+    },
+    "customBuild": false
+}
