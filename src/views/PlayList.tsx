@@ -1,27 +1,19 @@
 import React, { type ReactElement } from 'react'
-import { Store, useCustomContext } from '../components/context'
-import { Button, Icon, List, ListItem } from 'framework7-react'
-import { PlayerAction, PlayerState, Playitem, PlaylistAction } from '../components/interfaces'
-import {useAudio} from '../components/reducers'
+import { Block, List, ListItem } from 'framework7-react'
+import { Playitem } from '../components/interfaces'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectPlaylist, setItemPlaying } from '@/store/playlist'
+import { play, selectPlayer } from '@/store/player'
+import PlayItemInner from '@/components/PlayItemInner'
+import PlaylistControlBar from '@/components/PlaylistControlBar'
 
 export interface PlayListProps {}
 
-export default function PlayList(props: PlayListProps): ReactElement {
-    const {
-        playlist,
-        dispatchPlaylist,
-        playerState,
-        dispatchPlayer,
-        audio,
-        audioSource
-    }: {
-        playlist: Playitem[],
-        dispatchPlaylist: React.Dispatch<PlaylistAction>,
-        playerState: PlayerState,
-        dispatchPlayer: React.Dispatch<PlayerAction>,
-        audio: React.Ref<HTMLAudioElement>
-        audioSource: React.Ref<HTMLSourceElement>
-    } = useCustomContext(Store)
+export default function PlayList(): ReactElement {
+    const playerState = useSelector(selectPlayer)
+    const playlist = useSelector(selectPlaylist)
+    const dispatch = useDispatch()
+
     const generateItemClass = (item: Playitem) => {
         if (item.downloadStatus === 'pending') {
             return 'opacity-60 cursor-default'
@@ -30,60 +22,41 @@ export default function PlayList(props: PlayListProps): ReactElement {
         }
         return 'cursor-pointer'
     }
+
     const handleSelectSong = (item: Playitem) => {
-        if(item.downloadStatus === 'downloaded' && audio.current.src != item.audioBlob){
-            useAudio(audio.current, audioSource.current, {type: "SELECT_SONG", payload: item});
-            dispatchPlaylist({type: "SET_PLAYING", payload: item})
+        if (
+            item.downloadStatus === 'downloaded' &&
+            playerState.currentPlaying?.id != item.id
+        ) {
+            dispatch(setItemPlaying(item.id))
+        } else if (playerState.status != 'playing') {
+            dispatch(play())
         }
     }
     return (
         <>
-            <List sortable sortableEnabled strong>
+            {/* Control bar */}
+            <Block className="sticky top-0 z-10 m-0 bg-[--f7-md-surface-1]">
+                <PlaylistControlBar />
+            </Block>
+            {/* Playlist Starts here */}
+            <List
+                sortable
+                sortableEnabled
+                outline
+                dividers
+                strong
+                className="mt-2"
+            >
                 {playlist.map((item) => (
-                    <ListItem key={item.id} className={generateItemClass(item)} onClick={()=>handleSelectSong(item)}>
-                        <div className="grid grid-cols-3">
-                            <div className="col-span-1 p-2 flex items-center justify-center">
-                                <img
-                                    className="object-cover"
-                                    src={item.thumbnailURL}
-                                />
-                            </div>
-                            <div className="col-span-2 flex flex-wrap justify-start items-stretch p-2 gap-2">
-                                <div className="w-full flex justify-between items-start">
-                                    <p className="lg:text-md text-sm font-semibold">
-                                        {item.title}
-                                    </p>
-                                    <p>{item.duration}</p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <Button
-                                        className="w-8 h-8 flex justify-center items-center"
-                                        tooltip="Download to disk"
-                                    >
-                                        <Icon
-                                            className="text-lg -translate-y-1"
-                                            f7="floppy_disk"
-                                        />
-                                    </Button>
-                                    <Button
-                                        className="w-8 h-8 flex justify-center items-center"
-                                        tooltip="Remove from playlist"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            dispatchPlaylist({
-                                                type: 'REMOVE',
-                                                payload: item.id
-                                            })
-                                        }}
-                                    >
-                                        <Icon
-                                            className="text-lg -translate-y-1"
-                                            f7="xmark"
-                                        />
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
+                    <ListItem
+                        key={item.id}
+                        className={generateItemClass(item)}
+                        onClick={() => handleSelectSong(item)}
+                        badge={item.downloadStatus === 'error' ? '!' : ''}
+                        badgeColor="red"
+                    >
+                        <PlayItemInner item={item} />
                     </ListItem>
                 ))}
             </List>

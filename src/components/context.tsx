@@ -1,7 +1,5 @@
 import { createContext, useContext } from 'react'
-import { Search } from './interfaces'
 const Store = createContext<any>(undefined)
-const SearchContext = createContext<undefined | Search>(undefined)
 
 function useCustomContext<T>(context: React.Context<T | undefined>): T {
     if (!context) {
@@ -16,8 +14,4 @@ function useCustomContext<T>(context: React.Context<T | undefined>): T {
     }
 }
 
-export {
-    SearchContext,
-    useCustomContext,
-    Store,
-}
+export { useCustomContext, Store }

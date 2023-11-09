@@ -32,3 +32,14 @@
     content: '';
     z-index: 6000;
 }
+
+::-webkit-scrollbar {
+    width: 2px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+    opacity: 0.5;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--f7-color-primary);
+}

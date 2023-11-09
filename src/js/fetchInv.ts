@@ -36,9 +36,9 @@ const fetchStreamData = async (item: Playitem) => {
             },
             { weight: 0 }
         )
-        return { 
+        return {
             url: targetAudio.url as string,
-            type: targetAudio.type.replace(/;.*$/, '') as string
+            type: targetAudio.type.replace(/;.*$/, '') as string,
         }
     } catch (err) {
         console.error(err)
@@ -46,13 +46,13 @@ const fetchStreamData = async (item: Playitem) => {
     }
 }
 
-const fetchStream = async (url: string, type = "audio/opus") => {
+const fetchStream = async (url: string) => {
     const res = await axios({
-        responseType: "blob",
+        responseType: 'blob',
         method: 'get',
         url: url,
         headers: { Range: 'bytes=0-' },
     })
-    return res.data 
+    return res.data
 }
 export { fetchStreamData, fetchStream }

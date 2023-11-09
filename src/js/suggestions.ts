@@ -8,10 +8,10 @@ export async function suggestInv(keyword: string) {
                 keyword
             )}`
         )
-        let rawSuggestions = res.data.suggestions
-        let suggestions = rawSuggestions.map((suggestion) => {
+        const rawSuggestions = res.data.suggestions
+        const suggestions = rawSuggestions.map((suggestion: any) => {
             let result = suggestion
-            const asciiMatch = [...suggestion.matchAll(/\&\#\d+;?/g)]
+            const asciiMatch = [...suggestion.matchAll(/&#\d+;?/g)]
             asciiMatch.forEach((match) => {
                 const char = String.fromCharCode(
                     match[0].replace('&#', '').replace(';', '')

@@ -1,27 +1,42 @@
 import { Icon, Link } from 'framework7-react'
-import React, { useState, type ReactElement } from 'react'
-import { PlaylistAction, SearchResult } from './interfaces'
+import React, { useState } from 'react'
+import { SearchResult } from './interfaces'
 import { Playitem } from './interfaces'
+import { formatViewNumber, convertSecond } from '../utils/format'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
+
 interface searchResultCardProps {
     data: SearchResult
 }
-import { formatViewNumber, convertSecond } from '../utils/format'
-import { Store, useCustomContext } from './context'
-export default function searchResultCard(
-    props: searchResultCardProps
-): ReactElement {
+
+export default function searchResultCard(props: searchResultCardProps) {
     const targetImage = props.data.videoThumbnails.find(
         (thumbnail) => thumbnail.quality === 'medium'
     )
+    const highResImage = props.data.videoThumbnails.find(
+        (thumbnail) => thumbnail.quality === 'maxres' || 'maxresdefault'
+    )
     const [iconText, setIconText] = useState('')
-    const {
-        playlist,
-        dispatchPlaylist,
-    }: {
-        playlist: Playitem[]
-        dispatchPlaylist: React.Dispatch<PlaylistAction>
-    } = useCustomContext(Store)
+    const playlist = useSelector(selectPlaylist)
+    const dispatch = useDispatch()
+
     const handleAddToPlaylist = () => {
+        const sameId = playlist.filter((item) => item.id === props.data.videoId)
+        if (sameId.length > 0) return
+        const newPlayitem: Playitem = {
+            id: props.data.videoId,
+            title: props.data.title,
+            thumbnailURL: highResImage === undefined ? '' : highResImage.url,
+            duration: convertSecond(props.data.lengthSeconds),
+            status: 'added',
+            downloadStatus: 'pending',
+        }
+        dispatch(addToPlaylist(newPlayitem))
+    }
+    const handleAddToNextSong = () => {
+        const sameId = playlist.filter((item) => item.id === props.data.videoId)
+        if (sameId.length > 0) return
         const newPlayitem: Playitem = {
             id: props.data.videoId,
             title: props.data.title,
@@ -30,7 +45,7 @@ export default function searchResultCard(
             status: 'added',
             downloadStatus: 'pending',
         }
-        dispatchPlaylist({ type: 'ADD', payload: newPlayitem })
+        dispatch(addToNextSong(newPlayitem))
     }
     const onPlaylist = () => {
         return playlist.some((item) => item.id === props.data.videoId)
@@ -38,7 +53,7 @@ export default function searchResultCard(
     return (
         <>
             <article className="p-4">
-                <div className="relative group">
+                <div className="relative group w-full aspect-video">
                     <div className="absolute right-0 bottom-0">
                         <p className="bg-black/60 p-1 align-middle">
                             {convertSecond(props.data.lengthSeconds)}
@@ -65,12 +80,12 @@ export default function searchResultCard(
                                 onClick={handleAddToPlaylist}
                             >
                                 <Icon
-                                    className="text-xl lg:text-4xl xl:text-6xl"
+                                    className="text-lg lg:text-2xl xl:text-4xl"
                                     f7="plus_rectangle_fill"
                                 />
                             </div>
                             <div className="flex justify-center align-middle col-span-2 cursor-default">
-                                <p className="text-lg xl:text-xl col-span-2 align-middle">
+                                <p className="text-md lg:text-lg xl:text-xl">
                                     {iconText}
                                 </p>
                             </div>
@@ -90,6 +105,7 @@ export default function searchResultCard(
                                     setIconText('Add as next song')
                                 }
                                 onMouseLeave={() => setIconText('')}
+                                onClick={handleAddToNextSong}
                             >
                                 <Icon
                                     className="text-lg lg:text-2xl xl:text-4xl"
@@ -103,7 +119,13 @@ export default function searchResultCard(
                         src={targetImage?.url}
                     />
                 </div>
-                <Link className="mt-2">{props.data.title}</Link>
+                <Link
+                    animate={false}
+                    onClick={handleAddToPlaylist}
+                    className="mt-2"
+                >
+                    {props.data.title}
+                </Link>
                 <div className="flex flex-wrap gap-2">
                     <Link className="underline">{props.data.author}</Link>
                     <p>{formatViewNumber(props.data.viewCount)} views</p>

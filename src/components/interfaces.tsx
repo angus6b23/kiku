@@ -2,16 +2,35 @@ interface Playitem {
     id: string
     title: string
     streamUrl?: string
-    audioBlob?: string
     audioFormat?: string
     duration: string
-    downloadStatus: 'pending' | 'downloading' | 'downloaded'
+    downloadStatus: 'pending' | 'downloading' | 'downloaded' | 'error'
     status: 'added' | 'playing' | 'played'
     thumbnailURL: string
 }
 
+interface AudioBlobObject {
+    id: string
+    blob?: Blob
+}
+
+interface AudioBlobAction {
+    type: 'ADD_BLOB' | 'REMOVE_BLOB'
+    payload: AudioBlobObject
+}
+
 interface PlaylistAction {
-    type: 'ADD' | 'REMOVE' | 'SET_STREAM' | 'SET_BLOB' | 'SET_DOWNLOADING' | 'SET_PLAYING'
+    type:
+        | 'ADD'
+        | 'REMOVE'
+        | 'SET_STREAM'
+        | 'SET_BLOB'
+        | 'SET_DOWNLOADING'
+        | 'SET_PLAYING'
+        | 'SET_ERROR'
+        | 'PLAY_NEXT'
+        | 'PLAY_PREV'
+        | 'PLAY_RANDOM'
     payload: any
 }
 
@@ -32,7 +51,7 @@ interface SearchState {
 }
 
 interface SearchAction {
-    type: 'INV_SEARCH' | 'LOAD_MORE'
+    type: 'INV_SEARCH' | 'LOAD_MORE' | 'NEW_SEARCH'
     payload: any
 }
 
@@ -59,13 +78,18 @@ interface SearchResult {
     premium: boolean
 }
 interface PlayerState {
-    currentPlaying: Playitem | undefined,
-    playing: boolean
+    currentPlaying: Playitem | undefined
+    status: 'stopped' | 'playing' | 'paused'
 }
 interface PlayerAction {
-    type: "TOGGLE_PLAY" | "NEXT" | "PREV" | "RANDOM_NEXT" | "SELECT_SONG",
-    payload?: any;
-} 
+    type: 'TOGGLE_PLAY' | 'SELECT_SONG' | 'PLAY' | 'PAUSE'
+    payload?: any
+}
+interface GlobalConfig {
+    preferType: 'local' | 'Invidious' | 'Piped'
+    invInstance: string
+    pipedInstance: string
+}
 export {
     Search,
     SearchState,
@@ -75,5 +99,8 @@ export {
     Playitem,
     PlaylistAction,
     PlayerState,
-    PlayerAction
+    PlayerAction,
+    AudioBlobObject,
+    AudioBlobAction,
+    GlobalConfig,
 }

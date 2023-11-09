@@ -1,73 +1,64 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, memo } from 'react'
 // Import WaveSurfer
-import WaveSurfer from "wavesurfer.js";
-import Timeline from "wavesurfer.js/dist/plugins/timeline"
+import WaveSurfer from 'wavesurfer.js'
+import { WaveSurferOptions } from 'wavesurfer.js'
+import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
+import HoverPlugin from 'wavesurfer.js/dist/plugins/hover'
 
 // WaveSurfer hook
-const useWavesurfer = (containerRef, options) => {
-  const [wavesurfer, setWavesurfer] = useState(null)
+const useWavesurfer = (
+    containerRef: React.RefObject<HTMLElement>,
+    options: WaveSurferOptions
+) => {
+    const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null)
 
-  // Initialize wavesurfer when the container mounts
-  // or any of the props change
-  useEffect(() => {
-    if (!containerRef.current) return
+    // Initialize wavesurfer when the container mounts
+    // or any of the props change
+    useEffect(() => {
+        if (!containerRef.current) return
 
-      const ws = WaveSurfer.create({
-        ...options,
-        container: containerRef.current,
-      })
+        const ws = WaveSurfer.create({
+            ...options,
+            normalize: true,
+            plugins: [TimelinePlugin.create(), HoverPlugin.create()],
+            container: containerRef.current,
+        })
 
-      setWavesurfer(ws)
+        setWavesurfer(ws)
 
-      return () => {
-        ws.destroy()
-      }
-  }, [options, containerRef])
+        return () => {
+            ws.destroy()
+        }
+    }, [options, containerRef])
 
-  return wavesurfer
+    return wavesurfer
 }
 
 // Create a React component that will render wavesurfer.
 // Props are wavesurfer options.
-export default function WaveSurferPlayer (props) {
-  const containerRef = useRef()
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const wavesurfer = useWavesurfer(containerRef, props)
+function WaveSurferPlayer(props: WaveSurferOptions) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [currentTime, setCurrentTime] = useState(0)
+    const wavesurfer = useWavesurfer(containerRef, props)
+    useEffect(() => {
+        if (!wavesurfer) return
 
-  // On play button click
-  const onPlayClick = useCallback(() => {
-    wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play()
-  }, [wavesurfer])
+        const subscriptions = [
+            wavesurfer.on('timeupdate', (currentTime) =>
+                setCurrentTime(currentTime)
+            ),
+        ]
 
-  // Initialize wavesurfer when the container mounts
-  // or any of the props change
-  useEffect(() => {
-    if (!wavesurfer) return
+        return () => {
+            subscriptions.forEach((unsub) => unsub())
+        }
+    }, [wavesurfer])
+    return (
+        <>
+            <div ref={containerRef} style={{ minHeight: '120px' }} />
 
-      setCurrentTime(0)
-      setIsPlaying(false)
-
-      const subscriptions = [
-        wavesurfer.on('play', () => setIsPlaying(true)),
-        wavesurfer.on('pause', () => setIsPlaying(false)),
-        wavesurfer.on('timeupdate', (currentTime) => setCurrentTime(currentTime)),
-      ]
-
-      return () => {
-        subscriptions.forEach((unsub) => unsub())
-      }
-  }, [wavesurfer])
-
-  return (
-    <>
-      <div ref={containerRef} style={{ minHeight: '120px' }} />
-
-      <button onClick={onPlayClick} style={{ marginTop: '1em' }}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
-
-      <p>Seconds played: {currentTime}</p>
-    </>
-  )
+            <p>Seconds played: {currentTime}</p>
+        </>
+    )
 }
+export default memo(WaveSurferPlayer)
