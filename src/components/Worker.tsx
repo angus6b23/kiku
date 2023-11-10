@@ -81,7 +81,7 @@ export default function Worker(): ReactElement {
                                     `[Worker] Downloading stream: ${nextJob.id} - ${nextJob.title}`
                                 )
                                 dispatch(setItemDownloading(nextJob.id))
-                                return fetchStream(res.url, res.type)
+                                return fetchStream(res.url)
                             }
                         })
                         .then((res: Blob) => {
@@ -99,7 +99,7 @@ export default function Worker(): ReactElement {
                             dispatch(setItemError(nextJob.id))
                         })
                 } else {
-                    fetchStream(nextJob.streamUrl, nextJob.audioFormat)
+                    fetchStream(nextJob.streamUrl)
                         .then(() => {
                             setWorkerState('idle')
                             dispatch(setItemDownloaded(nextJob.id))

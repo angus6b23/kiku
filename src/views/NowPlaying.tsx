@@ -7,10 +7,12 @@ import { getNextSong, getPrevSong } from '@/utils/songControl'
 import { Store, useCustomContext } from '@/components/context'
 import Wavesurfer from '@/components/Wavesurfer'
 import NoPlaying from '@/components/NoPlaying'
+import {selectConfig} from '@/store/globalConfig'
 
 export default function NowPlaying(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const playlist = useSelector(selectPlaylist)
+    const config = useSelector(selectConfig)
     const dispatch = useDispatch()
     const { audio } = useCustomContext(Store)
 
@@ -64,11 +66,11 @@ export default function NowPlaying(): ReactElement {
                         />
                     </div>
                     <div className="w-full flex justify-center py-4">
-                        <h5 className="text-2xl">
+                        <h5 className="text-2xl text-center">
                             {playerState.currentPlaying?.title}
                         </h5>
                     </div>
-                    <Wavesurfer media={audio.current} />
+                    <Wavesurfer media={audio.current} showTimeline={config.ui.showTimeline} />
                     <div className="w-full flex justify-center gap-6">
                         <Button
                             className="h-40 w-40"

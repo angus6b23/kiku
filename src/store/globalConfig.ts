@@ -4,18 +4,34 @@ import { RootState } from './store'
 import { GlobalConfig } from '@/components/interfaces'
 
 const initiConfigState: GlobalConfig = {
-    preferType: 'local',
-    invInstance: '',
-    pipedInstance: '',
+    instance: {
+        localEnabled: true,
+        invidiousEnalbed: true,
+        invidiousUrl: 'https://invidious.12a.app',
+        pipedEnabled: true,
+        pipedUrl: 'https://pipedapi.12a.app',
+        preferType: [],
+    },
+    ui: {
+        accentColor: '#000000',
+        showTimeline: true,
+    },
 }
 
 export const globalConfig = createSlice({
     name: 'globalConfig',
     initialState: initiConfigState,
-    reducers: {},
+    reducers: {
+        toggleTimeline: (state) => {
+            return {
+                ...state,
+                ui: { ...state.ui, showTimeline: !state.ui.showTimeline },
+            }
+        },
+    },
 })
 
-// export const {} = globalConfig.actions;
+export const { toggleTimeline } = globalConfig.actions
 
 export default globalConfig.reducer
 export const selectConfig = (state: RootState) => state.config

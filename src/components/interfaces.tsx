@@ -86,9 +86,18 @@ interface PlayerAction {
     payload?: any
 }
 interface GlobalConfig {
-    preferType: 'local' | 'Invidious' | 'Piped'
-    invInstance: string
-    pipedInstance: string
+    instance: {
+        localEnabled: boolean
+        invidiousEnalbed: boolean
+        invidiousUrl: string
+        pipedEnabled: boolean
+        pipedUrl: string
+        preferType: { type: 'local' | 'invidious' | 'piped'; url?: string }[]
+    }
+    ui: {
+        accentColor: string
+        showTimeline: boolean
+    }
 }
 export {
     Search,

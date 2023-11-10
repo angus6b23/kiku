@@ -4,31 +4,32 @@ import WaveSurfer from 'wavesurfer.js'
 import { WaveSurferOptions } from 'wavesurfer.js'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
 import HoverPlugin from 'wavesurfer.js/dist/plugins/hover'
+import {GenericPlugin} from 'wavesurfer.js/dist/base-plugin'
 
 // WaveSurfer hook
 const useWavesurfer = (
     containerRef: React.RefObject<HTMLElement>,
-    options: WaveSurferOptions
+    options: any
 ) => {
     const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null)
-
+    const plugins: GenericPlugin[] | undefined = options.showTimeline ? [TimelinePlugin.create(), HoverPlugin.create()] : [HoverPlugin.create()]
     // Initialize wavesurfer when the container mounts
     // or any of the props change
     useEffect(() => {
         if (!containerRef.current) return
 
-        const ws = WaveSurfer.create({
-            ...options,
-            normalize: true,
-            plugins: [TimelinePlugin.create(), HoverPlugin.create()],
-            container: containerRef.current,
-        })
+            const ws = WaveSurfer.create({
+                ...options,
+                normalize: true,
+                plugins: plugins,
+                container: containerRef.current,
+            })
 
-        setWavesurfer(ws)
+            setWavesurfer(ws)
 
-        return () => {
-            ws.destroy()
-        }
+            return () => {
+                ws.destroy()
+            }
     }, [options, containerRef])
 
     return wavesurfer
@@ -36,22 +37,22 @@ const useWavesurfer = (
 
 // Create a React component that will render wavesurfer.
 // Props are wavesurfer options.
-function WaveSurferPlayer(props: WaveSurferOptions) {
+function WaveSurferPlayer(props: any) {
     const containerRef = useRef<HTMLDivElement>(null)
     const [currentTime, setCurrentTime] = useState(0)
     const wavesurfer = useWavesurfer(containerRef, props)
     useEffect(() => {
         if (!wavesurfer) return
 
-        const subscriptions = [
-            wavesurfer.on('timeupdate', (currentTime) =>
-                setCurrentTime(currentTime)
-            ),
-        ]
+            const subscriptions = [
+                wavesurfer.on('timeupdate', (currentTime) =>
+                              setCurrentTime(currentTime)
+                             ),
+            ]
 
-        return () => {
-            subscriptions.forEach((unsub) => unsub())
-        }
+            return () => {
+                subscriptions.forEach((unsub) => unsub())
+            }
     }, [wavesurfer])
     return (
         <>

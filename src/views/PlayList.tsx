@@ -2,13 +2,17 @@ import React, { type ReactElement } from 'react'
 import { Block, List, ListItem } from 'framework7-react'
 import { Playitem } from '../components/interfaces'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectPlaylist, setItemPlaying } from '@/store/playlist'
+import { selectPlaylist, setItemPlaying, sort } from '@/store/playlist'
 import { play, selectPlayer } from '@/store/player'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/components/PlaylistControlBar'
 
 export interface PlayListProps {}
 
+interface sortEvent {
+    from: number
+    to: number
+}
 export default function PlayList(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const playlist = useSelector(selectPlaylist)
@@ -33,6 +37,9 @@ export default function PlayList(): ReactElement {
             dispatch(play())
         }
     }
+    const handleSortMove = (e: sortEvent) => {
+        dispatch(sort({ from: e.from, to: e.to }))
+    }
     return (
         <>
             {/* Control bar */}
@@ -47,6 +54,7 @@ export default function PlayList(): ReactElement {
                 dividers
                 strong
                 className="mt-2"
+                onSortableSort={handleSortMove}
             >
                 {playlist.map((item) => (
                     <ListItem

@@ -74,7 +74,6 @@ export default function AudioWatcher(): ReactElement {
             img.src = playingItem.thumbnailURL
             const imgWidth = img.width
             const imgHeight = img.height
-            console.log(playingItem.thumbnailURL)
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: playingItem.title,
                 artwork: [

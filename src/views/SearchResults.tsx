@@ -26,7 +26,7 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
                 <div>
                     <BlockTitle>
                         <span ref={resultTop} className="text-2xl">
-                            Search Results for {search.searchTerm}
+                            Search Results: {search.searchTerm}
                         </span>
                     </BlockTitle>
                     <Block className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

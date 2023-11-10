@@ -10,11 +10,11 @@ interface setItemInfoPayload {
     url: string
     type: string
 }
-const shuffle:<T>(arg0: T[]) => T[] = (list) => {
-    const clone = [...list];
+const shuffle: <T>(arg0: T[]) => T[] = (list) => {
+    const clone = [...list]
     let currentIndex = clone.length
-    while (currentIndex > 0){
-        const randomIndex = Math.floor(Math.random() * currentIndex);
+    while (currentIndex > 0) {
+        const randomIndex = Math.floor(Math.random() * currentIndex)
         currentIndex--
         const temp = clone[currentIndex]
         clone[currentIndex] = clone[randomIndex]
@@ -22,7 +22,6 @@ const shuffle:<T>(arg0: T[]) => T[] = (list) => {
     }
     return clone
 }
-
 
 export const playlist = createSlice({
     name: 'playlist',
@@ -119,14 +118,25 @@ export const playlist = createSlice({
             return state.filter((item) => item.status !== 'played')
         },
         shuffleAll: (state) => {
-            const shuffled = shuffle([...state]);
+            const shuffled = shuffle([...state])
             return shuffled
         },
         shuffleUnplayed: (state) => {
-            const unchanged = state.filter((item) => item.status !== 'added');
-            const shuffled = shuffle(state.filter((item) => item.status === 'added'))
+            const unchanged = state.filter((item) => item.status !== 'added')
+            const shuffled = shuffle(
+                state.filter((item) => item.status === 'added')
+            )
             return [...unchanged, ...shuffled]
-        }
+        },
+        sort: (state, action: PayloadAction<{ from: number; to: number }>) => {
+            const clone = [...state]
+            clone.splice(
+                action.payload.to,
+                0,
+                ...clone.splice(action.payload.from, 1)
+            )
+            return clone
+        },
     },
 })
 
@@ -143,7 +153,8 @@ export const {
     clearErrorItems,
     clearPlayedItems,
     shuffleAll,
-    shuffleUnplayed
+    shuffleUnplayed,
+    sort,
 } = playlist.actions
 
 export default playlist.reducer

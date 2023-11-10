@@ -1,7 +1,11 @@
 import React, { type ReactElement } from 'react'
 import { Button, Icon } from 'framework7-react'
 import { useDispatch } from 'react-redux'
-import { clearErrorItems, clearPlayedItems, shuffleUnplayed } from '@/store/playlist'
+import {
+    clearErrorItems,
+    clearPlayedItems,
+    shuffleUnplayed,
+} from '@/store/playlist'
 
 export interface PlaylistControlBarProps {}
 
