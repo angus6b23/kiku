@@ -8,7 +8,7 @@ const fetchStreamData = async (item: Playitem) => {
         const res = await axios({
             method: 'get',
             baseURL: apiBase,
-            url: `/api/v1/videos/${item.id}`,
+            url: `api/v1/videos/${item.id}`,
         })
         const audios = res.data.adaptiveFormats.filter((format: any) => {
             return format.encoding === 'opus' || format.encoding === 'aac'
@@ -41,8 +41,7 @@ const fetchStreamData = async (item: Playitem) => {
             type: targetAudio.type.replace(/;.*$/, '') as string,
         }
     } catch (err) {
-        console.error(err)
-        return ''
+        throw new Error(err as string)
     }
 }
 

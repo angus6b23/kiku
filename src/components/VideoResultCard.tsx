@@ -1,13 +1,13 @@
 import { Icon, Link } from 'framework7-react'
 import React, { useState } from 'react'
-import { SearchResult } from './interfaces'
+import { VideoResult } from './interfaces'
 import { Playitem } from './interfaces'
 import { formatViewNumber, convertSecond } from '../utils/format'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
 
 interface searchResultCardProps {
-    data: SearchResult
+    data: VideoResult
 }
 
 export default function searchResultCard(props: searchResultCardProps) {
@@ -18,11 +18,13 @@ export default function searchResultCard(props: searchResultCardProps) {
         (thumbnail) => thumbnail.quality === 'maxres' || 'maxresdefault'
     )
     const [iconText, setIconText] = useState('')
-    const playlist = useSelector(selectPlaylist)
+    const playlist: Playitem[] = useSelector(selectPlaylist)
     const dispatch = useDispatch()
 
     const handleAddToPlaylist = () => {
-        const sameId = playlist.filter((item) => item.id === props.data.videoId)
+        const sameId = playlist.filter(
+            (item: Playitem) => item.id === props.data.videoId
+        )
         if (sameId.length > 0) return
         const newPlayitem: Playitem = {
             id: props.data.videoId,
@@ -35,7 +37,9 @@ export default function searchResultCard(props: searchResultCardProps) {
         dispatch(addToPlaylist(newPlayitem))
     }
     const handleAddToNextSong = () => {
-        const sameId = playlist.filter((item) => item.id === props.data.videoId)
+        const sameId = playlist.filter(
+            (item: Playitem) => item.id === props.data.videoId
+        )
         if (sameId.length > 0) return
         const newPlayitem: Playitem = {
             id: props.data.videoId,
@@ -54,11 +58,13 @@ export default function searchResultCard(props: searchResultCardProps) {
         <>
             <article className="p-4">
                 <div className="relative group w-full aspect-video">
+                    {/* Overlay for time */}
                     <div className="absolute right-0 bottom-0">
                         <p className="bg-black/60 p-1 align-middle">
                             {convertSecond(props.data.lengthSeconds)}
                         </p>
                     </div>
+                    {/* Overlay for various buttons */}
                     {onPlaylist() ? (
                         <div className="group-hover:flex flex-wrap hidden absolute group-hover:bg-black/60 group-hover:backdrop-blur-sm duration-100 w-full h-full items-center justify-center cursor-default">
                             <Icon
@@ -85,7 +91,7 @@ export default function searchResultCard(props: searchResultCardProps) {
                                 />
                             </div>
                             <div className="flex justify-center align-middle col-span-2 cursor-default">
-                                <p className="text-md lg:text-lg xl:text-xl">
+                                <p className="text-md lg:text-lg xl:text-xl text-center">
                                     {iconText}
                                 </p>
                             </div>
@@ -114,20 +120,28 @@ export default function searchResultCard(props: searchResultCardProps) {
                             </div>
                         </div>
                     )}
+                    {/* Image here */}
                     <img
                         className="w-full max-h-30 object-contain"
                         src={targetImage?.url}
                     />
                 </div>
+                {/* Video Title Here */}
                 <Link
                     animate={false}
                     onClick={handleAddToPlaylist}
-                    className="mt-2"
+                    className="mt-2  line-clamp-2"
                 >
                     {props.data.title}
                 </Link>
+                {/* Author and views info here */}
                 <div className="flex flex-wrap gap-2">
-                    <Link className="underline" href={`channel/${props.data.authorId}`}>{props.data.author}</Link>
+                    <Link
+                        className="underline"
+                        href={`channel/${props.data.authorId}`}
+                    >
+                        {props.data.author}
+                    </Link>
                     <p>{formatViewNumber(props.data.viewCount)} views</p>
                 </div>
             </article>

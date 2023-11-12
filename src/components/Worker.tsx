@@ -49,27 +49,27 @@ export default function Worker(): ReactElement {
 
         // Prefer download songs next to currently playing one
         // Check upcoming playing items first
-        for (let i = playingIndex + 1; i < playlist.length; i++){
-            const item = playlist[i];
-            if (item.downloadStatus === 'pending'){
-                result = item;
-                break;
+        for (let i = playingIndex + 1; i < playlist.length; i++) {
+            const item = playlist[i]
+            if (item.downloadStatus === 'pending') {
+                result = item
+                break
             }
         }
         // Then check items before current playing one
-        if ( result === undefined ){
-            for (let i = 0; i < playingIndex; i++){
-                const item = playlist[i];
-                if (item.downloadStatus === 'pending'){
-                    result = item;
-                    break;
+        if (result === undefined) {
+            for (let i = 0; i < playingIndex; i++) {
+                const item = playlist[i]
+                if (item.downloadStatus === 'pending') {
+                    result = item
+                    break
                 }
             }
         }
         return result
     }
     const getIsDownloading = () => {
-        return playlist.some(item => item.downloadStatus === 'downloading')
+        return playlist.some((item) => item.downloadStatus === 'downloading')
     }
 
     // Watcher for playlist, automatically download info and audio blob when available

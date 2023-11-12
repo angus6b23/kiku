@@ -3,8 +3,8 @@ import { Button, Icon } from 'framework7-react'
 import React, { type ReactElement } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { togglePlay } from '@/store/player'
-import {getNextSong} from '@/utils/songControl'
-import {selectPlaylist, setItemPlaying} from '@/store/playlist'
+import { getNextSong } from '@/utils/songControl'
+import { selectPlaylist, setItemPlaying } from '@/store/playlist'
 
 export interface ToolbarPlayerProps {
     showNowPlaying: () => void
@@ -20,7 +20,7 @@ export default function ToolbarPlayer(props: ToolbarPlayerProps): ReactElement {
     }
     const handleNextSong = () => {
         const nextSong = getNextSong(playlist)
-        if (nextSong !== undefined){
+        if (nextSong !== undefined) {
             dispatch(setItemPlaying(nextSong.id))
         }
     }

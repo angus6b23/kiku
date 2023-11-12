@@ -61,23 +61,50 @@ interface Thumbnail {
     width: number
     height: number
 }
-interface SearchResult {
-    type: string
+interface VideoResult {
+    type: 'video'
     title: string
     videoId: string
     author: string
     authorId: string
     videoThumbnails: Thumbnail[]
-    description: string
-    descriptionHtml: string
     viewCount: number
-    published: number
-    publishedText: string
     lengthSeconds: number
-    liveNow: boolean
-    paid: boolean
-    premium: boolean
 }
+interface ChannelResult {
+    type: 'channel'
+    author: string
+    authorId: string
+    channelThumbnails: Thumbnail[]
+    subCount: string
+}
+interface PlaylistResult {
+    type: 'playlist'
+    title: string
+    playlistId: string
+    author: string
+    authorId: string
+    playlistThumbnails: Thumbnail[]
+    vidCount: number
+}
+type SearchResult = VideoResult | PlaylistResult | ChannelResult
+// interface SearchResult {
+//     type: string
+//     title: string
+//     videoId: string
+//     author: string
+//     authorId: string
+//     videoThumbnails: Thumbnail[]
+//     description?: string
+//     descriptionHtml?: string
+//     viewCount: number
+//     published?: number
+//     publishedText?: string
+//     lengthSeconds: number
+//     liveNow?: boolean
+//     paid?: boolean
+//     premium?: boolean
+// }
 interface PlayerState {
     currentPlaying: Playitem | undefined
     status: 'stopped' | 'playing' | 'paused'
@@ -86,6 +113,12 @@ interface PlayerAction {
     type: 'TOGGLE_PLAY' | 'SELECT_SONG' | 'PLAY' | 'PAUSE'
     payload?: any
 }
+
+interface Instance {
+    type: 'local' | 'invidious' | 'piped'
+    url: string
+    enabled: boolean
+}
 interface GlobalConfig {
     instance: {
         localEnabled: boolean
@@ -93,7 +126,7 @@ interface GlobalConfig {
         invidiousUrl: string
         pipedEnabled: boolean
         pipedUrl: string
-        preferType: { type: 'local' | 'invidious' | 'piped'; url?: string }[]
+        preferType: Instance[]
         lang: string
         location: string
     }
@@ -107,6 +140,9 @@ export {
     Search,
     SearchState,
     Thumbnail,
+    VideoResult,
+    ChannelResult,
+    PlaylistResult,
     SearchResult,
     SearchAction,
     Playitem,
@@ -115,5 +151,6 @@ export {
     PlayerAction,
     AudioBlobObject,
     AudioBlobAction,
+    Instance,
     GlobalConfig,
 }

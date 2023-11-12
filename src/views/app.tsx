@@ -1,7 +1,5 @@
 import React, { useReducer, useRef } from 'react'
-import {
-    AudioBlobObject,
-} from '@/components/interfaces'
+import { AudioBlobObject } from '@/components/interfaces'
 import { Store } from '@/components/context'
 
 import {

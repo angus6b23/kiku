@@ -2,10 +2,15 @@ import React, { type ReactElement } from 'react'
 import { Playitem } from './interfaces'
 import { Button, Icon } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeFromPlaylist, selectPlaylist, setItemPlaying, setItemRetry } from '@/store/playlist'
+import {
+    removeFromPlaylist,
+    selectPlaylist,
+    setItemPlaying,
+    setItemRetry,
+} from '@/store/playlist'
 import { Store, useCustomContext } from './context'
-import {getNextSong} from '@/utils/songControl'
-import {setSong, stop} from '@/store/player'
+import { getNextSong } from '@/utils/songControl'
+import { setSong, stop } from '@/store/player'
 
 export interface PlayItemInnerProps {
     item: Playitem
@@ -18,9 +23,9 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const { dispatchAudioBlob } = useCustomContext(Store)
 
     const handleItemRemoval = (item: Playitem) => {
-        if(item.status === 'playing'){
+        if (item.status === 'playing') {
             const nextSong = getNextSong(playlist)
-            if (nextSong != undefined){
+            if (nextSong != undefined) {
                 dispatch(setItemPlaying(nextSong.id))
             } else {
                 dispatch(setSong(undefined))

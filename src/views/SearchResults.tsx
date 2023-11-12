@@ -1,5 +1,6 @@
 import React, { useRef, type ReactElement, useEffect } from 'react'
-import SearchResultCard from '../components/SearchResultCard'
+import VideoResultCard from '@/components/VideoResultCard'
+import PlaylistResultCard from '@/components/PlaylistResultCard'
 import { Block, BlockTitle, Button, Icon } from 'framework7-react'
 import { nanoid } from 'nanoid'
 import { useSelector } from 'react-redux'
@@ -32,7 +33,9 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
                     <Block className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {search.results.map((result) =>
                             result.type === 'video' ? (
-                                <SearchResultCard
+                                <VideoResultCard key={nanoid()} data={result} />
+                            ) : result.type === 'playlist' ? (
+                                <PlaylistResultCard
                                     key={nanoid()}
                                     data={result}
                                 />

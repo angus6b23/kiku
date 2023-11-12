@@ -6,7 +6,7 @@ import { selectPlaylist, setItemPlaying, sort } from '@/store/playlist'
 import { play, selectPlayer } from '@/store/player'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/components/PlaylistControlBar'
-import {selectConfig} from '@/store/globalConfig'
+import { selectConfig } from '@/store/globalConfig'
 
 export interface PlayListProps {}
 
@@ -17,10 +17,9 @@ interface sortEvent {
 export default function PlayList(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const playlist = useSelector(selectPlaylist)
-    const dispatch = useDispatch();
-    const config = useSelector(selectConfig);
+    const dispatch = useDispatch()
+    const config = useSelector(selectConfig)
     const playingRef = useRef<HTMLElement>(null)
-
 
     const generateItemClass = (item: Playitem) => {
         if (item.downloadStatus === 'pending') {
@@ -74,7 +73,7 @@ export default function PlayList(): ReactElement {
                         badge={item.downloadStatus === 'error' ? '!' : ''}
                         badgeColor="red"
                     >
-                        {item.status === 'playing' && <span ref={playingRef}/>}
+                        {item.status === 'playing' && <span ref={playingRef} />}
                         <PlayItemInner item={item} />
                     </ListItem>
                 ))}

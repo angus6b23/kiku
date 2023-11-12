@@ -26,9 +26,9 @@ export default function AudioWatcher(): ReactElement {
 
     const getBlobByID: (id: string | undefined) => Blob = (id) => {
         if (id === undefined) throw new Error('ID is undefined')
-            const blobItem = audioBlobStore.find((item) => item.id === id)
+        const blobItem = audioBlobStore.find((item) => item.id === id)
         if (blobItem === undefined) throw new Error('Blob ID not found')
-            return blobItem.blob as Blob
+        return blobItem.blob as Blob
     }
 
     // updated playlist state cannot be accessed in the event handler, so use Ref instead
@@ -152,19 +152,19 @@ export default function AudioWatcher(): ReactElement {
             audio.current.currentTime = Math.max(0, currentTime - 5)
         })
         window.onkeydown = (e: KeyboardEvent) => {
-            switch (e.key){
-                case "MediaTrackNext":
-                    dispatchPlayNext();
-                break;
-                case "MediaTrackPrev":
-                    dispatchPlayPrev();
-                break;
-                case "MediaPlayPause":
-                    dispatch(togglePlay());
-                break;
-                case "MediaStop":
-                    dispatch(stop());
-                break;
+            switch (e.key) {
+                case 'MediaTrackNext':
+                    dispatchPlayNext()
+                    break
+                case 'MediaTrackPrev':
+                    dispatchPlayPrev()
+                    break
+                case 'MediaPlayPause':
+                    dispatch(togglePlay())
+                    break
+                case 'MediaStop':
+                    dispatch(stop())
+                    break
                 default:
             }
         }

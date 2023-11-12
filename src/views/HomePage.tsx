@@ -12,8 +12,8 @@ import {
     Tabs,
 } from 'framework7-react'
 
-import { suggestInv } from '../js/suggestions'
-import { searchInv } from '../js/search'
+import { handleSuggest } from '../js/suggestions'
+import { handleSearchVideo, searchInv } from '../js/search'
 import SearchResults from '../views/SearchResults'
 import NowPlaying from '../views/NowPlaying'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
@@ -21,8 +21,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectPlayer } from '@/store/player'
 import { newSearch, nextPage, selectSearch } from '@/store/search'
 import Setting from './Setting'
+import { Store, useCustomContext } from '@/components/context'
+import Innertube from 'youtubei.js/agnostic'
+import { selectConfig } from '@/store/globalConfig'
 
-interface SearchbarSelf{
+interface SearchbarSelf {
     searchbar: any
 }
 declare const self: Window & typeof globalThis & SearchbarSelf
@@ -30,7 +33,10 @@ declare const self: Window & typeof globalThis & SearchbarSelf
 const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [tab, setTab] = useState('now-playing')
-    const  playerState = useSelector(selectPlayer)
+    const { innertube }: { innertube: React.RefObject<Innertube> } =
+        useCustomContext(Store)
+    const playerState = useSelector(selectPlayer)
+    const config = useSelector(selectConfig)
     const autocompleteSearch = useRef<any>(null)
     const onPageBeforeRemove = () => {
         autocompleteSearch.current.destroy()
@@ -43,15 +49,19 @@ const HomePage = () => {
             openIn: 'dropdown',
             inputEl: '#searchbar-autocomplete input[type="search"]',
             async source(query, render) {
-                let results = await suggestInv(query)
+                let results = await handleSuggest(
+                    query,
+                    config.instance.preferType,
+                    innertube.current
+                )
                 results = results.map((text: string) => decodeURI(text))
                 render(results)
             },
             on: {
-                change: (e: string[])=> {
+                change: (e: string[]) => {
                     setSearchTerm(e[0])
-                }
-            }
+                },
+            },
         })
         self.searchbar = f7.searchbar.create({
             el: '#searchbar-autocomplete',
@@ -62,14 +72,24 @@ const HomePage = () => {
         setTab('search-results')
         autocompleteSearch.current.close()
         f7.preloader.show()
-        const res = await searchInv(searchTerm, { ...search, page: 1 })
+        // handleSearchVideo(searchTerm: string, options: Search, instances: Instance[], innertube: Innertube | null)
+        const res = await handleSearchVideo(
+            searchTerm,
+            { ...search, page: 1 },
+            config.instance.preferType,
+            innertube.current
+        )
         dispatch(newSearch({ res: res, searchTerm: searchTerm }))
         f7.preloader.hide()
     }
     const handleLoadMore = async () => {
         f7.preloader.show()
         const newPage = search.page + 1
-        const res = await searchInv(searchTerm, { ...search, page: newPage })
+        const res = await searchInv(
+            searchTerm,
+            { ...search, page: newPage },
+            config.instance.preferType[1].url
+        )
         dispatch(nextPage(res))
         f7.preloader.hide()
     }
@@ -135,7 +155,7 @@ const HomePage = () => {
                             showNowPlaying={() => setTab('now-playing')}
                         />
                     </Toolbar>
-            )}
+                )}
             {/* Page content */}
         </Page>
     )

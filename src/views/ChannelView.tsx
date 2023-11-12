@@ -1,7 +1,7 @@
-import React, { type ReactElement } from "react"
+import React, { type ReactElement } from 'react'
 
 export interface ChannelViewProps {
-    channelid: string 
+    channelid: string
 }
 
 export default function ChannelView(props: ChannelViewProps): ReactElement {

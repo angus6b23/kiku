@@ -13,7 +13,9 @@ export const player = createSlice({
     initialState: initPlayer,
     reducers: {
         play: (state) => {
-            return state.currentPlaying === undefined ? state : { ...state, status: 'playing' }
+            return state.currentPlaying === undefined
+                ? state
+                : { ...state, status: 'playing' }
         },
         pause: (state) => {
             return { ...state, status: 'paused' }
@@ -25,7 +27,12 @@ export const player = createSlice({
             return { ...state, currentPlaying: action.payload }
         },
         togglePlay: (state) => {
-            return state.currentPlaying === undefined ? state : { ...state, status: state.status === 'playing' ? 'paused' : 'playing' }
+            return state.currentPlaying === undefined
+                ? state
+                : {
+                      ...state,
+                      status: state.status === 'playing' ? 'paused' : 'playing',
+                  }
         },
     },
 })

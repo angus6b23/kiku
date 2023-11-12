@@ -10,14 +10,26 @@ const initiConfigState: GlobalConfig = {
         invidiousUrl: 'https://invidious.12a.app',
         pipedEnabled: true,
         pipedUrl: 'https://pipedapi.12a.app',
-        preferType: [],
+        preferType: [
+            {
+                type: 'piped',
+                url: 'https://pipedapi.12a.app',
+                enabled: true
+            },
+            {
+                type: 'invidious',
+                url: 'https://invidious.12a.app',
+                enabled: true,
+            },
+            { type: 'local', url: '', enabled: true },
+        ],
         lang: 'en',
         location: 'US',
     },
     ui: {
         accentColor: '#000000',
         showTimeline: true,
-        autoScroll: true
+        autoScroll: true,
     },
 }
 
