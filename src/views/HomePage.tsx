@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import {
     Page,
-    Navbar,
     Toolbar,
     Block,
     Button,
@@ -23,10 +22,15 @@ import { selectPlayer } from '@/store/player'
 import { newSearch, nextPage, selectSearch } from '@/store/search'
 import Setting from './Setting'
 
+interface SearchbarSelf{
+    searchbar: any
+}
+declare const self: Window & typeof globalThis & SearchbarSelf
+
 const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [tab, setTab] = useState('now-playing')
-    const playerState = useSelector(selectPlayer)
+    const  playerState = useSelector(selectPlayer)
     const autocompleteSearch = useRef<any>(null)
     const onPageBeforeRemove = () => {
         autocompleteSearch.current.destroy()
@@ -43,6 +47,11 @@ const HomePage = () => {
                 results = results.map((text: string) => decodeURI(text))
                 render(results)
             },
+            on: {
+                change: (e: string[])=> {
+                    setSearchTerm(e[0])
+                }
+            }
         })
         self.searchbar = f7.searchbar.create({
             el: '#searchbar-autocomplete',
@@ -79,6 +88,7 @@ const HomePage = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     id="searchbar-autocomplete"
                     onSubmit={handleSearch}
+                    value={searchTerm}
                 />
                 <Button onClick={handleSearch}>Search</Button>
             </Subnavbar>
@@ -125,7 +135,7 @@ const HomePage = () => {
                             showNowPlaying={() => setTab('now-playing')}
                         />
                     </Toolbar>
-                )}
+            )}
             {/* Page content */}
         </Page>
     )

@@ -11,10 +11,13 @@ const initiConfigState: GlobalConfig = {
         pipedEnabled: true,
         pipedUrl: 'https://pipedapi.12a.app',
         preferType: [],
+        lang: 'en',
+        location: 'US',
     },
     ui: {
         accentColor: '#000000',
         showTimeline: true,
+        autoScroll: true
     },
 }
 

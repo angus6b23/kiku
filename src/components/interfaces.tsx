@@ -66,6 +66,7 @@ interface SearchResult {
     title: string
     videoId: string
     author: string
+    authorId: string
     videoThumbnails: Thumbnail[]
     description: string
     descriptionHtml: string
@@ -93,10 +94,13 @@ interface GlobalConfig {
         pipedEnabled: boolean
         pipedUrl: string
         preferType: { type: 'local' | 'invidious' | 'piped'; url?: string }[]
+        lang: string
+        location: string
     }
     ui: {
         accentColor: string
         showTimeline: boolean
+        autoScroll: boolean
     }
 }
 export {

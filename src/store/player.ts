@@ -13,7 +13,7 @@ export const player = createSlice({
     initialState: initPlayer,
     reducers: {
         play: (state) => {
-            return { ...state, status: 'playing' }
+            return state.currentPlaying === undefined ? state : { ...state, status: 'playing' }
         },
         pause: (state) => {
             return { ...state, status: 'paused' }
@@ -21,14 +21,11 @@ export const player = createSlice({
         stop: (state) => {
             return { ...state, status: 'stopped' }
         },
-        setSong: (state, action: PayloadAction<Playitem>) => {
+        setSong: (state, action: PayloadAction<Playitem | undefined>) => {
             return { ...state, currentPlaying: action.payload }
         },
         togglePlay: (state) => {
-            return {
-                ...state,
-                status: state.status === 'playing' ? 'paused' : 'playing',
-            }
+            return state.currentPlaying === undefined ? state : { ...state, status: state.status === 'playing' ? 'paused' : 'playing' }
         },
     },
 })

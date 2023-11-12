@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react'
+import React, { useRef, type ReactElement, useEffect } from 'react'
 import { Block, List, ListItem } from 'framework7-react'
 import { Playitem } from '../components/interfaces'
 import { useSelector, useDispatch } from 'react-redux'
@@ -6,6 +6,7 @@ import { selectPlaylist, setItemPlaying, sort } from '@/store/playlist'
 import { play, selectPlayer } from '@/store/player'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/components/PlaylistControlBar'
+import {selectConfig} from '@/store/globalConfig'
 
 export interface PlayListProps {}
 
@@ -16,7 +17,10 @@ interface sortEvent {
 export default function PlayList(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const playlist = useSelector(selectPlaylist)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const config = useSelector(selectConfig);
+    const playingRef = useRef<HTMLElement>(null)
+
 
     const generateItemClass = (item: Playitem) => {
         if (item.downloadStatus === 'pending') {
@@ -40,6 +44,12 @@ export default function PlayList(): ReactElement {
     const handleSortMove = (e: sortEvent) => {
         dispatch(sort({ from: e.from, to: e.to }))
     }
+    // Disabled due to strange behaviour
+    // useEffect(() => {
+    //     if (playingRef.current != null && config.ui.autoScroll){
+    //         playingRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    //     }
+    // }, [playerState.currentPlaying])
     return (
         <>
             {/* Control bar */}
@@ -64,6 +74,7 @@ export default function PlayList(): ReactElement {
                         badge={item.downloadStatus === 'error' ? '!' : ''}
                         badgeColor="red"
                     >
+                        {item.status === 'playing' && <span ref={playingRef}/>}
                         <PlayItemInner item={item} />
                     </ListItem>
                 ))}

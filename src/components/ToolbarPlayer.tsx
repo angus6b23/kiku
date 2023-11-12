@@ -1,8 +1,10 @@
 import { selectPlayer } from '@/store/player'
-import { Icon } from 'framework7-react'
+import { Button, Icon } from 'framework7-react'
 import React, { type ReactElement } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { togglePlay } from '@/store/player'
+import {getNextSong} from '@/utils/songControl'
+import {selectPlaylist, setItemPlaying} from '@/store/playlist'
 
 export interface ToolbarPlayerProps {
     showNowPlaying: () => void
@@ -10,10 +12,17 @@ export interface ToolbarPlayerProps {
 
 export default function ToolbarPlayer(props: ToolbarPlayerProps): ReactElement {
     const playerState = useSelector(selectPlayer)
+    const playlist = useSelector(selectPlaylist)
     const dispatch = useDispatch()
 
     const handleTogglePlay = () => {
         dispatch(togglePlay())
+    }
+    const handleNextSong = () => {
+        const nextSong = getNextSong(playlist)
+        if (nextSong !== undefined){
+            dispatch(setItemPlaying(nextSong.id))
+        }
     }
     return (
         <>
@@ -33,16 +42,16 @@ export default function ToolbarPlayer(props: ToolbarPlayerProps): ReactElement {
                     </div>
                 )}
                 <div className="flex flex-end gap-2 items-center">
-                    <button className="p-2" onClick={handleTogglePlay}>
+                    <Button className="p-2" onClick={handleTogglePlay}>
                         {playerState.status === 'playing' ? (
                             <Icon f7="pause_fill" />
                         ) : (
                             <Icon f7="play_fill" />
                         )}
-                    </button>
-                    <button className="p-2">
+                    </Button>
+                    <Button className="p-2" onClick={handleNextSong}>
                         <Icon f7="forward_end_fill" />
-                    </button>
+                    </Button>
                 </div>
             </section>
         </>

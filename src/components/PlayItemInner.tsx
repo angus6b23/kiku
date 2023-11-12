@@ -1,9 +1,11 @@
 import React, { type ReactElement } from 'react'
 import { Playitem } from './interfaces'
 import { Button, Icon } from 'framework7-react'
-import { useDispatch } from 'react-redux'
-import { removeFromPlaylist, setItemRetry } from '@/store/playlist'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeFromPlaylist, selectPlaylist, setItemPlaying, setItemRetry } from '@/store/playlist'
 import { Store, useCustomContext } from './context'
+import {getNextSong} from '@/utils/songControl'
+import {setSong, stop} from '@/store/player'
 
 export interface PlayItemInnerProps {
     item: Playitem
@@ -12,7 +14,25 @@ export interface PlayItemInnerProps {
 export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const { item } = props
     const dispatch = useDispatch()
+    const playlist = useSelector(selectPlaylist)
     const { dispatchAudioBlob } = useCustomContext(Store)
+
+    const handleItemRemoval = (item: Playitem) => {
+        if(item.status === 'playing'){
+            const nextSong = getNextSong(playlist)
+            if (nextSong != undefined){
+                dispatch(setItemPlaying(nextSong.id))
+            } else {
+                dispatch(setSong(undefined))
+                dispatch(stop())
+            }
+        }
+        dispatch(removeFromPlaylist(item.id))
+        dispatchAudioBlob({
+            type: 'REMOVE_BLOB',
+            payload: { id: item.id },
+        })
+    }
     return (
         <>
             <div className="grid grid-cols-3">
@@ -49,11 +69,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                             tooltip="Remove from playlist"
                             onClick={(e) => {
                                 e.stopPropagation()
-                                dispatch(removeFromPlaylist(item.id))
-                                dispatchAudioBlob({
-                                    type: 'REMOVE_BLOB',
-                                    payload: { id: item.id },
-                                })
+                                handleItemRemoval(item)
                             }}
                         >
                             <Icon

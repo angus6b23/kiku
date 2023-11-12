@@ -117,6 +117,9 @@ export const playlist = createSlice({
         clearPlayedItems: (state) => {
             return state.filter((item) => item.status !== 'played')
         },
+        clearAllItems: () => {
+            return []
+        },
         shuffleAll: (state) => {
             const shuffled = shuffle([...state])
             return shuffled
@@ -152,6 +155,7 @@ export const {
     setItemRetry,
     clearErrorItems,
     clearPlayedItems,
+    clearAllItems,
     shuffleAll,
     shuffleUnplayed,
     sort,

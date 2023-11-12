@@ -1,9 +1,6 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react'
+import React, { useReducer, useRef } from 'react'
 import {
     AudioBlobObject,
-    PlayerState,
-    Playitem,
-    PlaylistAction,
 } from '@/components/interfaces'
 import { Store } from '@/components/context'
 
@@ -13,14 +10,9 @@ import {
     App,
     Panel,
     View,
-    Views,
     Page,
     Navbar,
     Toolbar,
-    Link,
-    BlockTitle,
-    List,
-    ListItem,
 } from 'framework7-react'
 
 import PlayList from '@/views/PlayList'
@@ -30,15 +22,17 @@ import Worker from '@/components/Worker'
 import AudioWatcher from '@/components/AudioWatcher'
 import store from '@/store/store'
 import HomePage from '@/views/HomePage'
+import Innertube from 'youtubei.js/agnostic'
+import InnerTube from '@/components/InnerTube'
 
 const initBlobStore: AudioBlobObject[] = []
 const MyApp = () => {
     const audio = useRef<HTMLAudioElement>(new Audio())
-
     const [audioBlobStore, dispatchAudioBlob] = useReducer(
         blobStoreReducer,
         initBlobStore
     )
+    const innertube = useRef<Innertube>(null)
     // Framework7 Parameters
     const f7params = {
         name: 'Kiku', // App name
@@ -64,9 +58,11 @@ const MyApp = () => {
                         audioBlobStore: audioBlobStore,
                         dispatchAudioBlob: dispatchAudioBlob,
                         audio: audio,
+                        innertube: innertube,
                     }}
                 >
                     <Worker />
+                    <InnerTube />
                     <AudioWatcher />
                     <Panel
                         className="min-w-60 w-1/3 lg:w-1/4"
@@ -85,6 +81,7 @@ const MyApp = () => {
                     <View main>
                         <HomePage />
                     </View>
+
                     <Toolbar bottom></Toolbar>
                 </Store.Provider>
             </Provider>

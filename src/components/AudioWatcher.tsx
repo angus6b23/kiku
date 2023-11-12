@@ -1,7 +1,7 @@
 import React, { useEffect, type ReactElement, useRef } from 'react'
 import { Store, useCustomContext } from './context'
 import { useDispatch, useSelector } from 'react-redux'
-import { pause, play, selectPlayer } from '@/store/player'
+import { pause, play, selectPlayer, togglePlay } from '@/store/player'
 import { selectPlaylist, setItemPlaying } from '@/store/playlist'
 import { setSong } from '@/store/player'
 import { AudioBlobObject } from '@/components/interfaces'
@@ -26,10 +26,12 @@ export default function AudioWatcher(): ReactElement {
 
     const getBlobByID: (id: string | undefined) => Blob = (id) => {
         if (id === undefined) throw new Error('ID is undefined')
-        const blobItem = audioBlobStore.find((item) => item.id === id)
+            const blobItem = audioBlobStore.find((item) => item.id === id)
         if (blobItem === undefined) throw new Error('Blob ID not found')
-        return blobItem.blob as Blob
+            return blobItem.blob as Blob
     }
+
+    // updated playlist state cannot be accessed in the event handler, so use Ref instead
     const dispatchPlayNext = () => {
         const nextSong = getNextSong(playlistRef.current)
         if (nextSong != undefined) {
@@ -90,6 +92,7 @@ export default function AudioWatcher(): ReactElement {
 
     // Sync player status with audio
     useEffect(() => {
+        // console.log(playerState.status)
         if (audio.current == null) {
             throw new Error('Audio Instance not found')
         }
@@ -113,6 +116,7 @@ export default function AudioWatcher(): ReactElement {
         return () =>
             audio.current?.removeEventListener('ended', dispatchPlayNext)
     }, [audio.current.src])
+
     // Add ActionHandler for media session
     useEffect(() => {
         navigator.mediaSession.setActionHandler('play', () => {
@@ -147,6 +151,23 @@ export default function AudioWatcher(): ReactElement {
             const currentTime = audio.current.currentTime
             audio.current.currentTime = Math.max(0, currentTime - 5)
         })
+        window.onkeydown = (e: KeyboardEvent) => {
+            switch (e.key){
+                case "MediaTrackNext":
+                    dispatchPlayNext();
+                break;
+                case "MediaTrackPrev":
+                    dispatchPlayPrev();
+                break;
+                case "MediaPlayPause":
+                    dispatch(togglePlay());
+                break;
+                case "MediaStop":
+                    dispatch(stop());
+                break;
+                default:
+            }
+        }
     }, [])
     return <></>
 }

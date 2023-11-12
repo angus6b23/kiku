@@ -127,7 +127,7 @@ export default function searchResultCard(props: searchResultCardProps) {
                     {props.data.title}
                 </Link>
                 <div className="flex flex-wrap gap-2">
-                    <Link className="underline">{props.data.author}</Link>
+                    <Link className="underline" href={`channel/${props.data.authorId}`}>{props.data.author}</Link>
                     <p>{formatViewNumber(props.data.viewCount)} views</p>
                 </div>
             </article>

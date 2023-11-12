@@ -20,6 +20,7 @@ import { selectPlayer } from '@/store/player'
 export interface WorkerProps {}
 
 export default function Worker(): ReactElement {
+    // Spawn a worker which will automatically download bolb in the background
     const playlist = useSelector(selectPlaylist)
     const playerState = useSelector(selectPlayer)
     const dispatch = useDispatch()
@@ -27,11 +28,16 @@ export default function Worker(): ReactElement {
         dispatchAudioBlob,
     }: { dispatchAudioBlob: React.Dispatch<AudioBlobAction> } =
         useContext(Store)
+
+    // Will only download one item at once, download when idle, pass when working
     const [workerState, setWorkerState] = useState('idle')
+
+    // Get the next job from playlist
     const getNextJob: () => undefined | Playitem = () => {
         const checkJobs = playlist.some(
             (item) => item.downloadStatus === 'pending'
         )
+
         let result: undefined | Playitem = undefined
         if (!checkJobs) {
             console.debug('[Worker] No job to work')
@@ -40,29 +46,42 @@ export default function Worker(): ReactElement {
         const playingIndex = playlist.findIndex(
             (item) => item.status === 'playing'
         )
-        playlist.forEach((item, index) => {
-            if (
-                index < playingIndex &&
-                item.downloadStatus == 'pending' &&
-                !result
-            ) {
-                result = item
-            } else if (
-                index > playingIndex &&
-                item.downloadStatus == 'pending' &&
-                !result
-            ) {
-                result = item
+
+        // Prefer download songs next to currently playing one
+        // Check upcoming playing items first
+        for (let i = playingIndex + 1; i < playlist.length; i++){
+            const item = playlist[i];
+            if (item.downloadStatus === 'pending'){
+                result = item;
+                break;
             }
-        })
+        }
+        // Then check items before current playing one
+        if ( result === undefined ){
+            for (let i = 0; i < playingIndex; i++){
+                const item = playlist[i];
+                if (item.downloadStatus === 'pending'){
+                    result = item;
+                    break;
+                }
+            }
+        }
         return result
     }
+    const getIsDownloading = () => {
+        return playlist.some(item => item.downloadStatus === 'downloading')
+    }
+
     // Watcher for playlist, automatically download info and audio blob when available
     useEffect(() => {
-        if (workerState === 'idle') {
+        // console.log('worker triggered', workerState)
+        // Sometimes worker state do not come up when large item is downloading
+        if (workerState === 'idle' || !getIsDownloading()) {
             const nextJob: undefined | Playitem = getNextJob()
             if (nextJob !== undefined) {
+                // Only work when the status is idle and next job exists
                 setWorkerState('working')
+                // try to fetch stream url first from info
                 if (!nextJob.streamUrl) {
                     console.log(
                         `[Worker] Start download videoInfo: ${nextJob.id} - ${nextJob.title}`
@@ -77,6 +96,7 @@ export default function Worker(): ReactElement {
                                         type: res.type,
                                     })
                                 )
+                                // then download the actual blob
                                 console.log(
                                     `[Worker] Downloading stream: ${nextJob.id} - ${nextJob.title}`
                                 )
@@ -86,6 +106,7 @@ export default function Worker(): ReactElement {
                         })
                         .then((res: Blob) => {
                             setWorkerState('idle')
+                            // console.log('[Worker] Download Finished')
                             dispatchAudioBlob({
                                 type: 'ADD_BLOB',
                                 payload: { id: nextJob.id, blob: res },
@@ -99,11 +120,12 @@ export default function Worker(): ReactElement {
                             dispatch(setItemError(nextJob.id))
                         })
                 } else {
+                    // only download blob if the url is already there
                     fetchStream(nextJob.streamUrl)
                         .then(() => {
                             setWorkerState('idle')
                             dispatch(setItemDownloaded(nextJob.id))
-                            console.log('[Worker] Download Finished')
+                            // console.log('[Worker] Download Finished')
                         })
                         .catch((err) => {
                             setWorkerState('idle')
