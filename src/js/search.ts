@@ -52,35 +52,38 @@ const extractInnertubeThumbnail = (
     }
     const mediumThumbnail: Thumbnail = array[1]
         ? {
-            quality: 'medium',
-            url: array[1].url,
-            height: array[1].height,
-            width: array[1].width,
-        }
-            : { ...maxresThumbnail, quality: 'medium' }
-            return [maxresThumbnail, mediumThumbnail]
+              quality: 'medium',
+              url: array[1].url,
+              height: array[1].height,
+              width: array[1].width,
+          }
+        : { ...maxresThumbnail, quality: 'medium' }
+    return [maxresThumbnail, mediumThumbnail]
 }
 const extractInvidiousChannelThumbnail = (
     array: { url: string; width: number; height: number }[]
 ) => {
     const thumbnails = array.sort((a, b) => b.width - a.width)
     return thumbnails.map((state, index) =>
-                          index === 0
-                              ? { ...state, quality: 'maxres' }
-                              : index === 1
-                                  ? { ...state, quality: 'medium' }
-                                  : { ...state, quality: '' }
-                         )
+        index === 0
+            ? { ...state, quality: 'maxres' }
+            : index === 1
+            ? { ...state, quality: 'medium' }
+            : { ...state, quality: '' }
+    )
 }
-const generatePipedThumbnail = ( url: string ) => {
-    const img = new Image();
+const generatePipedThumbnail = (url: string) => {
+    const img = new Image()
     img.src = url
     const thumbnail = {
         width: img.width,
         height: img.height,
         url: url,
     }
-    return [{...thumbnail, quality: 'maxres'}, {...thumbnail, quality: 'medium'}]
+    return [
+        { ...thumbnail, quality: 'maxres' },
+        { ...thumbnail, quality: 'medium' },
+    ]
 }
 export async function searchInv(
     keyword: string,
@@ -179,10 +182,10 @@ async function searchInner(
         }
         const res = await innertube.search(keyword, {
             sort_by: options.sort_by as
-            | 'relevance'
-            | 'rating'
-            | 'upload_date'
-            | 'view_count',
+                | 'relevance'
+                | 'rating'
+                | 'upload_date'
+                | 'view_count',
             type: options.type as 'all' | 'video' | 'channel' | 'playlist',
         })
         if (res.results === undefined || res.results === null) {
@@ -263,15 +266,15 @@ async function searchInner(
     }
 }
 
-async function searchPiped(keyword: string, options: Search, baseUrl: string){
-    try{
+async function searchPiped(keyword: string, options: Search, baseUrl: string) {
+    try {
         const res = await axios({
             method: 'get',
             baseURL: baseUrl,
             url: 'search',
             params: {
                 q: keyword,
-                filter: options.type
+                filter: options.type,
             },
         })
         const searchResults: (SearchResult | undefined)[] = res.data.items.map(
@@ -284,15 +287,18 @@ async function searchPiped(keyword: string, options: Search, baseUrl: string){
                         uploaderUrl,
                         views,
                         duration,
-                        thumbnail
+                        thumbnail,
                     } = item
                     const newVideo: VideoResult = {
                         type: 'video',
                         title: title as string,
                         videoId: url.replace(/^\/watch\?v=/, ''),
                         author: uploaderName as string,
-                        authorId: uploaderUrl?.replace(/^\/channel\//, '') as string,
-                            videoThumbnails: generatePipedThumbnail(thumbnail),
+                        authorId: uploaderUrl?.replace(
+                            /^\/channel\//,
+                            ''
+                        ) as string,
+                        videoThumbnails: generatePipedThumbnail(thumbnail),
                         viewCount: views as number,
                         lengthSeconds: duration as number,
                     }
@@ -304,28 +310,30 @@ async function searchPiped(keyword: string, options: Search, baseUrl: string){
                         uploaderName,
                         uploaderUrl,
                         thumbnail,
-                        videos
+                        videos,
                     } = item
                     const newPlaylist: PlaylistResult = {
                         type: 'playlist',
                         title: name as string,
                         playlistId: url.replace(/\/playlist\?list=/, ''),
                         author: uploaderName as string,
-                        authorId: uploaderUrl?.replace(/\/channel\//, '') as string,
-                            playlistThumbnails: generatePipedThumbnail(thumbnail),
+                        authorId: uploaderUrl?.replace(
+                            /\/channel\//,
+                            ''
+                        ) as string,
+                        playlistThumbnails: generatePipedThumbnail(thumbnail),
                         vidCount: videos as number,
                     }
                     console.log(newPlaylist)
                     return newPlaylist
                 } else if (item.type === 'channel') {
-                    const { url, name, subscribers, thumbnail } =
-                        item
+                    const { url, name, subscribers, thumbnail } = item
                     const newChannel: ChannelResult = {
                         type: 'channel',
                         author: name as string,
                         authorId: url.replace(/\/channel\//, '') as string,
-                            channelThumbnails: generatePipedThumbnail(thumbnail),
-                        subCount: subscribers?.toString() as string
+                        channelThumbnails: generatePipedThumbnail(thumbnail),
+                        subCount: subscribers?.toString() as string,
                     }
                     return newChannel
                 } else {
@@ -365,14 +373,14 @@ export async function handleSearchVideo(
     switch (instances[0].type) {
         case 'local':
             res = await searchInner(keyword, options, innertube)
-        break
+            break
         case 'invidious':
             res = await searchInv(keyword, options, instances[0].url)
-        break
+            break
         case 'piped':
             res = await searchPiped(keyword, options, instances[0].url)
-        break;
-            default:
+            break
+        default:
             throw new Error('Unknown instance in handle Search')
     }
     if (res instanceof Error) {

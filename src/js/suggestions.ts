@@ -14,8 +14,8 @@ export async function suggestInv(
             baseURL: baseUrl,
             url: 'api/v1/search/suggestions',
             params: {
-                q: keyword
-            }
+                q: keyword,
+            },
         })
         const rawSuggestions = res.data.suggestions
         const suggestions = rawSuggestions.map((suggestion: any) => {
@@ -57,18 +57,17 @@ async function suggestPiped(keyword: string, url: string) {
     if (keyword === '') {
         return []
     }
-    try{
+    try {
         const res = await axios({
             baseURL: url,
             url: 'suggestions',
             params: {
-                query: keyword
-            }
+                query: keyword,
+            },
         })
         return res.data as string[]
-    }
-    catch (err){
-        console.error(err);
+    } catch (err) {
+        console.error(err)
         return new Error('Piped suggestion error')
     }
 }
@@ -83,6 +82,7 @@ export async function handleSuggest(
         console.error('no more instances')
         return []
     }
+    console.log(instances)
     if (instances[0].enabled === false) {
         return handleSuggest(keyword, instances.slice(1), innertube)
     }
@@ -102,6 +102,7 @@ export async function handleSuggest(
     }
 
     if (res instanceof Error) {
+        console.error(res.message)
         return handleSuggest(keyword, instances.slice(1), innertube)
     } else {
         return res as string[]

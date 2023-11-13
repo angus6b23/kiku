@@ -18,6 +18,7 @@ import '../css/app.css'
 // Import App Component
 import App from '@/views/app'
 
+import './i18n'
 // Init F7 React Plugin
 Framework7.use(Framework7React)
 

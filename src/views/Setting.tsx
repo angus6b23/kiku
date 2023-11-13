@@ -1,36 +1,43 @@
+import InstanceSetting from '@/components/InstanceSetting'
 import presentToast from '@/components/Toast'
+import { Instance } from '@/components/interfaces'
 import { selectConfig, toggleTimeline } from '@/store/globalConfig'
 import {
     AccordionContent,
     Block,
     BlockTitle,
-    Button,
+    Icon,
     List,
+    ListInput,
     ListItem,
 } from 'framework7-react'
-import React, { type ReactElement } from 'react'
+import React, { useState, type ReactElement, ChangeEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 export interface SettingProps {}
 
 export default function Setting(props: SettingProps): ReactElement {
     const config = useSelector(selectConfig)
+    const { t } = useTranslation(['setting', 'common'])
     const dispatch = useDispatch()
+
+
     return (
         <>
             <Block>
-                <BlockTitle className="text-2xl">Setting</BlockTitle>
+                <BlockTitle className="text-2xl">
+                    {t('common:Setting')}
+                </BlockTitle>
                 <List strong outlineIos dividersIos insetMd>
                     <ListItem
                         className="text-xl"
                         accordionItem
                         accordionItemOpened
-                        title="Instance Configuration"
+                        title={t('setting:Instance-Configuration')}
                     >
                         <AccordionContent>
-                            <Block>
-                                <p>test</p>
-                            </Block>
+                            <InstanceSetting />
                         </AccordionContent>
                     </ListItem>
                     <ListItem

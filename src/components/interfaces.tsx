@@ -121,11 +121,6 @@ interface Instance {
 }
 interface GlobalConfig {
     instance: {
-        localEnabled: boolean
-        invidiousEnalbed: boolean
-        invidiousUrl: string
-        pipedEnabled: boolean
-        pipedUrl: string
         preferType: Instance[]
         lang: string
         location: string
@@ -136,7 +131,7 @@ interface GlobalConfig {
         autoScroll: boolean
     }
 }
-export {
+export type {
     Search,
     SearchState,
     Thumbnail,

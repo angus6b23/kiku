@@ -13,21 +13,18 @@ export default function InnerTube(): ReactElement {
         useCustomContext(Store)
 
     useEffect(() => {
-        if (config.instance.localEnabled) {
-            Innertube.create({
-                lang: config.instance.lang,
-                location: config.instance.location,
-                fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-                    fetch(input, init),
-                generate_session_locally: true,
-            }).then((res) => {
-                innertube.current = res
-            })
-        }
+        Innertube.create({
+            lang: config.instance.lang,
+            location: config.instance.location,
+            fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+                fetch(input, init),
+            generate_session_locally: true,
+        }).then((res) => {
+            innertube.current = res
+        })
     }, [
         config.instance.lang,
         config.instance.location,
-        config.instance.localEnabled,
     ])
     return <></>
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import {
     Page,
     Toolbar,
@@ -24,6 +24,7 @@ import Setting from './Setting'
 import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
 import { selectConfig } from '@/store/globalConfig'
+import { useTranslation } from 'react-i18next'
 
 interface SearchbarSelf {
     searchbar: any
@@ -37,12 +38,16 @@ const HomePage = () => {
         useCustomContext(Store)
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
+    const instance = useRef(config.instance.preferType) // Use reference for f7 autocomplete
+
+
     const autocompleteSearch = useRef<any>(null)
     const onPageBeforeRemove = () => {
         autocompleteSearch.current.destroy()
     }
     const search = useSelector(selectSearch)
     const dispatch = useDispatch()
+    const { t } = useTranslation(['common'])
 
     const onPageInit = () => {
         autocompleteSearch.current = f7.autocomplete.create({
@@ -51,7 +56,7 @@ const HomePage = () => {
             async source(query, render) {
                 let results = await handleSuggest(
                     query,
-                    config.instance.preferType,
+                    instance.current, //Use ref instead of config directly as f7.autocomplete.create will not sync with config
                     innertube.current
                 )
                 results = results.map((text: string) => decodeURI(text))
@@ -93,6 +98,10 @@ const HomePage = () => {
         dispatch(nextPage(res))
         f7.preloader.hide()
     }
+
+    useEffect(() => { // Sync Instance settings with local ref
+        instance.current = config.instance.preferType
+    }, [config.instance.preferType])
     return (
         <Page
             name="home"
@@ -110,7 +119,7 @@ const HomePage = () => {
                     onSubmit={handleSearch}
                     value={searchTerm}
                 />
-                <Button onClick={handleSearch}>Search</Button>
+                <Button onClick={handleSearch}>{t('common:Search')}</Button>
             </Subnavbar>
             <Block className="sticky top-0 z-10 my-0 px-0">
                 <Segmented strong>
@@ -118,19 +127,19 @@ const HomePage = () => {
                         active={tab === 'now-playing'}
                         onClick={() => setTab('now-playing')}
                     >
-                        Now Playing
+                        {t('common:Now-Playing')}
                     </Button>
                     <Button
                         active={tab === 'search-results'}
                         onClick={() => setTab('search-results')}
                     >
-                        Search Results
+                        {t('common:Search-Result')}
                     </Button>
                     <Button
                         active={tab === 'settings'}
                         onClick={() => setTab('settings')}
                     >
-                        Settings
+                        {t('common:Setting')}
                     </Button>
                 </Segmented>
             </Block>

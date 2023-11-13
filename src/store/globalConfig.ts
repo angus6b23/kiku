@@ -1,27 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store'
-import { GlobalConfig } from '@/components/interfaces'
+import { GlobalConfig, Instance } from '@/components/interfaces'
 
 const initiConfigState: GlobalConfig = {
     instance: {
-        localEnabled: true,
-        invidiousEnalbed: true,
-        invidiousUrl: 'https://invidious.12a.app',
-        pipedEnabled: true,
-        pipedUrl: 'https://pipedapi.12a.app',
         preferType: [
             {
                 type: 'piped',
-                url: 'https://pipedapi.12a.app',
-                enabled: true
-            },
-            {
-                type: 'invidious',
-                url: 'https://invidious.12a.app',
+                url: 'https://pipedapi.kavin.rocks',
                 enabled: true,
             },
             { type: 'local', url: '', enabled: true },
+            {
+                type: 'invidious',
+                url: 'https://invidious.fdn.fr',
+                enabled: true,
+            },
         ],
         lang: 'en',
         location: 'US',
@@ -43,10 +38,19 @@ export const globalConfig = createSlice({
                 ui: { ...state.ui, showTimeline: !state.ui.showTimeline },
             }
         },
+        updateInstance: (state, action:PayloadAction<Instance[]>) => {
+            return {
+                ...state,
+                instance:{
+                    ...state.instance,
+                    preferType: action.payload
+                }
+            }
+        }
     },
 })
 
-export const { toggleTimeline } = globalConfig.actions
+export const { toggleTimeline, updateInstance } = globalConfig.actions
 
 export default globalConfig.reducer
 export const selectConfig = (state: RootState) => state.config
