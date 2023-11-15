@@ -3,11 +3,13 @@ import {
     ChannelResult,
     Instance,
     PlaylistResult,
-    Search,
+    SearchContinuation,
+    SearchOption,
     SearchResult,
     Thumbnail,
     VideoResult,
 } from '../components/interfaces'
+import { Search } from 'youtubei.js/dist/src/parser/youtube'
 import Innertube from 'youtubei.js/agnostic'
 import { Channel, Playlist, Video } from 'youtubei.js/dist/src/parser/nodes'
 import { Author } from 'youtubei.js/dist/src/parser/misc'
@@ -39,6 +41,10 @@ interface PipedRes {
     videos?: number
     thumbnail: string
     subscribers?: number
+}
+interface Res {
+    continuation: Search | undefined | string
+    data: SearchResult[]
 }
 
 const extractInnertubeThumbnail = (
@@ -85,11 +91,11 @@ const generatePipedThumbnail = (url: string) => {
         { ...thumbnail, quality: 'medium' },
     ]
 }
-export async function searchInv(
+async function searchInv(
     keyword: string,
-    options: Search,
+    options: SearchOption,
     baseUrl: string
-) {
+): Promise<Res | Error> {
     try {
         const res = await axios({
             method: 'get',
@@ -162,9 +168,13 @@ export async function searchInv(
                 }
             }
         )
-        return searchResults.filter(
+        const data = searchResults.filter(
             (item) => item !== undefined
         ) as SearchResult[]
+        return {
+            data: data,
+            continuation: undefined,
+        }
     } catch (err) {
         console.error(err)
         return new Error(err as string)
@@ -173,21 +183,28 @@ export async function searchInv(
 
 async function searchInner(
     keyword: string,
-    options: Search,
-    innertube: Innertube | null
-): Promise<Error | SearchResult[]> {
+    options: SearchOption,
+    innertube: Innertube | null,
+    nextpage: Search | undefined = undefined
+): Promise<Res | Error> {
     try {
         if (innertube === null) {
             return new Error('innertube not found')
         }
-        const res = await innertube.search(keyword, {
-            sort_by: options.sort_by as
-                | 'relevance'
-                | 'rating'
-                | 'upload_date'
-                | 'view_count',
-            type: options.type as 'all' | 'video' | 'channel' | 'playlist',
-        })
+        let res
+        if (nextpage === undefined) {
+            res = await innertube.search(keyword, {
+                sort_by: options.sort_by as
+                    | 'relevance'
+                    | 'rating'
+                    | 'upload_date'
+                    | 'view_count',
+                type: options.type as 'all' | 'video' | 'channel' | 'playlist',
+            })
+        } else {
+            res = await nextpage.getContinuation()
+            console.log(res)
+        }
         if (res.results === undefined || res.results === null) {
             throw new Error('innertube results not defined')
         }
@@ -258,26 +275,57 @@ async function searchInner(
             }
         )
         // console.log(searchResults)
-        return searchResults.filter(
+        const data = searchResults.filter(
             (item) => item !== undefined
         ) as SearchResult[]
+        return {
+            continuation: res,
+            data: data,
+        }
     } catch (err) {
         return new Error(err as string)
     }
 }
 
-async function searchPiped(keyword: string, options: Search, baseUrl: string) {
+async function searchPiped(
+    keyword: string,
+    options: SearchOption,
+    baseUrl: string,
+    nextpage = ''
+) {
     try {
-        const res = await axios({
-            method: 'get',
-            baseURL: baseUrl,
-            url: 'search',
-            params: {
-                q: keyword,
-                filter: options.type,
-            },
-        })
-        const searchResults: (SearchResult | undefined)[] = res.data.items.map(
+        const url =
+            nextpage === ''
+                ? new URL(baseUrl + '/search')
+                : new URL(baseUrl + '/nextpage/search')
+        if (nextpage !== '') {
+            url.searchParams.set('nextpage', nextpage)
+        }
+        url.searchParams.set('q', keyword)
+        url.searchParams.set('filter', options.type)
+        const res = await fetch(url)
+        const resJson = await res.json()
+        // axios does not work for some reason
+        // const res = await axios({
+        //     method: 'get',
+        //     baseURL: baseUrl,
+        //     url: nextpage === '' ? 'search' : 'nextpage/search',
+        //     params: {
+        //         q: keyword,
+        //         filter: options.type,
+        //         nextpage: nextpage
+        //     },
+        //     paramsSerializer: (params) => {
+        //         if (params.nextpage !== ''){
+        //             const nextpage = JSON.parse(params.nextpage)
+        //             console.log(nextpage)
+        //             return `nextpage=${JSON.stringify(nextpage)}&q=${params.q}&filter=${params.filter}`
+        //         } else {
+        //             return `q=${params.q}&filter=${params.filter}`
+        //         }
+        //     },
+        // })
+        const searchResults: (SearchResult | undefined)[] = resJson.items.map(
             (item: PipedRes) => {
                 if (item.type === 'stream') {
                     const {
@@ -341,9 +389,13 @@ async function searchPiped(keyword: string, options: Search, baseUrl: string) {
                 }
             }
         )
-        return searchResults.filter(
+        const data = searchResults.filter(
             (item) => item !== undefined
         ) as SearchResult[]
+        return {
+            data: data,
+            continuation: resJson.nextpage,
+        }
     } catch (err) {
         console.error(err)
         return new Error(err as string)
@@ -352,17 +404,17 @@ async function searchPiped(keyword: string, options: Search, baseUrl: string) {
 
 export async function handleSearchVideo(
     keyword: string,
-    options: Search,
+    options: SearchOption,
     instances: Instance[],
     innertube: Innertube | null
-): Promise<SearchResult[]> {
-    let res: Error | SearchResult[]
+): Promise<Res> {
+    let res: Error | Res
     if (instances.length === 0) {
         throw new Error('error on handle search')
     }
 
     if (instances[0].enabled === false) {
-        return handleSearchVideo(
+        return await handleSearchVideo(
             keyword,
             options,
             instances.slice(1),
@@ -393,5 +445,55 @@ export async function handleSearchVideo(
             innertube
         )
     }
+    return res
+}
+
+export async function handleContinuation(
+    options: SearchOption,
+    continuation: SearchContinuation,
+    instances: Instance[],
+    innertube: Innertube | null
+): Promise<Res> {
+    let res: Res | Error
+    if (continuation === undefined) {
+        const invidious = instances.find(
+            (item) => item.type === 'invidious'
+        ) as Instance
+        res = await searchInv(
+            options.searchTerm,
+            { ...options, page: options.page + 1 },
+            invidious.url
+        )
+        if (res instanceof Error) {
+            presentToast('error', 'Unable to load more with invidious')
+            throw new Error('Error while continuation with invidious')
+        }
+    } else if (continuation.constructor.name === 'String') {
+        const piped = instances.find(
+            (item) => item.type === 'piped'
+        ) as Instance
+        res = await searchPiped(
+            options.searchTerm,
+            options,
+            piped.url,
+            continuation as string
+        )
+        if (res instanceof Error) {
+            presentToast('error', 'Unable to load more with piped')
+            throw new Error('Error while continuation with piped')
+        }
+    } else {
+        res = await searchInner(
+            options.searchTerm,
+            options,
+            innertube,
+            continuation as Search
+        )
+        if (res instanceof Error) {
+            presentToast('error', 'Unable to load more with inner tube')
+            throw new Error('Error while continuation with inner tube')
+        }
+    }
+    console.log(res)
     return res
 }

@@ -13,7 +13,7 @@ import {
 } from 'framework7-react'
 
 import { handleSuggest } from '../js/suggestions'
-import { handleSearchVideo, searchInv } from '../js/search'
+import { handleContinuation, handleSearchVideo } from '../js/search'
 import SearchResults from '../views/SearchResults'
 import NowPlaying from '../views/NowPlaying'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
@@ -25,6 +25,7 @@ import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
 import { selectConfig } from '@/store/globalConfig'
 import { useTranslation } from 'react-i18next'
+import { SearchContinuation } from '@/components/interfaces'
 
 interface SearchbarSelf {
     searchbar: any
@@ -33,13 +34,14 @@ declare const self: Window & typeof globalThis & SearchbarSelf
 
 const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('')
+    const [continuation, setContinuation] =
+        useState<SearchContinuation>(undefined)
     const [tab, setTab] = useState('now-playing')
     const { innertube }: { innertube: React.RefObject<Innertube> } =
         useCustomContext(Store)
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
     const instance = useRef(config.instance.preferType) // Use reference for f7 autocomplete
-
 
     const autocompleteSearch = useRef<any>(null)
     const onPageBeforeRemove = () => {
@@ -84,22 +86,31 @@ const HomePage = () => {
             config.instance.preferType,
             innertube.current
         )
-        dispatch(newSearch({ res: res, searchTerm: searchTerm }))
+        setContinuation(res.continuation)
+        dispatch(newSearch({ res: res.data, searchTerm: searchTerm }))
+
         f7.preloader.hide()
     }
     const handleLoadMore = async () => {
         f7.preloader.show()
-        const newPage = search.page + 1
-        const res = await searchInv(
-            searchTerm,
-            { ...search, page: newPage },
-            config.instance.preferType[1].url
+        const res = await handleContinuation(
+            search,
+            continuation,
+            config.instance.preferType,
+            innertube.current
         )
-        dispatch(nextPage(res))
+        dispatch(nextPage(res.data))
+        // const res = await searchInv(
+        //     searchTerm,
+        //     { ...search, page: newPage },
+        //     config.instance.preferType[1].url
+        // )
+        // dispatch(nextPage(res))
         f7.preloader.hide()
     }
 
-    useEffect(() => { // Sync Instance settings with local ref
+    useEffect(() => {
+        // Sync Instance settings with local ref
         instance.current = config.instance.preferType
     }, [config.instance.preferType])
     return (

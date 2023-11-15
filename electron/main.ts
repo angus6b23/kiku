@@ -1,5 +1,5 @@
-/* eslint-disable*/
-const { app, BrowserWindow, session } = require('electron')
+/* eslint-disable */
+const { app, BrowserWindow, session, ipcMain } = require('electron')
 
 function createWindow() {
     // Create the browser window.
@@ -13,7 +13,6 @@ function createWindow() {
             contextIsolation: false,
         },
     })
-
     // Set CONSENT cookie on reasonable domains
     const consentCookieDomains = [
         'https://www.youtube.com',
@@ -76,7 +75,7 @@ function createWindow() {
                 const TEN_MIB = 10 * 1024 * 1024
 
                 const contentLength = parseInt(
-                    new URL(url).searchParams.get('clen')
+                    new URL(url).searchParams.get('clen') as string
                 )
 
                 if (contentLength > TEN_MIB) {
@@ -108,7 +107,7 @@ function createWindow() {
     }
 
     // Open the DevTools.
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

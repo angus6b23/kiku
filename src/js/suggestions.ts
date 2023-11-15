@@ -5,7 +5,7 @@ import Innertube from 'youtubei.js/agnostic'
 export async function suggestInv(
     keyword: string,
     baseUrl: string
-): Promise<string[]> {
+): Promise<string[] | Error> {
     // console.log('using invidious')
     if (keyword === '') return []
     try {
@@ -31,8 +31,7 @@ export async function suggestInv(
         })
         return suggestions
     } catch (err) {
-        console.error(err)
-        return []
+        return new Error('Invidious suggestion error')
     }
 }
 
@@ -82,7 +81,7 @@ export async function handleSuggest(
         console.error('no more instances')
         return []
     }
-    console.log(instances)
+    // console.log(instances)
     if (instances[0].enabled === false) {
         return handleSuggest(keyword, instances.slice(1), innertube)
     }

@@ -22,7 +22,6 @@ export default function Setting(props: SettingProps): ReactElement {
     const { t } = useTranslation(['setting', 'common'])
     const dispatch = useDispatch()
 
-
     return (
         <>
             <Block>

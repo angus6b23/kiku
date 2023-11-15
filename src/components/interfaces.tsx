@@ -1,3 +1,5 @@
+import { Search } from 'youtubei.js/dist/src/parser/youtube'
+
 interface Playitem {
     id: string
     title: string
@@ -34,21 +36,26 @@ interface PlaylistAction {
     payload: any
 }
 
-interface Search {
-    page: number
-    sort_by: string
-    type: string
-    results: any[]
-}
-
-interface SearchState {
+interface SearchOption {
+    //Passed through options
     searchTerm: string
     page: number
     sort_by: 'relevance' | 'rating' | 'upload_date' | 'view_count'
-    type: 'all' | 'video' | 'playlist' | 'channel' | 'movie' | 'show'
+    type: 'all' | 'video' | 'playlist' | 'channel'
+    region?: string
+}
+
+interface SearchState {
+    //Saved in store
+    searchTerm: string
+    page: number
+    sort_by: 'relevance' | 'rating' | 'upload_date' | 'view_count'
+    type: 'all' | 'video' | 'playlist' | 'channel'
     region: string
     results: SearchResult[]
 }
+
+type SearchContinuation = undefined | string | Search
 
 interface SearchAction {
     type: 'INV_SEARCH' | 'LOAD_MORE' | 'NEW_SEARCH'
@@ -132,8 +139,9 @@ interface GlobalConfig {
     }
 }
 export type {
-    Search,
+    SearchOption,
     SearchState,
+    SearchContinuation,
     Thumbnail,
     VideoResult,
     ChannelResult,

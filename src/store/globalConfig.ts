@@ -38,15 +38,15 @@ export const globalConfig = createSlice({
                 ui: { ...state.ui, showTimeline: !state.ui.showTimeline },
             }
         },
-        updateInstance: (state, action:PayloadAction<Instance[]>) => {
+        updateInstance: (state, action: PayloadAction<Instance[]>) => {
             return {
                 ...state,
-                instance:{
+                instance: {
                     ...state.instance,
-                    preferType: action.payload
-                }
+                    preferType: action.payload,
+                },
             }
-        }
+        },
     },
 })
 

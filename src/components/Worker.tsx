@@ -5,29 +5,35 @@ import React, {
     useContext,
 } from 'react'
 import { AudioBlobAction, Playitem } from './interfaces'
-import { fetchStreamData, fetchStream } from '../js/fetchInv'
+import { handleFetchStream } from '../js/fetchInv'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     selectPlaylist,
     setItemDownloaded,
     setItemDownloading,
     setItemError,
-    setItemInfo,
     setItemPlaying,
 } from '@/store/playlist'
 import { Store } from './context'
 import { selectPlayer } from '@/store/player'
+import { selectConfig } from '@/store/globalConfig'
+import Innertube from 'youtubei.js/agnostic'
+import presentToast from './Toast'
 export interface WorkerProps {}
 
 export default function Worker(): ReactElement {
     // Spawn a worker which will automatically download bolb in the background
     const playlist = useSelector(selectPlaylist)
     const playerState = useSelector(selectPlayer)
+    const config = useSelector(selectConfig)
     const dispatch = useDispatch()
     const {
         dispatchAudioBlob,
-    }: { dispatchAudioBlob: React.Dispatch<AudioBlobAction> } =
-        useContext(Store)
+        innertube,
+    }: {
+        dispatchAudioBlob: React.Dispatch<AudioBlobAction>
+        innertube: React.RefObject<Innertube | null>
+    } = useContext(Store)
 
     // Will only download one item at once, download when idle, pass when working
     const [workerState, setWorkerState] = useState('idle')
@@ -82,57 +88,57 @@ export default function Worker(): ReactElement {
                 // Only work when the status is idle and next job exists
                 setWorkerState('working')
                 // try to fetch stream url first from info
-                if (!nextJob.streamUrl) {
-                    console.log(
-                        `[Worker] Start download videoInfo: ${nextJob.id} - ${nextJob.title}`
-                    )
-                    fetchStreamData(nextJob)
-                        .then((res) => {
-                            if (res !== '') {
-                                dispatch(
-                                    setItemInfo({
-                                        id: nextJob.id,
-                                        url: res.url,
-                                        type: res.type,
-                                    })
-                                )
-                                // then download the actual blob
-                                console.log(
-                                    `[Worker] Downloading stream: ${nextJob.id} - ${nextJob.title}`
-                                )
-                                dispatch(setItemDownloading(nextJob.id))
-                                return fetchStream(res.url)
-                            }
-                        })
-                        .then((res: Blob) => {
-                            setWorkerState('idle')
-                            // console.log('[Worker] Download Finished')
+                // if (!nextJob.streamUrl) {
+                console.log(
+                    `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
+                )
+                dispatch(setItemDownloading(nextJob.id))
+                handleFetchStream(
+                    nextJob.id,
+                    config.instance.preferType,
+                    innertube?.current
+                )
+                    .then((blob) => {
+                        if (blob instanceof Error) {
+                            throw new Error(blob as unknown as string)
+                        } else {
                             dispatchAudioBlob({
                                 type: 'ADD_BLOB',
-                                payload: { id: nextJob.id, blob: res },
+                                payload: { id: nextJob.id, blob: blob },
                             })
                             dispatch(setItemDownloaded(nextJob.id))
-                        })
-                        .catch((err) => {
-                            setWorkerState('idle')
-                            console.log(err)
-                            // Show toast
-                            dispatch(setItemError(nextJob.id))
-                        })
-                } else {
-                    // only download blob if the url is already there
-                    fetchStream(nextJob.streamUrl)
-                        .then(() => {
-                            setWorkerState('idle')
-                            dispatch(setItemDownloaded(nextJob.id))
-                            // console.log('[Worker] Download Finished')
-                        })
-                        .catch((err) => {
-                            setWorkerState('idle')
-                            console.log(err)
-                            dispatch(setItemError(nextJob.id))
-                        })
-                }
+                        }
+                    })
+                    // .then((res: Blob) => {
+                    //     setWorkerState('idle')
+                    //     // console.log('[Worker] Download Finished')
+                    //     dispatchAudioBlob({
+                    //         type: 'ADD_BLOB',
+                    //         payload: { id: nextJob.id, blob: res },
+                    //     })
+                    //     dispatch(setItemDownloaded(nextJob.id))
+                    // })
+                    .catch((err) => {
+                        setWorkerState('idle')
+                        console.log(err)
+                        presentToast('error', err)
+                        // Show toast
+                        dispatch(setItemError(nextJob.id))
+                    })
+                // } else {
+                //     // only download blob if the url is already there
+                //     fetchStream(nextJob.streamUrl)
+                //         .then(() => {
+                //             setWorkerState('idle')
+                //             dispatch(setItemDownloaded(nextJob.id))
+                //             // console.log('[Worker] Download Finished')
+                //         })
+                //         .catch((err) => {
+                //             setWorkerState('idle')
+                //             console.log(err)
+                //             dispatch(setItemError(nextJob.id))
+                //         })
+                // }
             }
         }
     }, [playlist])

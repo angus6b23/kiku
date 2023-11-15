@@ -22,9 +22,6 @@ export default function InnerTube(): ReactElement {
         }).then((res) => {
             innertube.current = res
         })
-    }, [
-        config.instance.lang,
-        config.instance.location,
-    ])
+    }, [config.instance.lang, config.instance.location])
     return <></>
 }
