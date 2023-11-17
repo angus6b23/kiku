@@ -8,15 +8,14 @@ import {
     ListItem,
     Page,
 } from 'framework7-react'
-import React, { useState, type ReactElement, Suspense } from 'react'
+import React, { type ReactElement } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 export interface SettingProps {}
 
-export default function Setting(props: SettingProps): ReactElement {
+export default function Setting(): ReactElement {
     const config = useSelector(selectConfig)
     const dispatch = useDispatch()
-
     return (
             <Page
                 name="setting">
