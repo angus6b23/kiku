@@ -47,7 +47,7 @@ interface Res {
     data: SearchResult[]
 }
 
-const extractInnertubeThumbnail = (
+export const extractInnertubeThumbnail = (
     array: { url: string; width: number; height: number }[]
 ) => {
     const maxresThumbnail: Thumbnail = {
@@ -66,7 +66,7 @@ const extractInnertubeThumbnail = (
         : { ...maxresThumbnail, quality: 'medium' }
     return [maxresThumbnail, mediumThumbnail]
 }
-const extractInvidiousChannelThumbnail = (
+export const extractInvidiousChannelThumbnail = (
     array: { url: string; width: number; height: number }[]
 ) => {
     const thumbnails = array.sort((a, b) => b.width - a.width)
@@ -78,7 +78,7 @@ const extractInvidiousChannelThumbnail = (
             : { ...state, quality: '' }
     )
 }
-const generatePipedThumbnail = (url: string) => {
+export const generatePipedThumbnail = (url: string) => {
     const img = new Image()
     img.src = url
     const thumbnail = {
@@ -438,7 +438,7 @@ export async function handleSearchVideo(
     if (res instanceof Error) {
         console.error(res)
         presentToast('error', res.message)
-        return handleSearchVideo(
+        return await handleSearchVideo(
             keyword,
             options,
             instances.slice(1),

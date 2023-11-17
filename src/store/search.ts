@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { SearchResult, SearchState } from '@/components/interfaces'
 import { RootState } from './store'
+import { Search } from 'youtubei.js/dist/src/parser/youtube'
 
 const initiSearchState: SearchState = {
     searchTerm: '',
@@ -10,11 +11,13 @@ const initiSearchState: SearchState = {
     type: 'all',
     region: 'US',
     results: [],
+    continuation: undefined
 }
 
 interface NewSearch {
     res: SearchResult[]
     searchTerm: string
+    continuation: string | undefined | Search
 }
 
 export const search = createSlice({
@@ -27,6 +30,7 @@ export const search = createSlice({
                 page: 1,
                 searchTerm: action.payload.searchTerm,
                 results: action.payload.res,
+                continuation: action.payload.continuation
             }
         },
         nextPage: (state, action: PayloadAction<SearchResult[]>) => {

@@ -6,11 +6,12 @@ import { formatViewNumber, convertSecond } from '../utils/format'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
 
-interface searchResultCardProps {
+interface VideoResultCardProps {
     data: VideoResult
+    handleViewChannel: (arg0: string) => void
 }
 
-export default function searchResultCard(props: searchResultCardProps) {
+export default function VideoResultCard(props: VideoResultCardProps) {
     const targetImage = props.data.videoThumbnails.find(
         (thumbnail) => thumbnail.quality === 'medium'
     )
@@ -139,6 +140,7 @@ export default function searchResultCard(props: searchResultCardProps) {
                     <Link
                         className="underline"
                         href={`channel/${props.data.authorId}`}
+                        // onClick={() => props.handleViewChannel(props.data.authorId)}
                     >
                         {props.data.author}
                     </Link>

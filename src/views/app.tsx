@@ -18,10 +18,12 @@ import { blobStoreReducer } from '@/components/reducers'
 import { Provider } from 'react-redux'
 import Worker from '@/components/Worker'
 import AudioWatcher from '@/components/AudioWatcher'
-import store from '@/store/store'
-import HomePage from '@/views/HomePage'
+import {store, persistor} from '@/store/store'
+import routes from '@/js/routes'
 import Innertube from 'youtubei.js/agnostic'
 import InnerTube from '@/components/InnerTube'
+import {PersistGate} from 'redux-persist/integration/react'
+import HomePage from '@/views/HomePage'
 
 const initBlobStore: AudioBlobObject[] = []
 const MyApp = () => {
@@ -39,6 +41,7 @@ const MyApp = () => {
             primary: '#89a0c2',
         },
         darkMode: true,
+        routes: routes
     }
     f7ready(() => {
         // Call F7 APIs here
@@ -47,41 +50,41 @@ const MyApp = () => {
     return (
         <App {...f7params}>
             <Provider store={store}>
-                <Store.Provider
-                    value={{
-                        // playlist: playlist,
-                        // dispatchPlaylist: dispatchPlaylist,
-                        // playerState: playerState,
-                        // dispatchPlayer: dispatchPlayer,
-                        audioBlobStore: audioBlobStore,
-                        dispatchAudioBlob: dispatchAudioBlob,
-                        audio: audio,
-                        innertube: innertube,
-                    }}
-                >
-                    <Worker />
-                    <InnerTube />
-                    <AudioWatcher />
-                    <Panel
-                        className="min-w-60 w-1/3 lg:w-1/4"
-                        right
-                        visibleBreakpoint={640}
+                <PersistGate loading={null} persistor={persistor}>
+                    <Store.Provider
+                        value={{
+                            // playlist: playlist,
+                            // dispatchPlaylist: dispatchPlaylist,
+                            // playerState: playerState,
+                            // dispatchPlayer: dispatchPlayer,
+                            audioBlobStore: audioBlobStore,
+                            dispatchAudioBlob: dispatchAudioBlob,
+                            audio: audio,
+                            innertube: innertube,
+                        }}
                     >
-                        <View>
-                            <Page>
-                                <Navbar title="PlayList" />
-                                <PlayList />
-                            </Page>
+                        <Worker />
+                        <InnerTube />
+                        <AudioWatcher />
+                        <Panel
+                            className="min-w-60 w-1/3 lg:w-1/4"
+                            right
+                            visibleBreakpoint={640}
+                        >
+                            <View>
+                                <Page>
+                                    <Navbar title="PlayList" />
+                                    <PlayList />
+                                </Page>
+                            </View>
+                        </Panel>
+
+                        <View main router={false}>
+                            <HomePage />
                         </View>
-                    </Panel>
 
-                    {/* Your main view, should have "view-main" class */}
-                    <View main>
-                        <HomePage />
-                    </View>
-
-                    <Toolbar bottom></Toolbar>
-                </Store.Provider>
+                    </Store.Provider>
+                </PersistGate>
             </Provider>
         </App>
     )

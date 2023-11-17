@@ -1,5 +1,5 @@
 import React, { type ReactElement, useCallback } from 'react'
-import { Block, Button, Icon } from 'framework7-react'
+import { Block, Button, Icon, Page } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectPlayer, stop, togglePlay } from '@/store/player'
 import { selectPlaylist, setItemPlaying } from '@/store/playlist'
@@ -54,7 +54,9 @@ export default function NowPlaying(): ReactElement {
         dispatch(togglePlay())
     }, [dispatch])
     return (
-        <>
+        <Page
+            name="now-playing">
+
             {playerState.currentPlaying === undefined ? (
                 <NoPlaying />
             ) : (
@@ -102,6 +104,6 @@ export default function NowPlaying(): ReactElement {
                     </div>
                 </Block>
             )}
-        </>
+        </Page>
     )
 }

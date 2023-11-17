@@ -75,7 +75,7 @@ function createWindow() {
                 const TEN_MIB = 10 * 1024 * 1024
 
                 const contentLength = parseInt(
-                    new URL(url).searchParams.get('clen') as string
+                    new URL(url).searchParams.get('clen')
                 )
 
                 if (contentLength > TEN_MIB) {

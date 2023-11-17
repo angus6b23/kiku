@@ -3,18 +3,18 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store'
 import { GlobalConfig, Instance } from '@/components/interfaces'
 
-const initiConfigState: GlobalConfig = {
+const initConfigState: GlobalConfig = {
     instance: {
         preferType: [
-            {
-                type: 'piped',
-                url: 'https://pipedapi.kavin.rocks',
-                enabled: true,
-            },
             { type: 'local', url: '', enabled: true },
             {
                 type: 'invidious',
                 url: 'https://invidious.fdn.fr',
+                enabled: true,
+            },
+            {
+                type: 'piped',
+                url: 'https://pipedapi.kavin.rocks',
                 enabled: true,
             },
         ],
@@ -30,7 +30,7 @@ const initiConfigState: GlobalConfig = {
 
 export const globalConfig = createSlice({
     name: 'globalConfig',
-    initialState: initiConfigState,
+    initialState: initConfigState,
     reducers: {
         toggleTimeline: (state) => {
             return {
@@ -47,6 +47,12 @@ export const globalConfig = createSlice({
                 },
             }
         },
+        resetInstance: (state) => {
+            return {
+                ...state,
+                instance: initConfigState.instance
+            }
+        }
     },
 })
 

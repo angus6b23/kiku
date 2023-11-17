@@ -52,7 +52,8 @@ interface SearchState {
     sort_by: 'relevance' | 'rating' | 'upload_date' | 'view_count'
     type: 'all' | 'video' | 'playlist' | 'channel'
     region: string
-    results: SearchResult[]
+    results: SearchResult[],
+    continuation: string | undefined | Search
 }
 
 type SearchContinuation = undefined | string | Search
@@ -138,6 +139,17 @@ interface GlobalConfig {
         autoScroll: boolean
     }
 }
+interface ChannelData{
+    channelInfo: {
+        name: string
+        // thumbnail: string
+        subscribers: string
+        videoCount: number
+    }
+
+    videos: VideoResult[]
+    playlists?: any[]
+}
 export type {
     SearchOption,
     SearchState,
@@ -156,4 +168,5 @@ export type {
     AudioBlobAction,
     Instance,
     GlobalConfig,
+    ChannelData
 }

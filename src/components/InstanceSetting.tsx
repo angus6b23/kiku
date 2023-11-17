@@ -16,7 +16,6 @@ export default function InstanceSetting(
     props: InstanceSettingProps
 ): ReactElement {
     const config = useSelector(selectConfig)
-    const { t } = useTranslation(['setting', 'common'])
     const [instances, setInstances] = useState<Instance[]>(
         config.instance.preferType
     )
@@ -54,7 +53,7 @@ export default function InstanceSetting(
 
     return (
         <Block className="mt-2">
-            <BlockTitle className="text-lg">{t('setting:Source')}</BlockTitle>
+            <BlockTitle className="text-lg">Source</BlockTitle>
             <List
                 sortable
                 sortableEnabled
@@ -73,7 +72,7 @@ export default function InstanceSetting(
                                 <p>{instance.type}</p>
                                 {instance.type !== 'local' && (
                                     <div>
-                                        <label>{t('common:url')}</label>
+                                        <label>URL:</label>
                                         <input
                                             type="options"
                                             className="ml-2 bg-transparent border-b-[1px] border-[--f7-md-on-surface] text-[--f7-md-on-surface] focus:border-[--f7-theme-color] focus:border-b-2 w-50"
