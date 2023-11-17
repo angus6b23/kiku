@@ -102,6 +102,7 @@ const MainNav = (props: MainNavProps) => {
             name="MainNav"
             onPageInit={onPageInit}
             onPageBeforeRemove={onPageBeforeRemove}
+            className="h-28 overflow-visible z-50"
         >
             {/* Top Navbar */}
             <Subnavbar inner={false} className="flex p-2">
