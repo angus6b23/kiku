@@ -1,5 +1,5 @@
-import React, { useReducer, useRef } from 'react'
-import { AudioBlobObject } from '@/components/interfaces'
+import React, { useReducer, useRef, useState } from 'react'
+import { AudioBlobObject, Continuation } from '@/components/interfaces'
 import { Store } from '@/components/context'
 
 import {
@@ -18,11 +18,11 @@ import { blobStoreReducer } from '@/components/reducers'
 import { Provider } from 'react-redux'
 import Worker from '@/components/Worker'
 import AudioWatcher from '@/components/AudioWatcher'
-import {store, persistor} from '@/store/store'
+import { store, persistor } from '@/store/store'
 import routes from '@/js/routes'
 import Innertube from 'youtubei.js/agnostic'
 import InnerTube from '@/components/InnerTube'
-import {PersistGate} from 'redux-persist/integration/react'
+import { PersistGate } from 'redux-persist/integration/react'
 import HomePage from '@/views/HomePage'
 
 const initBlobStore: AudioBlobObject[] = []
@@ -33,6 +33,7 @@ const MyApp = () => {
         initBlobStore
     )
     const innertube = useRef<Innertube>(null)
+    const [continuation, setContinuation] = useState<Continuation>(undefined)
     // Framework7 Parameters
     const f7params = {
         name: 'Kiku', // App name
@@ -41,7 +42,7 @@ const MyApp = () => {
             primary: '#89a0c2',
         },
         darkMode: true,
-        routes: routes
+        routes: routes,
     }
     f7ready(() => {
         // Call F7 APIs here
@@ -53,10 +54,8 @@ const MyApp = () => {
                 <PersistGate loading={null} persistor={persistor}>
                     <Store.Provider
                         value={{
-                            // playlist: playlist,
-                            // dispatchPlaylist: dispatchPlaylist,
-                            // playerState: playerState,
-                            // dispatchPlayer: dispatchPlayer,
+                            continuation: continuation,
+                            setContinuation: setContinuation,
                             audioBlobStore: audioBlobStore,
                             dispatchAudioBlob: dispatchAudioBlob,
                             audio: audio,
@@ -82,7 +81,6 @@ const MyApp = () => {
                         <View main router={false}>
                             <HomePage />
                         </View>
-
                     </Store.Provider>
                 </PersistGate>
             </Provider>

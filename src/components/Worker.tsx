@@ -5,7 +5,7 @@ import React, {
     useContext,
 } from 'react'
 import { AudioBlobAction, Playitem } from './interfaces'
-import { handleFetchStream } from '../js/fetchInv'
+import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     selectPlaylist,

@@ -1,21 +1,20 @@
-import ChannelView from "@/views/ChannelView";
-import SearchResults from "@/views/SearchResults";
-import TestPage from "@/views/TestPage";
+import ChannelView from '@/views/ChannelView'
+import SearchResults from '@/views/SearchResults'
+import TestPage from '@/views/TestPage'
 
 const routes = [
     {
         path: '/',
-        component: SearchResults
+        component: SearchResults,
     },
     {
         path: '/test',
-        component: TestPage
+        component: TestPage,
     },
     {
         path: '/channel/:channelId',
-        component: ChannelView
-    }
-
+        component: ChannelView,
+    },
 ]
 
 export default routes

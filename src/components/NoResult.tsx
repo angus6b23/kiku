@@ -5,7 +5,7 @@ export interface NoResultProps {}
 
 export default function NoResult(): ReactElement {
     return (
-        <section className="w-full h-full flex justify-center items-center ">
+        <section className="w-full h-full flex justify-center items-center">
             <div className="w-full h-fit flex flex-wrap justify-center flex-row items-center gap-8 my-auto">
                 <div className="w-full">
                     <Icon

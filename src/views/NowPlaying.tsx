@@ -54,9 +54,7 @@ export default function NowPlaying(): ReactElement {
         dispatch(togglePlay())
     }, [dispatch])
     return (
-        <Page
-            name="now-playing">
-
+        <Page name="now-playing" className="h-page overflow-auto">
             {playerState.currentPlaying === undefined ? (
                 <NoPlaying />
             ) : (

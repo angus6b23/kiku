@@ -158,17 +158,17 @@ const HomePage = () => {
             {/* Toolbar */}
             <Block>
                 {/* <View> */}
-                    <Tabs>
-                        <Tab tabActive={tab === 'now-playing'}>
-                            <NowPlaying />
-                        </Tab>
-                        <Tab tabActive={tab === 'search-results'}>
-                            <SearchResults handleLoadMore={handleLoadMore} />
-                        </Tab>
-                        <Tab tabActive={tab === 'settings'}>
-                            <Setting />
-                        </Tab>
-                    </Tabs>
+                <Tabs>
+                    <Tab tabActive={tab === 'now-playing'}>
+                        <NowPlaying />
+                    </Tab>
+                    <Tab tabActive={tab === 'search-results'}>
+                        <SearchResults handleLoadMore={handleLoadMore} />
+                    </Tab>
+                    <Tab tabActive={tab === 'settings'}>
+                        <Setting />
+                    </Tab>
+                </Tabs>
                 {/* </View> */}
             </Block>
             {tab !== 'now-playing' &&
@@ -178,7 +178,7 @@ const HomePage = () => {
                             showNowPlaying={() => setTab('now-playing')}
                         />
                     </Toolbar>
-            )}
+                )}
             {/* Page content */}
         </Page>
     )

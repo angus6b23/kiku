@@ -1,9 +1,4 @@
-import React, {
-    useState,
-    type ReactElement,
-    useEffect,
-    useRef,
-} from 'react'
+import React, { useState, type ReactElement, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig, updateInstance } from '@/store/globalConfig'
 import { Instance } from './interfaces'
@@ -27,22 +22,17 @@ export default function InstanceSetting(): ReactElement {
     const handleInstanceCheck = (instance: Instance) => {
         setInstances((state) => {
             return state.map((item) =>
-                             item.type === instance.type
-                                 ? { ...item, enabled: !item.enabled }
-                                 : item
-                            )
+                item.type === instance.type
+                    ? { ...item, enabled: !item.enabled }
+                    : item
+            )
         })
     }
-    const handleUrlChange = (
-        newUrl: string,
-        instanceType: string,
-    ) => {
+    const handleUrlChange = (newUrl: string, instanceType: string) => {
         setInstances((state) => {
             return state.map((item) =>
-                             item.type === instanceType
-                                 ? { ...item, url: newUrl }
-                                 : item
-                            )
+                item.type === instanceType ? { ...item, url: newUrl } : item
+            )
         })
     }
     const handleInstanceSort = (e: { to: number; from: number }) => {
@@ -50,7 +40,7 @@ export default function InstanceSetting(): ReactElement {
         stateClone.splice(e.to, 0, ...stateClone.splice(e.from, 1))
         setInstances(stateClone)
     }
-    const resetInstances = () =>{
+    const resetInstances = () => {
         setInstances([
             { type: 'local', url: '', enabled: true },
             {
@@ -63,56 +53,62 @@ export default function InstanceSetting(): ReactElement {
                 url: 'https://pipedapi.kavin.rocks',
                 enabled: true,
             },
-        ]) 
+        ])
     }
     const autoCompletefx = (source: string[]) => {
         return (query: string, render: (items: any[]) => void) => {
-            if (query.length === 0){
+            if (query.length === 0) {
                 render([])
             } else {
-                const res = source.filter(sourceItem => sourceItem.toLowerCase().includes(query.toLowerCase()))
+                const res = source.filter((sourceItem) =>
+                    sourceItem.toLowerCase().includes(query.toLowerCase())
+                )
                 render(res)
             }
         }
     }
     useEffect(() => {
-        getInvInstances().then((res: string[] | Error) => {
-            if (res instanceof Error){
-                throw res
-            }
-            invAutocomplete.current = f7.autocomplete.create({
-                inputEl: '#autocomplete-invidious',
-                openIn: 'dropdown',
-                source: autoCompletefx(res),
-                on: {
-                    change: (e) => {
-                        handleUrlChange(e[0], 'invidious')
-                    }
+        getInvInstances()
+            .then((res: string[] | Error) => {
+                if (res instanceof Error) {
+                    throw res
                 }
+                invAutocomplete.current = f7.autocomplete.create({
+                    inputEl: '#autocomplete-invidious',
+                    openIn: 'dropdown',
+                    source: autoCompletefx(res),
+                    on: {
+                        change: (e) => {
+                            handleUrlChange(e[0], 'invidious')
+                        },
+                    },
+                })
             })
-        }).catch(err => {
-            presentToast('error', err)
-        })
-        getPipedInstances().then((res: string[] | Error) => {
-            if (res instanceof Error){
-                throw res
-            }
-            pipedAutocomplete.current = f7.autocomplete.create({
-                inputEl: '#autocomplete-piped',
-                openIn: 'dropdown',
-                source: autoCompletefx(res),
-                on: {
-                    change: (e) => {
-                        handleUrlChange(e[0], 'piped')
-                    }
+            .catch((err) => {
+                presentToast('error', err)
+            })
+        getPipedInstances()
+            .then((res: string[] | Error) => {
+                if (res instanceof Error) {
+                    throw res
                 }
+                pipedAutocomplete.current = f7.autocomplete.create({
+                    inputEl: '#autocomplete-piped',
+                    openIn: 'dropdown',
+                    source: autoCompletefx(res),
+                    on: {
+                        change: (e) => {
+                            handleUrlChange(e[0], 'piped')
+                        },
+                    },
+                })
             })
-        }).catch(err => {
-            presentToast('error', err)
-        })
+            .catch((err) => {
+                presentToast('error', err)
+            })
         return () => {
-            invAutocomplete.current.destroy();
-            pipedAutocomplete.current.destroy();
+            invAutocomplete.current.destroy()
+            pipedAutocomplete.current.destroy()
         }
     }, [])
     useEffect(() => {
@@ -145,11 +141,15 @@ export default function InstanceSetting(): ReactElement {
                                             <input
                                                 type="options"
                                                 className="ml-2 bg-transparent border-b-[1px] border-[--f7-md-on-surface] text-[--f7-md-on-surface] focus:border-[--f7-theme-color] focus:border-b-2 w-50"
+                                                spellCheck={false}
                                                 placeholder="https://instance.url"
                                                 value={instance.url}
                                                 id={`autocomplete-${instance.type}`}
                                                 onChange={(e) =>
-                                                    handleUrlChange(e.target.value, instance.type)
+                                                    handleUrlChange(
+                                                        e.target.value,
+                                                        instance.type
+                                                    )
                                                 }
                                             ></input>
                                         </div>
@@ -161,9 +161,27 @@ export default function InstanceSetting(): ReactElement {
                 </List>
             </Block>
             <Block className="p-10 flex flex-wrap justify-center items-center gap-10">
-                <Button fill onClick={() => shell.openExternal('https://api.invidious.io/')}>View Invidious Instances</Button>
-                <Button fill onClick={() => shell.openExternal('https://github.com/TeamPiped/Piped/wiki/Instances')}>View Piped Instances</Button>
-                <Button fill onClick={resetInstances}>Reset to default</Button>
+                <Button
+                    fill
+                    onClick={() =>
+                        shell.openExternal('https://api.invidious.io/')
+                    }
+                >
+                    View Invidious Instances
+                </Button>
+                <Button
+                    fill
+                    onClick={() =>
+                        shell.openExternal(
+                            'https://github.com/TeamPiped/Piped/wiki/Instances'
+                        )
+                    }
+                >
+                    View Piped Instances
+                </Button>
+                <Button fill onClick={resetInstances}>
+                    Reset to default
+                </Button>
             </Block>
         </>
     )

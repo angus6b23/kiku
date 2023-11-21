@@ -12,9 +12,6 @@ export default function PlaylistResultCard(props: SearchResultProps) {
     const targetImage = props.data.playlistThumbnails.find(
         (thumbnail) => thumbnail.quality === 'medium'
     )
-    const highResImage = props.data.playlistThumbnails.find(
-        (thumbnail) => thumbnail.quality === 'maxres' || 'maxresdefault'
-    )
     const [iconText, setIconText] = useState('')
     const dispatch = useDispatch()
 

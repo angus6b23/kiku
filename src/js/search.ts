@@ -47,6 +47,7 @@ interface Res {
     data: SearchResult[]
 }
 
+// Helper functions for extracting thumbnails for different api / innertube
 export const extractInnertubeThumbnail = (
     array: { url: string; width: number; height: number }[]
 ) => {
@@ -91,6 +92,8 @@ export const generatePipedThumbnail = (url: string) => {
         { ...thumbnail, quality: 'medium' },
     ]
 }
+
+// Main function for searching with invidious instance
 async function searchInv(
     keyword: string,
     options: SearchOption,
@@ -176,8 +179,7 @@ async function searchInv(
             continuation: undefined,
         }
     } catch (err) {
-        console.error(err)
-        return new Error(err as string)
+        return new Error(('invidious > ' + err) as string)
     }
 }
 
@@ -203,7 +205,6 @@ async function searchInner(
             })
         } else {
             res = await nextpage.getContinuation()
-            console.log(res)
         }
         if (res.results === undefined || res.results === null) {
             throw new Error('innertube results not defined')
@@ -283,7 +284,7 @@ async function searchInner(
             data: data,
         }
     } catch (err) {
-        return new Error(err as string)
+        return new Error(('innertube > ' + err) as string)
     }
 }
 
@@ -372,7 +373,6 @@ async function searchPiped(
                         playlistThumbnails: generatePipedThumbnail(thumbnail),
                         vidCount: videos as number,
                     }
-                    console.log(newPlaylist)
                     return newPlaylist
                 } else if (item.type === 'channel') {
                     const { url, name, subscribers, thumbnail } = item
@@ -397,8 +397,7 @@ async function searchPiped(
             continuation: resJson.nextpage,
         }
     } catch (err) {
-        console.error(err)
-        return new Error(err as string)
+        return new Error(('piped > ' + err) as string)
     }
 }
 
@@ -436,8 +435,7 @@ export async function handleSearchVideo(
             throw new Error('Unknown instance in handle Search')
     }
     if (res instanceof Error) {
-        console.error(res)
-        presentToast('error', res.message)
+        presentToast('error', 'search > ' + res.message)
         return await handleSearchVideo(
             keyword,
             options,
@@ -455,45 +453,46 @@ export async function handleContinuation(
     innertube: Innertube | null
 ): Promise<Res> {
     let res: Res | Error
-    if (continuation === undefined) {
-        const invidious = instances.find(
-            (item) => item.type === 'invidious'
-        ) as Instance
-        res = await searchInv(
-            options.searchTerm,
-            { ...options, page: options.page + 1 },
-            invidious.url
-        )
-        if (res instanceof Error) {
-            presentToast('error', 'Unable to load more with invidious')
-            throw new Error('Error while continuation with invidious')
+    try {
+        if (continuation === undefined) {
+            const invidious = instances.find(
+                (item) => item.type === 'invidious'
+            ) as Instance
+            res = await searchInv(
+                options.searchTerm,
+                { ...options, page: options.page + 1 },
+                invidious.url
+            )
+            if (res instanceof Error) {
+                throw new Error('continuation > ' + res)
+            }
+        } else if (continuation.constructor.name === 'String') {
+            const piped = instances.find(
+                (item) => item.type === 'piped'
+            ) as Instance
+            res = await searchPiped(
+                options.searchTerm,
+                options,
+                piped.url,
+                continuation as string
+            )
+            if (res instanceof Error) {
+                throw new Error('continuation > ' + res)
+            }
+        } else {
+            res = await searchInner(
+                options.searchTerm,
+                options,
+                innertube,
+                continuation as Search
+            )
+            if (res instanceof Error) {
+                throw new Error('continuation > ' + res)
+            }
         }
-    } else if (continuation.constructor.name === 'String') {
-        const piped = instances.find(
-            (item) => item.type === 'piped'
-        ) as Instance
-        res = await searchPiped(
-            options.searchTerm,
-            options,
-            piped.url,
-            continuation as string
-        )
-        if (res instanceof Error) {
-            presentToast('error', 'Unable to load more with piped')
-            throw new Error('Error while continuation with piped')
-        }
-    } else {
-        res = await searchInner(
-            options.searchTerm,
-            options,
-            innertube,
-            continuation as Search
-        )
-        if (res instanceof Error) {
-            presentToast('error', 'Unable to load more with inner tube')
-            throw new Error('Error while continuation with inner tube')
-        }
+        return res
+    } catch (err) {
+        presentToast('error', err as string)
+        throw new Error(err as string)
     }
-    console.log(res)
-    return res
 }

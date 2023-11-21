@@ -4,8 +4,8 @@ module.exports = {
     theme: {
         extend: {
             spacing: {
-                'page': 'calc(100vh - 7rem)'
-            }
+                page: 'calc(100vh - 7rem)',
+            },
         },
     },
     plugins: [],

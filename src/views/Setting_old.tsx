@@ -25,9 +25,7 @@ export default function Setting(props: SettingProps): ReactElement {
 
     return (
         <Suspense fallback="loading">
-
-            <Page
-                name="setting">
+            <Page name="setting">
                 <Block>
                     <BlockTitle className="text-2xl">
                         {/* {t('common:Setting')} */}

@@ -24,11 +24,11 @@ const convertSecond: (arg0: number) => string = (seconds) => {
     return `${hourString}${minuteString}${second}`
 }
 const toSecond: (arg0: string) => number = (string) => {
-    const splited = string.split(':').reverse();
-    let secondCount = 0;
+    const splited = string.split(':').reverse()
+    let secondCount = 0
     splited.forEach((item, index) => {
-        secondCount += Number(item) * (60 ** index)
+        secondCount += Number(item) * 60 ** index
     })
     return secondCount
 }
-export { formatViewNumber, convertSecond, toSecond}
+export { formatViewNumber, convertSecond, toSecond }

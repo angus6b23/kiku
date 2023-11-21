@@ -9,7 +9,7 @@ import configReducer from '@/store/globalConfig'
 const persistConfig = {
     key: 'root',
     storage: storage('kiku-db'),
-    whitelist: ['config']
+    whitelist: ['config'],
 }
 
 const rootReducer = combineReducers({
@@ -21,12 +21,11 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 const store = configureStore({
-    reducer: persistedReducer
+    reducer: persistedReducer,
 })
 
 const persistor = persistStore(store)
 
-export {persistor, store}
+export { persistor, store }
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
-

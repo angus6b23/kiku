@@ -5,6 +5,10 @@ function createWindow() {
     // Create the browser window.
     const win = new BrowserWindow({
         autoHideMenuBar: true,
+        icon:
+            process.env.NODE_ENV === 'development'
+                ? `${__dirname}/../public/icons/png/512x512.png`
+                : `${__dirname}/../dist/icons/png/512x512.png}`,
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: false,
@@ -67,13 +71,8 @@ function createWindow() {
             // If it does surpass that limit, it then checks if the requested range is larger than the limit
             // (seeking right at the end of the video, would result in a small enough range to be under the chunk limit)
             // if that surpasses the limit too, it then limits the requested range to 10MiB, by setting the range to `start-${start + 10MiB}`.
-            if (
-                resourceType === 'media' &&
-                url.includes('&mime=audio') &&
-                requestHeaders.Range
-            ) {
+            if (url.includes('&mime=audio') && requestHeaders.Range) {
                 const TEN_MIB = 10 * 1024 * 1024
-
                 const contentLength = parseInt(
                     new URL(url).searchParams.get('clen')
                 )

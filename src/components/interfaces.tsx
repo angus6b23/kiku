@@ -52,8 +52,7 @@ interface SearchState {
     sort_by: 'relevance' | 'rating' | 'upload_date' | 'view_count'
     type: 'all' | 'video' | 'playlist' | 'channel'
     region: string
-    results: SearchResult[],
-    continuation: string | undefined | Search
+    results: SearchResult[]
 }
 
 type SearchContinuation = undefined | string | Search
@@ -117,6 +116,7 @@ interface PlayerState {
     currentPlaying: Playitem | undefined
     status: 'stopped' | 'playing' | 'paused'
 }
+
 interface PlayerAction {
     type: 'TOGGLE_PLAY' | 'SELECT_SONG' | 'PLAY' | 'PAUSE'
     payload?: any
@@ -127,6 +127,7 @@ interface Instance {
     url: string
     enabled: boolean
 }
+
 interface GlobalConfig {
     instance: {
         preferType: Instance[]
@@ -139,7 +140,8 @@ interface GlobalConfig {
         autoScroll: boolean
     }
 }
-interface ChannelData{
+
+interface ChannelData {
     channelInfo: {
         name: string
         // thumbnail: string
@@ -150,6 +152,9 @@ interface ChannelData{
     videos: VideoResult[]
     playlists?: any[]
 }
+
+type Continuation = Search | string | undefined
+
 export type {
     SearchOption,
     SearchState,
@@ -168,5 +173,6 @@ export type {
     AudioBlobAction,
     Instance,
     GlobalConfig,
-    ChannelData
+    ChannelData,
+    Continuation,
 }

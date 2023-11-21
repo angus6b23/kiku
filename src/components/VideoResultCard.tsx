@@ -8,7 +8,6 @@ import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
 
 interface VideoResultCardProps {
     data: VideoResult
-    handleViewChannel: (arg0: string) => void
 }
 
 export default function VideoResultCard(props: VideoResultCardProps) {
@@ -140,7 +139,6 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                     <Link
                         className="underline"
                         href={`channel/${props.data.authorId}`}
-                        // onClick={() => props.handleViewChannel(props.data.authorId)}
                     >
                         {props.data.author}
                     </Link>

@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next'
 import { SearchContinuation } from '@/components/interfaces'
 
 interface MainNavProps {
-    tab: string,
+    tab: string
     setTab: (arg0: string) => void
 }
 interface SearchbarSelf {
@@ -31,7 +31,7 @@ declare const self: Window & typeof globalThis & SearchbarSelf
 
 const MainNav = (props: MainNavProps) => {
     const [searchTerm, setSearchTerm] = useState('')
-        useState<SearchContinuation>(undefined)
+    useState<SearchContinuation>(undefined)
     const { innertube }: { innertube: React.RefObject<Innertube> } =
         useCustomContext(Store)
     const config = useSelector(selectConfig)
@@ -42,11 +42,12 @@ const MainNav = (props: MainNavProps) => {
         autocompleteSearch.current.destroy()
     }
     const search = useSelector(selectSearch)
+    const { setContinuation } = useCustomContext(Store)
     const dispatch = useDispatch()
     const { t } = useTranslation(['common'])
 
     // Use useEffect hook to setup the autosuggest bar since the page is not wrapped in View, the page init would not work
-    useEffect(() =>{
+    useEffect(() => {
         onPageInit()
         return onPageBeforeRemove
     }, [])
@@ -87,8 +88,8 @@ const MainNav = (props: MainNavProps) => {
             config.instance.preferType,
             innertube.current
         )
-        dispatch(newSearch({ res: res.data, searchTerm: searchTerm, continuation: res.continuation }))
-
+        dispatch(newSearch({ res: res.data, searchTerm: searchTerm }))
+        setContinuation(res.continuation)
         f7.preloader.hide()
     }
 

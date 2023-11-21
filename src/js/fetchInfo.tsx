@@ -103,13 +103,39 @@ const fetchInfoInner = async (id: string, innertube: Innertube | null) => {
 
 const fetchStream = async (url: string) => {
     try {
-        const res = await axios({
-            responseType: 'blob',
-            method: 'get',
-            url: url,
-            headers: { Range: 'bytes=0-' },
-        })
-        return res.data
+        const TEN_MIB = 10 * 1024 * 1024
+        const contentLength = Number(new URL(url).searchParams.get('clen'))
+        if (contentLength < TEN_MIB) {
+            const res = await axios({
+                responseType: 'blob',
+                method: 'get',
+                url: url,
+                headers: { Range: `bytes=0-${contentLength}` },
+            })
+            return res.data
+        } else {
+            let start = 0
+            const blobs = []
+            while (start < contentLength) {
+                const end =
+                    start + TEN_MIB > contentLength
+                        ? contentLength
+                        : start + TEN_MIB
+                const res = await axios({
+                    responseType: 'blob',
+                    method: 'get',
+                    url: url,
+                    headers: { Range: `bytes=${start}-${end}` },
+                })
+                blobs.push(res.data)
+                start += TEN_MIB + 1
+            }
+            const type = blobs[0].type
+            const data = blobs.reduce(
+                (a, b) => new Blob([a, b], { type: type })
+            )
+            return data
+        }
     } catch (err) {
         return new Error(err as string)
     }

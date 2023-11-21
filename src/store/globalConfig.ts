@@ -50,9 +50,9 @@ export const globalConfig = createSlice({
         resetInstance: (state) => {
             return {
                 ...state,
-                instance: initConfigState.instance
+                instance: initConfigState.instance,
             }
-        }
+        },
     },
 })
 
