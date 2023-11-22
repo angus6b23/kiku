@@ -14,6 +14,7 @@ import { setSong, stop } from '@/store/player'
 import {selectConfig} from '@/store/globalConfig'
 import presentToast from './Toast'
 import {nanoid} from 'nanoid'
+import {useTranslation} from 'react-i18next'
 
 export interface PlayItemInnerProps {
     item: Playitem
@@ -25,6 +26,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const playlist = useSelector(selectPlaylist)
     const config = useSelector(selectConfig)
     const { dispatchAudioBlob } = useCustomContext(Store)
+    const { t } = useTranslation(['playlist'])
     const popoverClass = useRef('popover-' + nanoid(5))
 
     const getInstanceUrl = (arg0: 'invidious' | 'piped') => {
@@ -88,7 +90,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                     <div className="flex gap-2">
                         <Button
                             className="w-8 h-8 flex justify-center items-center"
-                            tooltip="Download to disk"
+                            tooltip={t('playlist:Save-to-drive')}
                         >
                             <Icon
                                 className="text-lg -translate-y-1"
@@ -97,7 +99,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                         </Button>
                         <Button
                             className="w-8 h-8 flex justify-center items-center"
-                            tooltip="Remove from playlist"
+                            tooltip={t('playlist:Remove-from-playlist')}
                             onClick={(e) => {
                                 e.stopPropagation()
                                 handleItemRemoval(item)
@@ -123,7 +125,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                         {item.downloadStatus === 'error' && (
                             <Button
                                 className="w-8 h-8 flex justify-center items-center"
-                                tooltip="Retry"
+                                tooltip={t('playlist:Retry')}
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     dispatch(setItemRetry(item.id))

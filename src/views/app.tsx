@@ -3,14 +3,12 @@ import { AudioBlobObject, Continuation } from '@/components/interfaces'
 import { Store } from '@/components/context'
 
 import {
-    f7,
     f7ready,
     App,
     Panel,
     View,
     Page,
     Navbar,
-    Toolbar,
 } from 'framework7-react'
 
 import PlayList from '@/views/PlayList'
@@ -24,6 +22,7 @@ import Innertube from 'youtubei.js/agnostic'
 import InnerTube from '@/components/InnerTube'
 import { PersistGate } from 'redux-persist/integration/react'
 import HomePage from '@/views/HomePage'
+import {useTranslation} from 'react-i18next'
 
 const initBlobStore: AudioBlobObject[] = []
 const MyApp = () => {
@@ -72,7 +71,6 @@ const MyApp = () => {
                         >
                             <View>
                                 <Page>
-                                    <Navbar title="PlayList" />
                                     <PlayList />
                                 </Page>
                             </View>

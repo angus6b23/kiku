@@ -1,5 +1,5 @@
 import React, { useRef, type ReactElement, useEffect } from 'react'
-import { Block, List, ListItem } from 'framework7-react'
+import { Block, List, ListItem, Navbar } from 'framework7-react'
 import { Playitem } from '../components/interfaces'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectPlaylist, setItemPlaying, sort } from '@/store/playlist'
@@ -7,6 +7,7 @@ import { play, selectPlayer } from '@/store/player'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/components/PlaylistControlBar'
 import { selectConfig } from '@/store/globalConfig'
+import {useTranslation} from 'react-i18next'
 
 export interface PlayListProps {}
 
@@ -20,6 +21,7 @@ export default function PlayList(): ReactElement {
     const dispatch = useDispatch()
     const config = useSelector(selectConfig)
     const playingRef = useRef<HTMLElement>(null)
+    const { t } = useTranslation(['common', 'playlist'])
 
     const generateItemClass = (item: Playitem) => {
         if (item.downloadStatus === 'pending') {
@@ -51,6 +53,7 @@ export default function PlayList(): ReactElement {
     // }, [playerState.currentPlaying])
     return (
         <>
+            <Navbar title={t('common:Playlist')} />
             {/* Control bar */}
             <Block className="sticky top-0 z-10 m-0 bg-[--f7-md-surface-1]">
                 <PlaylistControlBar />
