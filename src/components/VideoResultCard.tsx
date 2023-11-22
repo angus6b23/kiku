@@ -5,6 +5,7 @@ import { Playitem } from './interfaces'
 import { formatViewNumber, convertSecond } from '../utils/format'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
+import {useTranslation} from 'react-i18next'
 
 interface VideoResultCardProps {
     data: VideoResult
@@ -20,6 +21,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
     const [iconText, setIconText] = useState('')
     const playlist: Playitem[] = useSelector(selectPlaylist)
     const dispatch = useDispatch()
+    const {t} = useTranslation(['common', 'search-result'])
 
     const handleAddToPlaylist = () => {
         const sameId = playlist.filter(
@@ -72,7 +74,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                 className="text-xl lg:text-4xl xl:text-6xl w-full"
                             />
                             <p className="text-md lg:text-lg xl:text-xl">
-                                Added to Playlist
+                                {t('search-result:Already-on-playlist')}
                             </p>
                         </div>
                     ) : (
@@ -80,7 +82,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                             <div
                                 className="cursor-pointer flex justify-center items-center col-span-2 row-span-4 flex-wrap"
                                 onMouseEnter={() =>
-                                    setIconText('Add to playlist')
+                                    setIconText(t('search-result:Add-to-playlist'))
                                 }
                                 onMouseLeave={() => setIconText('')}
                                 onClick={handleAddToPlaylist}
@@ -108,7 +110,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                             <div
                                 className="flex justify-center row-span-4 align-middle cursor-pointer items-center"
                                 onMouseEnter={() =>
-                                    setIconText('Add as next song')
+                                    setIconText(t('search-result:Add-to-next-song'))
                                 }
                                 onMouseLeave={() => setIconText('')}
                                 onClick={handleAddToNextSong}
@@ -142,7 +144,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                     >
                         {props.data.author}
                     </Link>
-                    <p>{formatViewNumber(props.data.viewCount)} views</p>
+                    <p>{formatViewNumber(props.data.viewCount)} {t('common:views')}</p>
                 </div>
             </article>
         </>

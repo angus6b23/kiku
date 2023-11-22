@@ -1,5 +1,6 @@
 import React, { useEffect, type ReactElement, useState } from 'react'
 import {
+    Button,
     Page,
     Navbar,
     NavLeft,
@@ -8,6 +9,7 @@ import {
     NavTitle,
     Icon,
     f7,
+    Toolbar,
 } from 'framework7-react'
 import { useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
@@ -32,6 +34,8 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
     const [channel, setChannel] = useState<ChannelData | undefined>(undefined)
     const { innertube }: { innertube: React.RefObject<Innertube | null> } =
         useCustomContext(Store)
+
+    // Auto fetch channel details when changing channel
     useEffect(() => {
         f7.preloader.show()
         fetchChannelDetails(
@@ -39,22 +43,25 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
             config.instance.preferType,
             innertube.current
         )
-            .then((res) => {
-                if (!(res instanceof Error)) {
-                    setChannel(res)
-                    f7.preloader.hide()
-                } else {
-                    throw res
-                }
-            })
-            .catch((err) => {
+        .then((res) => {
+            if (!(res instanceof Error)) {
+                setChannel(res)
                 f7.preloader.hide()
-                presentToast('error', err)
-            })
+            } else {
+                throw res
+            }
+        })
+        .catch((err) => {
+            f7.preloader.hide()
+            presentToast('error', err)
+        })
     }, [props.channelId])
+
+    // Nagvigate back to search results automatically when user create a new search
     useEffect(() => {
         props.f7router.navigate('/')
     }, [search.searchTerm])
+
     return (
         <Page>
             <Navbar>
@@ -71,11 +78,28 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                         <VideoResultCard
                             key={nanoid()}
                             data={item}
-                            handleViewChannel={() => undefined}
                         />
                     ))}
                 </Block>
             )}
+            {
+
+            }
+            <Block className="flex items-center justify-center mx-4">
+                <Button
+                    raised
+                    fill
+                    className="w-1/2"
+                >
+                    <Icon
+                        f7="chevron_down_circle"
+                        className="mr-2"
+                    />
+                    Load More
+                </Button>
+            </Block>
+            <Toolbar bottom className="bg-transparent">
+            </Toolbar>
         </Page>
     )
 }

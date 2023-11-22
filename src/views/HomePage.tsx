@@ -1,13 +1,17 @@
 import MainNav from '@/components/MainNav'
 import React, { useState, type ReactElement } from 'react'
-import { Block, Tabs, Tab, View, Page } from 'framework7-react'
+import { Block, Tabs, Tab, View, Toolbar } from 'framework7-react'
+import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
 import Setting from './Setting'
+import {useSelector} from 'react-redux'
+import {selectPlayer} from '@/store/player'
 
 export interface HomePageProps {}
 
 export default function HomePage(props: HomePageProps): ReactElement {
     const [tab, setTab] = useState('main')
+    const playerState = useSelector(selectPlayer)
     return (
         <>
             <MainNav tab={tab} setTab={setTab} />
@@ -24,6 +28,14 @@ export default function HomePage(props: HomePageProps): ReactElement {
                     </Tab>
                 </Tabs>
             </Block>
+            {tab !== 'now-playing' &&
+                playerState.currentPlaying !== undefined && (
+                    <Toolbar bottom>
+                        <ToolbarPlayer
+                            showNowPlaying={() => setTab('now-playing')}
+                        />
+                    </Toolbar>
+                )}
         </>
     )
 }

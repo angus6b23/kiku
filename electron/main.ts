@@ -1,5 +1,7 @@
 /* eslint-disable */
-const { app, BrowserWindow, session, ipcMain } = require('electron')
+const { app, BrowserWindow, session } = require('electron')
+const serve = require('electron-serve')
+const loadURL = serve({directory: 'dist'})
 
 function createWindow() {
     // Create the browser window.
@@ -102,11 +104,14 @@ function createWindow() {
     if (process.env.NODE_ENV === 'development') {
         win.loadURL('http://localhost:5201')
     } else {
-        win.loadFile(`${__dirname}/../dist/index.html`)
+        win.loadURL('app://-')
+        // win.loadFile(`${__dirname}/../dist/index.html`)
     }
 
     // Open the DevTools.
-    // win.webContents.openDevTools()
+    if (process.env.NODE_ENV === 'development'){
+        win.webContents.openDevTools();
+    }
 }
 
 // This method will be called when Electron has finished

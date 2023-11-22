@@ -1,7 +1,10 @@
 {
-    "url": "鏈結",
-    "Search": "搜尋",
-    "Now-Playing": "現正播放",
-    "Search-Result": "搜尋結果",
-    "Setting": "設定"
+  "Search-here": "在此搜尋",
+  "Search": "搜尋",
+  "Now-Playing": "現正播放",
+  "Search-Result": "搜尋結果",
+  "Setting": "設定",
+  "views": "觀看次數",
+  "Load-More": "載入更多",
+  "setting": ""
 }

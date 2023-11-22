@@ -109,7 +109,7 @@ const MainNav = (props: MainNavProps) => {
             <Subnavbar inner={false} className="flex p-2">
                 <Searchbar
                     init={false}
-                    placeholder="Search Video"
+                    placeholder={t('common:Search-here')}
                     clearButton={true}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     id="searchbar-autocomplete"
@@ -125,19 +125,19 @@ const MainNav = (props: MainNavProps) => {
                         active={props.tab === 'now-playing'}
                         onClick={() => props.setTab('now-playing')}
                     >
-                        Now Playing
+                        { t('common:Now-Playing') }
                     </Button>
                     <Button
                         active={props.tab === 'main'}
                         onClick={() => props.setTab('main')}
                     >
-                        Search Result
+                        { t('common:Search-Result') }
                     </Button>
                     <Button
                         active={props.tab === 'setting'}
                         onClick={() => props.setTab('setting')}
                     >
-                        Setting
+                        { t('common:Setting') }
                     </Button>
                 </Segmented>
             </Block>

@@ -1,7 +1,10 @@
 {
-    "url": "url",
-    "Search": "Search",
-    "Now-Playing": "Now Playing",
-    "Search-Result": "Search Result",
-    "Setting": "Setting"
+  "Search-here": "",
+  "Search": "Search",
+  "Now-Playing": "Now Playing",
+  "Search-Result": "Search Result",
+  "Setting": "Setting",
+  "views": "",
+  "Load-More": "",
+  "setting": ""
 }
