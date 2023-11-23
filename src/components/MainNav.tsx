@@ -12,7 +12,7 @@ import {
 import { handleSuggest } from '../js/suggestions'
 import { handleSearchVideo } from '../js/search'
 import { useDispatch, useSelector } from 'react-redux'
-import { newSearch, selectSearch } from '@/store/search'
+import { newSearch, selectSearch } from '@/store/searchReducers'
 import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
 import { selectConfig } from '@/store/globalConfig'

@@ -1,16 +1,16 @@
 import React, { useRef, type ReactElement } from 'react'
 import { Playitem } from './interfaces'
-import { Button, Icon, List, ListItem, Popover, f7 } from 'framework7-react'
+import { Button, Icon } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     removeFromPlaylist,
     selectPlaylist,
+    setItemDownloadStatus,
     setItemPlaying,
-    setItemRetry,
-} from '@/store/playlist'
+} from '@/store/playlistReducers'
 import { Store, useCustomContext } from './context'
 import { getNextSong } from '@/utils/songControl'
-import { setSong, stop } from '@/store/player'
+import { setSong, stop } from '@/store/playerReducers'
 import {selectConfig} from '@/store/globalConfig'
 import presentToast from './Toast'
 import {nanoid} from 'nanoid'
@@ -128,7 +128,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                                 tooltip={t('playlist:Retry')}
                                 onClick={(e) => {
                                     e.stopPropagation()
-                                    dispatch(setItemRetry(item.id))
+                                    dispatch(setItemDownloadStatus({id: item.id, status: 'pending'}))
                                 }}
                             >
                                 <Icon

@@ -1,7 +1,7 @@
 import { Playitem } from '@/components/interfaces'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from './store'
+import { RootState } from '@/store/store'
 
 const initPlaylist: Playitem[] = []
 
@@ -9,6 +9,10 @@ interface setItemInfoPayload {
     id: string
     url: string
     type: string
+}
+interface setItemDownloadStatusPayload {
+    id: string
+    status: 'downloading' | 'downloaded' | 'pending' | 'error'
 }
 const shuffle: <T>(arg0: T[]) => T[] = (list) => {
     const clone = [...list]
@@ -65,27 +69,10 @@ export const playlist = createSlice({
                 }
             })
         },
-        setItemDownloading: (state, action: PayloadAction<string>) => {
-            return state.map((item) =>
-                item.id === action.payload
-                    ? { ...item, downloadStatus: 'downloading' }
-                    : item
-            )
-        },
-        setItemDownloaded: (state, action: PayloadAction<string>) => {
-            const { payload } = action
-            return state.map((item) =>
-                item.id === payload
-                    ? { ...item, downloadStatus: 'downloaded' }
-                    : item
-            )
-        },
-        setItemError: (state, action: PayloadAction<string>) => {
-            return state.map((item) =>
-                item.id === action.payload
-                    ? { ...item, downloadStatus: 'error' }
-                    : item
-            )
+        setItemDownloadStatus: (state, action: PayloadAction<setItemDownloadStatusPayload>) => {
+            return state.map((item) => {
+                return item.id === action.payload.id ? {...item, downloadStatus: action.payload.status} : item
+            })
         },
         setItemPlaying: (state, action: PayloadAction<string>) => {
             return state.map((item) => {
@@ -148,9 +135,7 @@ export const {
     addToNextSong,
     removeFromPlaylist,
     setItemInfo,
-    setItemDownloading,
-    setItemDownloaded,
-    setItemError,
+    setItemDownloadStatus,
     setItemPlaying,
     setItemRetry,
     clearErrorItems,

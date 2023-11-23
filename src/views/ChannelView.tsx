@@ -19,7 +19,7 @@ import Innertube from 'youtubei.js/agnostic'
 import { ChannelData } from '@/components/interfaces'
 import { nanoid } from 'nanoid'
 import VideoResultCard from '@/components/VideoResultCard'
-import { selectSearch } from '@/store/search'
+import { selectSearch } from '@/store/searchReducers'
 import { Router } from 'framework7/types'
 import presentToast from '@/components/Toast'
 

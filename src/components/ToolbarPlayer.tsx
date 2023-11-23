@@ -1,10 +1,9 @@
-import { selectPlayer } from '@/store/player'
-import { Button, Icon } from 'framework7-react'
 import React, { type ReactElement } from 'react'
+import { selectPlayer, togglePlay } from '@/store/playerReducers'
+import { Button, Icon } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { togglePlay } from '@/store/player'
 import { getNextSong } from '@/utils/songControl'
-import { selectPlaylist, setItemPlaying } from '@/store/playlist'
+import { selectPlaylist, setItemPlaying } from '@/store/playlistReducers'
 
 export interface ToolbarPlayerProps {
     showNowPlaying: () => void

@@ -6,8 +6,8 @@ import {
     clearPlayedItems,
     clearAllItems,
     shuffleUnplayed,
-} from '@/store/playlist'
-import { setSong, stop } from '@/store/player'
+} from '@/store/playlistReducers'
+import { setSong, stop } from '@/store/playerReducers'
 import {useTranslation} from 'react-i18next'
 
 export interface PlaylistControlBarProps {}

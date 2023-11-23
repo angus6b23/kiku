@@ -1,8 +1,14 @@
 import { Icon, Link } from 'framework7-react'
 import React, { useState } from 'react'
-import { PlaylistResult } from './interfaces'
+import { Playitem, PlaylistResult, VideoResult, Thumbnail } from './interfaces'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
+import { addToNextSong, addToPlaylist, playlist, selectPlaylist } from '@/store/playlistReducers'
+import {handleGetPlaylist} from '@/js/playlist'
+import {selectConfig} from '@/store/globalConfig'
+import {Store, useCustomContext} from './context'
+import Innertube from 'youtubei.js/agnostic'
+import presentToast from './Toast'
+import {convertSecond} from '@/utils/format'
 
 interface SearchResultProps {
     data: PlaylistResult
@@ -13,13 +19,39 @@ export default function PlaylistResultCard(props: SearchResultProps) {
         (thumbnail) => thumbnail.quality === 'medium'
     )
     const [iconText, setIconText] = useState('')
+    const config = useSelector(selectConfig)
+    const playlist = useSelector(selectPlaylist)
     const dispatch = useDispatch()
+    const { innertube }: { innertube: React.RefObject<Innertube | null> } = useCustomContext(Store)
 
     const displayPlaylist = () => {
         console.log('display playlist')
     }
-    const handleAddToPlaylist = () => {
+    const getHighResImage = (thumbnails: Thumbnail[]) => {
+        return thumbnails.find(thumbnail => thumbnail.quality === 'maxres' || 'max')
+    }
+    const handleAddAlltoPlaylist = async (id: string) => {
         console.log('add all items to playlist')
+        const res: VideoResult[] = await handleGetPlaylist(id, config.instance.preferType, innertube.current)
+        if (res instanceof Error){
+            presentToast('error', 'error while getting playlist')
+            return
+        }
+        res.forEach((item) => {
+            const sameId: boolean = playlist.some(playitem => playitem.id === item.videoId);
+            if (!sameId){
+                const highResImage = getHighResImage(item.videoThumbnails)
+                const newPlayitem: Playitem = {
+                    id: item.videoId,
+                    title: item.title,
+                    thumbnailURL: highResImage === undefined ? '' : highResImage.url,
+                    duration: convertSecond(item.lengthSeconds),
+                    status: 'added',
+                    downloadStatus: 'pending',
+                }
+                dispatch(addToPlaylist(newPlayitem))
+            }
+        })
     }
     const handleAddToNextSong = () => {}
     return (
@@ -58,6 +90,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                             className="flex justify-center align-middle row-span-4 cursor-pointer items-center"
                             onMouseEnter={() => setIconText('Add all items')}
                             onMouseLeave={() => setIconText('')}
+                            onClick={() => handleAddAlltoPlaylist(props.data.playlistId)}
                         >
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"

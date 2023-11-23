@@ -9,13 +9,11 @@ import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     selectPlaylist,
-    setItemDownloaded,
-    setItemDownloading,
-    setItemError,
+    setItemDownloadStatus,
     setItemPlaying,
-} from '@/store/playlist'
+} from '@/store/playlistReducers'
 import { Store } from './context'
-import { selectPlayer } from '@/store/player'
+import { selectPlayer } from '@/store/playerReducers'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
@@ -92,7 +90,7 @@ export default function Worker(): ReactElement {
                 console.log(
                     `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
                 )
-                dispatch(setItemDownloading(nextJob.id))
+                dispatch(setItemDownloadStatus({id: nextJob.id, status: 'downloading'}))
                 handleFetchStream(
                     nextJob.id,
                     config.instance.preferType,
@@ -106,7 +104,7 @@ export default function Worker(): ReactElement {
                                 type: 'ADD_BLOB',
                                 payload: { id: nextJob.id, blob: blob },
                             })
-                            dispatch(setItemDownloaded(nextJob.id))
+                            dispatch(setItemDownloadStatus({id: nextJob.id, status: 'downloaded'}))
                         }
                     })
                     // .then((res: Blob) => {
@@ -123,7 +121,7 @@ export default function Worker(): ReactElement {
                         console.log(err)
                         presentToast('error', err)
                         // Show toast
-                        dispatch(setItemError(nextJob.id))
+                        dispatch(setItemDownloadStatus({id: nextJob.id, status: 'error'}))
                     })
                 // } else {
                 //     // only download blob if the url is already there

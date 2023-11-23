@@ -1,12 +1,10 @@
 import React, { useEffect, type ReactElement, useRef } from 'react'
 import { Store, useCustomContext } from './context'
 import { useDispatch, useSelector } from 'react-redux'
-import { pause, play, selectPlayer, togglePlay } from '@/store/player'
-import { selectPlaylist, setItemPlaying } from '@/store/playlist'
-import { setSong } from '@/store/player'
+import { pause, play, selectPlayer, togglePlay, setSong, stop } from '@/store/playerReducers'
+import { selectPlaylist, setItemPlaying } from '@/store/playlistReducers'
 import { AudioBlobObject } from '@/components/interfaces'
 import { getNextSong, getPrevSong } from '@/utils/songControl'
-import { stop } from '@/store/player'
 
 export interface AudioWatcherProps {}
 

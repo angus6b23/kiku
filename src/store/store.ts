@@ -1,9 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist-indexeddb-storage'
-import playlistReducer from '@/store/playlist'
-import playerReducer from '@/store/player'
-import searchReducer from '@/store/search'
+import playlistReducer from '@/store/playlistReducers'
+import playerReducer from '@/store/playerReducers'
+import searchReducer from '@/store/searchReducers'
 import configReducer from '@/store/globalConfig'
 
 const persistConfig = {

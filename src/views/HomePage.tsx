@@ -5,7 +5,7 @@ import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
 import Setting from './Setting'
 import {useSelector} from 'react-redux'
-import {selectPlayer} from '@/store/player'
+import {selectPlayer} from '@/store/playerReducers'
 
 export interface HomePageProps {}
 

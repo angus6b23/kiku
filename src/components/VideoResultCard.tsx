@@ -4,7 +4,7 @@ import { VideoResult } from './interfaces'
 import { Playitem } from './interfaces'
 import { formatViewNumber, convertSecond } from '../utils/format'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlist'
+import { addToNextSong, addToPlaylist, selectPlaylist } from '@/store/playlistReducers'
 import {useTranslation} from 'react-i18next'
 
 interface VideoResultCardProps {
