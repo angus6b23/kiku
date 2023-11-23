@@ -154,6 +154,17 @@ interface ChannelData {
     playlists: PlaylistResult[]
 }
 
+
+interface PlaylistData {
+    playlistInfo: {
+        title: string
+        videoCount: number
+        authorId: string
+        author: string
+    }
+    videos: VideoResult[]
+}
+
 type Continuation = Search | string | undefined
 
 export type {
@@ -175,5 +186,6 @@ export type {
     Instance,
     GlobalConfig,
     ChannelData,
+    PlaylistData,
     Continuation,
 }

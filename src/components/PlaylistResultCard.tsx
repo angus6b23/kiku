@@ -1,8 +1,8 @@
 import { Icon, Link } from 'framework7-react'
 import React, { useState } from 'react'
-import { Playitem, PlaylistResult, VideoResult, Thumbnail } from './interfaces'
+import { Playitem, PlaylistResult, Thumbnail, PlaylistData } from './interfaces'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToNextSong, addToPlaylist, playlist, selectPlaylist } from '@/store/playlistReducers'
+import { addToPlaylist, selectPlaylist } from '@/store/playlistReducers'
 import {handleGetPlaylist} from '@/js/playlist'
 import {selectConfig} from '@/store/globalConfig'
 import {Store, useCustomContext} from './context'
@@ -32,12 +32,12 @@ export default function PlaylistResultCard(props: SearchResultProps) {
     }
     const handleAddAlltoPlaylist = async (id: string) => {
         console.log('add all items to playlist')
-        const res: VideoResult[] = await handleGetPlaylist(id, config.instance.preferType, innertube.current)
+        const res: PlaylistData = await handleGetPlaylist(id, config.instance.preferType, innertube.current)
         if (res instanceof Error){
             presentToast('error', 'error while getting playlist')
             return
         }
-        res.forEach((item) => {
+        res.videos.forEach((item) => {
             const sameId: boolean = playlist.some(playitem => playitem.id === item.videoId);
             if (!sameId){
                 const highResImage = getHighResImage(item.videoThumbnails)
@@ -70,17 +70,17 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                     </div>
                     {/* Overlay for various buttons */}
                     <div className="group-hover:grid hidden grid-cols-2 grid-rows-9 absolute w-full h-full group-hover:bg-black/60 group-hover:backdrop-blur-sm duration-100">
-                        <div
+                        <a
                             className="cursor-pointer flex justify-center items-center col-span-2 row-span-4 flex-wrap"
                             onMouseEnter={() => setIconText('Browse')}
                             onMouseLeave={() => setIconText('')}
-                            onClick={displayPlaylist}
+                            href={`/playlist/${props.data.playlistId}`}
                         >
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"
                                 f7="list_bullet_below_rectangle"
                             />
-                        </div>
+                        </a>
                         <div className="flex justify-center align-middle col-span-2 cursor-default">
                             <p className="text-md lg:text-lg xl:text-xl text-center">
                                 {iconText}
@@ -120,7 +120,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                 {/* Video Title Here */}
                 <Link
                     animate={false}
-                    onClick={displayPlaylist}
+                    href={`/playlist/${props.data.playlistId}`}
                     className="mt-2  line-clamp-2"
                 >
                     {props.data.title}
@@ -129,7 +129,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                 <div className="flex flex-wrap gap-2">
                     <Link
                         className="underline"
-                        href={`channel/${props.data.authorId}`}
+                        href={`/channel/${props.data.authorId}`}
                     >
                         {props.data.author}
                     </Link>

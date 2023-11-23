@@ -9,6 +9,7 @@ import {
     Page,
 } from 'framework7-react'
 import React, { type ReactElement } from 'react'
+import {useTranslation} from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 export interface SettingProps {}
@@ -16,16 +17,16 @@ export interface SettingProps {}
 export default function Setting(): ReactElement {
     const config = useSelector(selectConfig)
     const dispatch = useDispatch()
+    const {t} = useTranslation(['common', 'setting'])
     return (
         <Page name="setting">
             <Block>
-                <BlockTitle className="text-2xl">Setting</BlockTitle>
                 <List strong outlineIos dividersIos insetMd>
                     <ListItem
                         className="text-xl"
                         accordionItem
                         accordionItemOpened
-                        title="Instance Configuration"
+                        title={t('setting:Instance-Configuration')}
                     >
                         <AccordionContent>
                             <InstanceSetting />
@@ -35,19 +36,18 @@ export default function Setting(): ReactElement {
                         className="text-xl"
                         accordionItem
                         accordionItemOpened
-                        title="UI Settings"
+                        title={t('setting:UI-Preference')}
                     >
                         <AccordionContent>
                             <Block className="p-6">
                                 <BlockTitle className="text-lg">
-                                    Now Playing Settings
+                                    {t('common:Now-Playing')}{t('common:Setting')}
                                 </BlockTitle>
                                 <List>
                                     <ListItem>
                                         <h1 className="text-lg my-4">
-                                            Choose Layout
+                                            {t('setting:Choose-Layout')}
                                         </h1>
-                                        <p>test</p>
                                     </ListItem>
                                     <ListItem
                                         checkbox
@@ -57,7 +57,7 @@ export default function Setting(): ReactElement {
                                         }
                                     >
                                         <h1 className="text-lg my-4">
-                                            Show Timeline in wavesurfer
+                                            {t('setting:Show-Timeline-in-wavesurfer')}
                                         </h1>
                                     </ListItem>
                                 </List>

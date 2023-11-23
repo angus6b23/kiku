@@ -1,5 +1,5 @@
 import presentToast from "@/components/Toast"
-import { Instance, Thumbnail, VideoResult } from "@/components/interfaces"
+import { Instance, PlaylistData, Thumbnail, VideoResult } from "@/components/interfaces"
 import {stringToNumber} from "@/utils/format"
 import {extractInnertubeThumbnail, generatePipedThumbnail} from "@/utils/thumbnailExtract"
 import axios from "axios"
@@ -35,7 +35,12 @@ const playlistInner = async (id: string, innertube: Innertube | null) => {
             throw new Error('Innertube is null or undefined')
         }
         let res = await innertube.getPlaylist(id)
-        // console.log(res)
+        const playlistInfo = {
+            title: res.info.title as string,
+            videoCount: Number(res.info.total_items.replace(' videos', '')),
+            authorId: res.info.author.id,
+            author: res.info.author.name
+        }
         let videos: PlaylistVideo[] = res.videos as PlaylistVideo[]
         while (res.has_continuation){
             res = await res.getContinuation();
@@ -56,11 +61,15 @@ const playlistInner = async (id: string, innertube: Innertube | null) => {
                 lengthSeconds: video.duration.seconds,
             }
         })
-        return resArr
+        return {
+            playlistInfo: playlistInfo,
+            videos: resArr
+        }
     }catch(err){
         return new Error('innertube > ' + err)
     }
 }
+
 const playlistInv = async (id: string, baseUrl: string) => {
     try{
         const res = await axios({
@@ -68,6 +77,12 @@ const playlistInv = async (id: string, baseUrl: string) => {
             baseURL: baseUrl,
             url: `api/v1/playlists/${id}`
         })
+        const playlistInfo = {
+            title: res.data.title as string,
+            videoCount: res.data.videoCount as number,
+            authorId: res.data.authorId as string,
+            author: res.data.author as string
+        }
         const resVideos: VideoResult[] = res.data.videos.map((video: InvidiousRes) => {
             return {
                 type: 'video',
@@ -80,8 +95,10 @@ const playlistInv = async (id: string, baseUrl: string) => {
                 lengthSeconds: video.lengthSeconds as number,
             }
         })
-        return resVideos
-
+        return {
+            playlistInfo: playlistInfo,
+            videos: resVideos
+        }
     } catch (err){
         throw new Error('invidious > ' + err)
     }
@@ -93,6 +110,12 @@ const playlistPiped = async (id: string, baseUrl: string) => {
             baseURL: baseUrl,
             url: `playlists/${id}`
         })
+        const playlistInfo = {
+            title: res.data.name as string,
+            videoCount: res.data.videos as number,
+            authorId: res.data.uploaderUrl.replace('/channel/', '') as string,
+            author: res.data.uploader as string
+        }
         const uploaderName = res.data.uploader as string
         let videos: PipedRes[] = res.data.relatedStreams 
         let nextPage = res.data.nextpage
@@ -111,13 +134,15 @@ const playlistPiped = async (id: string, baseUrl: string) => {
                 videoId: video.url.replace(/\/watch\?v=/, ''),
                 author: uploaderName,
                 authorId: video.uploaderUrl.replace(/\/channel\//, ''),
-                videoThumbnails: generatePipedThumbnail(video.thumbnail),
+                    videoThumbnails: generatePipedThumbnail(video.thumbnail),
                 viewCount: video.views,
                 lengthSeconds: video.duration,
             }
         })
-        console.log(resVideos)
-        return resVideos
+        return {
+            playlistInfo: playlistInfo,
+            videos: resVideos
+        }
     } catch (err){
         throw new Error('piped > ' + err)
     }
@@ -126,7 +151,7 @@ export async function handleGetPlaylist(
     id: string,
     instances: Instance[],
     innertube: Innertube | null
-): Promise<VideoResult[]> {
+): Promise<PlaylistData> {
     let res: Error | VideoResult[]
     if (instances.length === 0) {
         throw new Error('error on handle search')

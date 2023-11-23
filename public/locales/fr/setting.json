@@ -1,4 +1,10 @@
 {
-    "Source": "Source",
-    "Instance-Configuration": "Instance Configuration"
+  "Source": "Source",
+  "View-Invidious-Instances": "",
+  "View-Piped-Instances": "",
+  "Reset-to-default": "",
+  "Instance-Configuration": "Instance Configuration",
+  "UI-Preference": "",
+  "Choose-Layout": "",
+  "Show-Timeline-in-wavesurfer": ""
 }

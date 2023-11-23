@@ -140,7 +140,8 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                 <div className="flex flex-wrap gap-2">
                     <Link
                         className="underline"
-                        href={`channel/${props.data.authorId}`}
+                        target="_self"
+                        href={`/channel/${props.data.authorId}`}
                     >
                         {props.data.author}
                     </Link>

@@ -5,6 +5,7 @@ import { Instance } from './interfaces'
 import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
 import { getInvInstances, getPipedInstances } from '@/js/getInstances'
 import presentToast from './Toast'
+import {useTranslation} from 'react-i18next'
 /* eslint @typescript-eslint/no-var-requires: 'off' */
 const shell = require('electron').shell
 
@@ -14,6 +15,7 @@ export default function InstanceSetting(): ReactElement {
     const config = useSelector(selectConfig)
     const invAutocomplete = useRef<any>(null)
     const pipedAutocomplete = useRef<any>(null)
+    const {t} = useTranslation(['setting'])
     const [instances, setInstances] = useState<Instance[]>(
         config.instance.preferType
     )
@@ -118,7 +120,7 @@ export default function InstanceSetting(): ReactElement {
     return (
         <>
             <Block className="mt-2">
-                <BlockTitle className="text-lg">Source</BlockTitle>
+                <BlockTitle className="text-lg">{t('setting:Source')}</BlockTitle>
                 <List
                     sortable
                     sortableEnabled
@@ -137,7 +139,7 @@ export default function InstanceSetting(): ReactElement {
                                     <p>{instance.type}</p>
                                     {instance.type !== 'local' && (
                                         <div>
-                                            <label>URL:</label>
+                                            <label>{t('common:URL')}</label>
                                             <input
                                                 type="options"
                                                 className="ml-2 bg-transparent border-b-[1px] border-[--f7-md-on-surface] text-[--f7-md-on-surface] focus:border-[--f7-theme-color] focus:border-b-2 w-50"
@@ -167,7 +169,7 @@ export default function InstanceSetting(): ReactElement {
                         shell.openExternal('https://api.invidious.io/')
                     }
                 >
-                    View Invidious Instances
+                    {t('setting:View-Invidious-Instances')}
                 </Button>
                 <Button
                     fill
@@ -177,10 +179,10 @@ export default function InstanceSetting(): ReactElement {
                         )
                     }
                 >
-                    View Piped Instances
+                    {t('setting:View-Piped-Instances')}
                 </Button>
                 <Button fill onClick={resetInstances}>
-                    Reset to default
+                    {t('setting:Reset-to-default')}
                 </Button>
             </Block>
         </>

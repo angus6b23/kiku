@@ -154,7 +154,6 @@ const channelInv = async (id: string, baseUrl: string) => {
                 }
             }
         )
-        console.log(videoRes.data)
         const playlists: PlaylistResult[] = playlistRes.data.playlists.map((playlist: InvidiousRes) => {
             return {
                 type: 'playlist',
