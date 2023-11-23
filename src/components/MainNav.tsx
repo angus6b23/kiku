@@ -125,19 +125,19 @@ const MainNav = (props: MainNavProps) => {
                         active={props.tab === 'now-playing'}
                         onClick={() => props.setTab('now-playing')}
                     >
-                        { t('common:Now-Playing') }
+                        {t('common:Now-Playing')}
                     </Button>
                     <Button
                         active={props.tab === 'main'}
                         onClick={() => props.setTab('main')}
                     >
-                        { t('common:Search-Result') }
+                        {t('common:Search-Result')}
                     </Button>
                     <Button
                         active={props.tab === 'setting'}
                         onClick={() => props.setTab('setting')}
                     >
-                        { t('common:Setting') }
+                        {t('common:Setting')}
                     </Button>
                 </Segmented>
             </Block>

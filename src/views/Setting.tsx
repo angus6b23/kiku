@@ -9,7 +9,7 @@ import {
     Page,
 } from 'framework7-react'
 import React, { type ReactElement } from 'react'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 export interface SettingProps {}
@@ -17,7 +17,7 @@ export interface SettingProps {}
 export default function Setting(): ReactElement {
     const config = useSelector(selectConfig)
     const dispatch = useDispatch()
-    const {t} = useTranslation(['common', 'setting'])
+    const { t } = useTranslation(['common', 'setting'])
     return (
         <Page name="setting">
             <Block>
@@ -41,7 +41,8 @@ export default function Setting(): ReactElement {
                         <AccordionContent>
                             <Block className="p-6">
                                 <BlockTitle className="text-lg">
-                                    {t('common:Now-Playing')}{t('common:Setting')}
+                                    {t('common:Now-Playing')}
+                                    {t('common:Setting')}
                                 </BlockTitle>
                                 <List>
                                     <ListItem>
@@ -57,7 +58,9 @@ export default function Setting(): ReactElement {
                                         }
                                     >
                                         <h1 className="text-lg my-4">
-                                            {t('setting:Show-Timeline-in-wavesurfer')}
+                                            {t(
+                                                'setting:Show-Timeline-in-wavesurfer'
+                                            )}
                                         </h1>
                                     </ListItem>
                                 </List>

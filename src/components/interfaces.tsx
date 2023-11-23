@@ -1,4 +1,8 @@
-import { Channel, Search } from 'youtubei.js/dist/src/parser/youtube'
+import {
+    Channel,
+    ChannelListContinuation,
+    Search,
+} from 'youtubei.js/dist/src/parser/youtube'
 
 interface Playitem {
     id: string
@@ -148,12 +152,11 @@ interface ChannelData {
         subscribers: string
         videoCount: number
     }
-    videoContinuation: undefined | Channel | string
-    playlistContinuation: undefined | Channel | string
+    videoContinuation: undefined | Channel | string | ChannelListContinuation
+    playlistContinuation: undefined | Channel | string | ChannelListContinuation
     videos: VideoResult[]
     playlists: PlaylistResult[]
 }
-
 
 interface PlaylistData {
     playlistInfo: {

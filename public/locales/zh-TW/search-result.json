@@ -1,6 +1,9 @@
 {
   "No-search-results": "尚未有搜尋結果",
   "Search-something-on-the-search-bar": "請使用上方的搜尋欄",
+  "Browse-playlist": "瀏覽清單",
+  "Add-all-to-playlist": "添加所有項目至播放清單",
+  "Replace-current-playlist": "取代現時播放清單",
   "Already-on-playlist": "已經在播放清單",
   "Add-to-playlist": "加到播放清單",
   "Add-to-next-song": "加至下一首",

@@ -4,8 +4,8 @@ import { Block, Tabs, Tab, View, Toolbar } from 'framework7-react'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
 import Setting from './Setting'
-import {useSelector} from 'react-redux'
-import {selectPlayer} from '@/store/playerReducers'
+import { useSelector } from 'react-redux'
+import { selectPlayer } from '@/store/playerReducers'
 
 export interface HomePageProps {}
 

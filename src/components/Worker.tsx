@@ -90,7 +90,12 @@ export default function Worker(): ReactElement {
                 console.log(
                     `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
                 )
-                dispatch(setItemDownloadStatus({id: nextJob.id, status: 'downloading'}))
+                dispatch(
+                    setItemDownloadStatus({
+                        id: nextJob.id,
+                        status: 'downloading',
+                    })
+                )
                 handleFetchStream(
                     nextJob.id,
                     config.instance.preferType,
@@ -104,7 +109,12 @@ export default function Worker(): ReactElement {
                                 type: 'ADD_BLOB',
                                 payload: { id: nextJob.id, blob: blob },
                             })
-                            dispatch(setItemDownloadStatus({id: nextJob.id, status: 'downloaded'}))
+                            dispatch(
+                                setItemDownloadStatus({
+                                    id: nextJob.id,
+                                    status: 'downloaded',
+                                })
+                            )
                         }
                     })
                     // .then((res: Blob) => {
@@ -121,7 +131,12 @@ export default function Worker(): ReactElement {
                         console.log(err)
                         presentToast('error', err)
                         // Show toast
-                        dispatch(setItemDownloadStatus({id: nextJob.id, status: 'error'}))
+                        dispatch(
+                            setItemDownloadStatus({
+                                id: nextJob.id,
+                                status: 'error',
+                            })
+                        )
                     })
                 // } else {
                 //     // only download blob if the url is already there

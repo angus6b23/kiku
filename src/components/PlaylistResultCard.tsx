@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import { Playitem, PlaylistResult, Thumbnail, PlaylistData } from './interfaces'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToPlaylist, selectPlaylist } from '@/store/playlistReducers'
-import {handleGetPlaylist} from '@/js/playlist'
-import {selectConfig} from '@/store/globalConfig'
-import {Store, useCustomContext} from './context'
+import { handleGetPlaylist } from '@/js/playlist'
+import { selectConfig } from '@/store/globalConfig'
+import { Store, useCustomContext } from './context'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
-import {convertSecond} from '@/utils/format'
+import { convertSecond } from '@/utils/format'
+import { useTranslation } from 'react-i18next'
 
 interface SearchResultProps {
     data: PlaylistResult
@@ -22,29 +23,36 @@ export default function PlaylistResultCard(props: SearchResultProps) {
     const config = useSelector(selectConfig)
     const playlist = useSelector(selectPlaylist)
     const dispatch = useDispatch()
-    const { innertube }: { innertube: React.RefObject<Innertube | null> } = useCustomContext(Store)
+    const { innertube }: { innertube: React.RefObject<Innertube | null> } =
+        useCustomContext(Store)
+    const { t } = useTranslation(['common', 'search-result'])
 
-    const displayPlaylist = () => {
-        console.log('display playlist')
-    }
     const getHighResImage = (thumbnails: Thumbnail[]) => {
-        return thumbnails.find(thumbnail => thumbnail.quality === 'maxres' || 'max')
+        return thumbnails.find(
+            (thumbnail) => thumbnail.quality === 'maxres' || 'max'
+        )
     }
     const handleAddAlltoPlaylist = async (id: string) => {
-        console.log('add all items to playlist')
-        const res: PlaylistData = await handleGetPlaylist(id, config.instance.preferType, innertube.current)
-        if (res instanceof Error){
+        const res: PlaylistData = await handleGetPlaylist(
+            id,
+            config.instance.preferType,
+            innertube.current
+        )
+        if (res instanceof Error) {
             presentToast('error', 'error while getting playlist')
             return
         }
         res.videos.forEach((item) => {
-            const sameId: boolean = playlist.some(playitem => playitem.id === item.videoId);
-            if (!sameId){
+            const sameId: boolean = playlist.some(
+                (playitem) => playitem.id === item.videoId
+            )
+            if (!sameId) {
                 const highResImage = getHighResImage(item.videoThumbnails)
                 const newPlayitem: Playitem = {
                     id: item.videoId,
                     title: item.title,
-                    thumbnailURL: highResImage === undefined ? '' : highResImage.url,
+                    thumbnailURL:
+                        highResImage === undefined ? '' : highResImage.url,
                     duration: convertSecond(item.lengthSeconds),
                     status: 'added',
                     downloadStatus: 'pending',
@@ -61,7 +69,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                     {/* Overlay for time */}
                     <div className="absolute right-0 bottom-0">
                         <p className="bg-black/60 p-1 align-middle">
-                            {`${props.data.vidCount} Videos`}
+                            {`${props.data.vidCount} ${t('common:Videos')}`}
                         </p>
                     </div>
                     {/* Overlay for playlist icon */}
@@ -72,7 +80,9 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                     <div className="group-hover:grid hidden grid-cols-2 grid-rows-9 absolute w-full h-full group-hover:bg-black/60 group-hover:backdrop-blur-sm duration-100">
                         <a
                             className="cursor-pointer flex justify-center items-center col-span-2 row-span-4 flex-wrap"
-                            onMouseEnter={() => setIconText('Browse')}
+                            onMouseEnter={() =>
+                                setIconText(t('search-result:Browse-playlist'))
+                            }
                             onMouseLeave={() => setIconText('')}
                             href={`/playlist/${props.data.playlistId}`}
                         >
@@ -88,9 +98,15 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                         </div>
                         <div
                             className="flex justify-center align-middle row-span-4 cursor-pointer items-center"
-                            onMouseEnter={() => setIconText('Add all items')}
+                            onMouseEnter={() =>
+                                setIconText(
+                                    t('search-result:Add-all-to-playlist')
+                                )
+                            }
                             onMouseLeave={() => setIconText('')}
-                            onClick={() => handleAddAlltoPlaylist(props.data.playlistId)}
+                            onClick={() =>
+                                handleAddAlltoPlaylist(props.data.playlistId)
+                            }
                         >
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"
@@ -100,7 +116,9 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                         <div
                             className="flex justify-center row-span-4 align-middle cursor-pointer items-center"
                             onMouseEnter={() =>
-                                setIconText('Replace current playlist')
+                                setIconText(
+                                    t('search-result:Replace-current-playlist')
+                                )
                             }
                             onMouseLeave={() => setIconText('')}
                             onClick={handleAddToNextSong}

@@ -33,14 +33,14 @@ const toSecond: (arg0: string) => number = (string) => {
 const stringToNumber: (arg0: string) => number = (string) => {
     const modifier = string[string.length - 1]
     const number = Number(string.replace(/[^0-9.]/g, ''))
-    if (modifier.match(/\d/)){
+    if (modifier.match(/\d/)) {
         return number
     }
-    if (isNaN(number)){
+    if (isNaN(number)) {
         console.error('unable to extract number')
         return 0
     }
-    switch (modifier){
+    switch (modifier) {
         case 'K':
             return number * 1000
         case 'k':

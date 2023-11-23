@@ -11,10 +11,10 @@ import {
 import { Store, useCustomContext } from './context'
 import { getNextSong } from '@/utils/songControl'
 import { setSong, stop } from '@/store/playerReducers'
-import {selectConfig} from '@/store/globalConfig'
+import { selectConfig } from '@/store/globalConfig'
 import presentToast from './Toast'
-import {nanoid} from 'nanoid'
-import {useTranslation} from 'react-i18next'
+import { nanoid } from 'nanoid'
+import { useTranslation } from 'react-i18next'
 
 export interface PlayItemInnerProps {
     item: Playitem
@@ -30,7 +30,8 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const popoverClass = useRef('popover-' + nanoid(5))
 
     const getInstanceUrl = (arg0: 'invidious' | 'piped') => {
-        return config.instance.preferType.find(item => item.type === arg0)?.url
+        return config.instance.preferType.find((item) => item.type === arg0)
+            ?.url
     }
 
     const handleItemRemoval = (item: Playitem) => {
@@ -49,17 +50,23 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
             payload: { id: item.id },
         })
     }
-    const handleCopy = (type: string) =>{
-        switch(type){
-            case "youtube":
-                navigator.clipboard.writeText(`https://youtu.be/${props.item.id}`)
-                break;
-            case "invidious":
-                navigator.clipboard.writeText(`${getInstanceUrl('invidious')}/watch?v=${props.item.id}}`)
-                break;
-            case "piped":
-                navigator.clipboard.writeText(`${getInstanceUrl('piped')}/watch?v=${props.item.id}}`)
-                break;
+    const handleCopy = (type: string) => {
+        switch (type) {
+            case 'youtube':
+                navigator.clipboard.writeText(
+                    `https://youtu.be/${props.item.id}`
+                )
+                break
+            case 'invidious':
+                navigator.clipboard.writeText(
+                    `${getInstanceUrl('invidious')}/watch?v=${props.item.id}}`
+                )
+                break
+            case 'piped':
+                navigator.clipboard.writeText(
+                    `${getInstanceUrl('piped')}/watch?v=${props.item.id}}`
+                )
+                break
             default:
                 throw new Error('unknown type to copy')
         }
@@ -128,7 +135,12 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                                 tooltip={t('playlist:Retry')}
                                 onClick={(e) => {
                                     e.stopPropagation()
-                                    dispatch(setItemDownloadStatus({id: item.id, status: 'pending'}))
+                                    dispatch(
+                                        setItemDownloadStatus({
+                                            id: item.id,
+                                            status: 'pending',
+                                        })
+                                    )
                                 }}
                             >
                                 <Icon

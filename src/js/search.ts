@@ -14,8 +14,12 @@ import Innertube from 'youtubei.js/agnostic'
 import { Channel, Playlist, Video } from 'youtubei.js/dist/src/parser/nodes'
 import { Author } from 'youtubei.js/dist/src/parser/misc'
 import presentToast from '@/components/Toast'
-import {formatViewNumber} from '@/utils/format'
-import { extractInnertubeThumbnail, extractInvidiousChannelThumbnail, generatePipedThumbnail } from '@/utils/thumbnailExtract'
+import { formatViewNumber } from '@/utils/format'
+import {
+    extractInnertubeThumbnail,
+    extractInvidiousChannelThumbnail,
+    generatePipedThumbnail,
+} from '@/utils/thumbnailExtract'
 interface InvidiousRes {
     type: 'video' | 'playlist' | 'channel'
     title?: string
@@ -119,7 +123,7 @@ async function searchInv(
                         authorId: authorId,
                         channelThumbnails:
                             extractInvidiousChannelThumbnail(authorThumbnails),
-                        subCount: formatViewNumber(subCount as number)
+                        subCount: formatViewNumber(subCount as number),
                     }
                     return newChannel
                 } else {

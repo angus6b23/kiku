@@ -1,13 +1,24 @@
 import presentToast from '@/components/Toast'
 import { Instance, PlaylistResult, VideoResult } from '@/components/interfaces'
 import Innertube from 'youtubei.js/agnostic'
-import { C4TabbedHeader, Video } from 'youtubei.js/dist/src/parser/nodes'
-import { extractInnertubeThumbnail, generatePipedThumbnail } from '@/utils/thumbnailExtract'
+import {
+    C4TabbedHeader,
+    GridPlaylist,
+    Playlist,
+    Video,
+} from 'youtubei.js/dist/src/parser/nodes'
+import {
+    extractInnertubeThumbnail,
+    generatePipedThumbnail,
+} from '@/utils/thumbnailExtract'
 import { formatViewNumber, toSecond } from '@/utils/format'
 import { Thumbnail } from '@/components/interfaces'
 import axios from 'axios'
-import { Channel, ChannelListContinuation } from 'youtubei.js/dist/src/parser/youtube'
-import {Author} from 'youtubei.js/dist/src/parser/misc'
+import {
+    Channel,
+    ChannelListContinuation,
+} from 'youtubei.js/dist/src/parser/youtube'
+import { Author } from 'youtubei.js/dist/src/parser/misc'
 import { ChannelData } from '@/components/interfaces'
 
 interface InvidiousRes {
@@ -59,7 +70,9 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
                 header.videos_count?.text?.replace(/ videos$/, '')
             ) as number,
         }
-        const videoRes = await res.getVideos();
+        const videoRes = res.has_videos
+            ? await res.getVideos()
+            : { videos: [], has_continuation: false }
         const videoArr: (VideoResult | undefined)[] = videoRes.videos.map(
             (video) => {
                 const innerVideo = video as Video
@@ -87,27 +100,34 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
                 }
             }
         )
-        const playlistRes = await res.getPlaylists()
-        console.log(playlistRes)
-        const playlist: PlaylistResult[] = playlistRes.playlists.map(playlist => {
-            return {
-                type: 'playlist',
-                title: playlist.title.text as string,
-                playlistId: playlist.id,
-                author: author.name,
-                authorId: author.id,
-                playlistThumbnails: extractInnertubeThumbnail(playlist.thumbnails),
-                vidCount: Number(playlist.video_count_short.text)
+        const playlistRes = res.has_playlists
+            ? await res.getPlaylists()
+            : { playlists: [], has_continuation: false }
+        const playlist: PlaylistResult[] = playlistRes.playlists.map(
+            (playlist) => {
+                return {
+                    type: 'playlist',
+                    title: playlist.title.text as string,
+                    playlistId: playlist.id,
+                    author: author.name,
+                    authorId: author.id,
+                    playlistThumbnails: extractInnertubeThumbnail(
+                        playlist.thumbnails
+                    ),
+                    vidCount: Number(playlist.video_count_short.text),
+                }
             }
-        })
+        )
         const videoHasContinuation = videoRes.has_continuation
         const playlistHasContinuation = playlistRes.has_continuation
         return {
             channelInfo: info,
-            videos: videoArr.filter(item => item !== undefined),
+            videos: videoArr.filter((item) => item !== undefined),
             playlists: playlist,
-            videoContinuation: videoHasContinuation ? res : undefined,
-            playlistContinuation: playlistHasContinuation ? res : undefined
+            videoContinuation: videoHasContinuation ? videoRes : undefined,
+            playlistContinuation: playlistHasContinuation
+                ? playlistRes
+                : undefined,
         } as ChannelData
     } catch (err) {
         return new Error('innertube > ' + err)
@@ -116,25 +136,29 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
 
 const channelInv = async (id: string, baseUrl: string) => {
     try {
-        const basicAxios = axios ({
+        const basicAxios = axios({
             baseURL: baseUrl,
             url: `api/v1/channels/${id}`,
         })
         const videoAxios = axios({
             baseURL: baseUrl,
             url: `api/v1/channels/${id}/videos`,
-            params:{
-                sort_by: 'newest'
-            }
+            params: {
+                sort_by: 'newest',
+            },
         })
         const playlistAxios = axios({
             baseURL: baseUrl,
             url: `api/v1/channels/${id}/playlists`,
-            params:{
-                sort_by: 'newest'
-            }
+            params: {
+                sort_by: 'newest',
+            },
         })
-        const [basicInfo, videoRes, playlistRes] = await Promise.all([basicAxios, videoAxios, playlistAxios])
+        const [basicInfo, videoRes, playlistRes] = await Promise.all([
+            basicAxios,
+            videoAxios,
+            playlistAxios,
+        ])
         const info = {
             name: basicInfo.data.author as string,
             subscribers: formatViewNumber(basicInfo.data.subCount) as string,
@@ -154,23 +178,27 @@ const channelInv = async (id: string, baseUrl: string) => {
                 }
             }
         )
-        const playlists: PlaylistResult[] = playlistRes.data.playlists.map((playlist: InvidiousRes) => {
-            return {
-                type: 'playlist',
-                title: playlist.title as string,
-                playlistId: playlist.playlistId as string,
-                author: playlist.author as string,
-                authorId: playlist.authorId as string,
-                playlistThumbnails: generatePipedThumbnail(playlist.playlistThumbnail as string),
-                vidCount: Number(playlist.videoCount)
+        const playlists: PlaylistResult[] = playlistRes.data.playlists.map(
+            (playlist: InvidiousRes) => {
+                return {
+                    type: 'playlist',
+                    title: playlist.title as string,
+                    playlistId: playlist.playlistId as string,
+                    author: playlist.author as string,
+                    authorId: playlist.authorId as string,
+                    playlistThumbnails: generatePipedThumbnail(
+                        playlist.playlistThumbnail as string
+                    ),
+                    vidCount: Number(playlist.videoCount),
+                }
             }
-        })
+        )
         return {
             channelInfo: info,
             videos: videos,
             playlists: playlists,
             videoContinuation: videoRes.data.continuation,
-            playlistContinuation: playlistRes.data.continuation
+            playlistContinuation: playlistRes.data.continuation,
         } as ChannelData
     } catch (err) {
         return new Error('invidious > ' + err)
@@ -184,9 +212,9 @@ const channelPiped = async (id: string, baseUrl: string) => {
             url: `channel/${id}`,
         })
         const info = {
-            name: data.name,
+            name: data.name as string,
             subscribers: formatViewNumber(data.subscriberCount),
-            videoCount: data.relatedStreams.length,
+            videoCount: data.relatedStreams.length as number,
         }
         let videos: VideoResult[] = data.relatedStreams.map(
             (video: PipedRes) => {
@@ -208,11 +236,11 @@ const channelPiped = async (id: string, baseUrl: string) => {
                 }
             }
         )
-        videos = videos.filter((item) => item !== undefined)
+        videos = videos.filter((item) => item !== undefined) as VideoResult[]
         return {
             channelInfo: info,
             videos: videos,
-            continuation: data.nextpage
+            continuation: data.nextpage as string,
         }
     } catch (err) {
         return new Error('piped > ' + err)
@@ -239,13 +267,13 @@ export async function fetchChannelDetails(
     switch (instances[0].type) {
         case 'local':
             res = await channelInner(id, innertube)
-        break
+            break
         case 'invidious':
             res = await channelInv(id, instances[0].url)
-        break
+            break
         case 'piped':
             res = await channelPiped(id, instances[0].url)
-        break
+            break
         default:
             throw new Error('Unknown instance in handle Search')
     }
@@ -258,6 +286,123 @@ export async function fetchChannelDetails(
     return res
 }
 
-export const handleChannelContinuation = async (instances: Instance[], innertube: Innertube, continuation: Channel | string | ChannelListContinuation) => {
+const channelVideoContinuationInner = async (
+    continuation: Channel | ChannelListContinuation,
+    innertube: Innertube | null
+) => {
+    if (innertube === null) {
+        return new Error('innertube is null')
+    }
+    try {
+        console.log(continuation)
+        const res = await continuation.getContinuation()
+        const videos = res.videos as Video[]
+        const videoArr: VideoResult[] = videos.map((video) => {
+            return {
+                type: 'video',
+                title: video.title.text as string,
+                videoId: video.id,
+                author: 'N/A',
+                authorId: 'N/A',
+                videoThumbnails: extractInnertubeThumbnail(video.thumbnails),
+                viewCount: Number(
+                    video.view_count.text
+                        ?.replace(/ views$/, '')
+                        .replace(/,/g, '')
+                ),
+                lengthSeconds: video.duration.seconds,
+            }
+        })
+        return {
+            videos: videoArr,
+            videoContinuation: res.has_continuation ? res : undefined,
+        }
+    } catch (err) {
+        return new Error('innertube > ' + err)
+    }
+}
 
+const channelPlaylistContinuationInner = async (
+    continuation: Channel | ChannelListContinuation,
+    innertube: Innertube | null
+) => {
+    if (innertube === null) {
+        return new Error('innertube is null')
+    }
+    try {
+        const res = await continuation.getContinuation()
+        const playlists: PlaylistResult[] = res.playlists.map(
+            (playlist: Playlist | GridPlaylist) => {
+                return {
+                    type: 'playlist',
+                    title: playlist.title.text as string,
+                    playlistId: playlist.id,
+                    author: 'N/A',
+                    authorId: 'N/A',
+                    playlistThumbnails: extractInnertubeThumbnail(
+                        playlist.thumbnails
+                    ),
+                    vidCount: Number(playlist.video_count_short.text),
+                }
+            }
+        )
+        return {
+            playlists: playlists,
+            playlistContinuation: res.has_continuation ? res : undefined,
+        }
+    } catch (err) {
+        return new Error('innertube > ' + err)
+    }
+}
+
+export const handleChannelContinuation = async (
+    innertube: Innertube | null,
+    continuation: Channel | string | ChannelListContinuation,
+    type: 'video' | 'playlist'
+) => {
+    if (type === 'video') {
+        let res:
+            | Error
+            | {
+                  videos: VideoResult[]
+                  videoContinuation:
+                      | undefined
+                      | ChannelListContinuation
+                      | string
+              }
+        if (!(continuation instanceof String)) {
+            // Check if continuation is string, both invidious and piped use string
+            res = await channelVideoContinuationInner(
+                continuation as Channel | ChannelListContinuation,
+                innertube
+            )
+        } else {
+            res = new Error('')
+        }
+        if (res instanceof Error) {
+            return new Error('channel video continuation > ' + res)
+        }
+        return res
+    } else {
+        let res:
+            | Error
+            | {
+                  playlists: PlaylistResult[]
+                  playlistContinuation:
+                      | undefined
+                      | ChannelListContinuation
+                      | string
+              }
+        if (!(continuation instanceof String)) {
+            res = await channelPlaylistContinuationInner(
+                continuation as Channel | ChannelListContinuation,
+                innertube
+            )
+        } else {
+            res = new Error('')
+        }
+        if (res instanceof Error) {
+            return new Error('channel playlist continuation > ' + res)
+        }
+    }
 }

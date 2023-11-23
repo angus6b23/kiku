@@ -1,7 +1,15 @@
 import React, { useRef, type ReactElement, useEffect } from 'react'
 import VideoResultCard from '@/components/VideoResultCard'
 import PlaylistResultCard from '@/components/PlaylistResultCard'
-import { f7, Block, BlockTitle, Button, Icon, Page, Toolbar } from 'framework7-react'
+import {
+    f7,
+    Block,
+    BlockTitle,
+    Button,
+    Icon,
+    Page,
+    Toolbar,
+} from 'framework7-react'
 import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectSearch, nextPage } from '@/store/searchReducers'
@@ -12,7 +20,7 @@ import Innertube from 'youtubei.js/agnostic'
 import { Store, useCustomContext } from '@/components/context'
 import { Continuation } from '@/components/interfaces'
 import ChannelResultCard from '@/components/ChannelResultCard'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export default function SearchResults(): ReactElement {
     const search = useSelector(selectSearch)
@@ -55,7 +63,8 @@ export default function SearchResults(): ReactElement {
                 <div>
                     <BlockTitle>
                         <span ref={resultTop} className="text-2xl">
-                            {t('search-result:Search-Results')} {search.searchTerm}
+                            {t('search-result:Search-Results')}{' '}
+                            {search.searchTerm}
                         </span>
                     </BlockTitle>
                     <Block className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -96,8 +105,7 @@ export default function SearchResults(): ReactElement {
                     )}
                 </div>
             )}
-                    <Toolbar bottom className="bg-transparent">
-                    </Toolbar>
+            <Toolbar bottom className="bg-transparent"></Toolbar>
         </Page>
     )
 }

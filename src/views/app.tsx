@@ -2,13 +2,7 @@ import React, { useReducer, useRef, useState } from 'react'
 import { AudioBlobObject, Continuation } from '@/components/interfaces'
 import { Store } from '@/components/context'
 
-import {
-    f7ready,
-    App,
-    Panel,
-    View,
-    Page,
-} from 'framework7-react'
+import { f7ready, App, Panel, View, Page } from 'framework7-react'
 
 import PlayList from '@/views/PlayList'
 import { blobStoreReducer } from '@/components/reducers'

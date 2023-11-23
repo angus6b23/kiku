@@ -8,18 +8,18 @@ import {
     shuffleUnplayed,
 } from '@/store/playlistReducers'
 import { setSong, stop } from '@/store/playerReducers'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export interface PlaylistControlBarProps {}
 
 export default function PlaylistControlBar(): ReactElement {
     const dispatch = useDispatch()
-    const {t} = useTranslation(['playlist']);
+    const { t } = useTranslation(['playlist'])
 
     const handleClearPlaylist = () => {
         f7.dialog.confirm(
-              t('playlist:Are-you-sure-to-clear-the-playlist'),
-              t('playlist:Clear-playlist'),
+            t('playlist:Are-you-sure-to-clear-the-playlist'),
+            t('playlist:Clear-playlist'),
             () => {
                 dispatch(clearAllItems())
                 dispatch(setSong(undefined))

@@ -1,11 +1,11 @@
 import { Icon } from 'framework7-react'
 import React, { type ReactElement } from 'react'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export interface NoPlayingProps {}
 
 export default function NoPlaying(): ReactElement {
-    const {t} = useTranslation(['now-playing'])
+    const { t } = useTranslation(['now-playing'])
     return (
         <section className="w-full h-full flex justify-center items-center">
             <div className="w-full h-fit flex flex-wrap justify-center flex-row items-center gap-8 my-auto">

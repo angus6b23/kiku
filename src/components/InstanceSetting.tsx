@@ -5,7 +5,7 @@ import { Instance } from './interfaces'
 import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
 import { getInvInstances, getPipedInstances } from '@/js/getInstances'
 import presentToast from './Toast'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 /* eslint @typescript-eslint/no-var-requires: 'off' */
 const shell = require('electron').shell
 
@@ -15,7 +15,7 @@ export default function InstanceSetting(): ReactElement {
     const config = useSelector(selectConfig)
     const invAutocomplete = useRef<any>(null)
     const pipedAutocomplete = useRef<any>(null)
-    const {t} = useTranslation(['setting'])
+    const { t } = useTranslation(['setting'])
     const [instances, setInstances] = useState<Instance[]>(
         config.instance.preferType
     )
@@ -119,8 +119,10 @@ export default function InstanceSetting(): ReactElement {
 
     return (
         <>
-            <Block className="mt-2">
-                <BlockTitle className="text-lg">{t('setting:Source')}</BlockTitle>
+            <Block className="p-6">
+                <BlockTitle className="text-lg">
+                    {t('setting:Source')}
+                </BlockTitle>
                 <List
                     sortable
                     sortableEnabled

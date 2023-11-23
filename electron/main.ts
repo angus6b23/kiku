@@ -1,7 +1,7 @@
 /* eslint-disable */
 const { app, BrowserWindow, session } = require('electron')
 const serve = require('electron-serve')
-const loadURL = serve({directory: 'dist'})
+const loadURL = serve({ directory: 'dist' })
 
 function createWindow() {
     // Create the browser window.
@@ -109,8 +109,8 @@ function createWindow() {
     }
 
     // Open the DevTools.
-    if (process.env.NODE_ENV === 'development'){
-        win.webContents.openDevTools();
+    if (process.env.NODE_ENV === 'development') {
+        win.webContents.openDevTools()
     }
 }
 

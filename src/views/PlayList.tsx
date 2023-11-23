@@ -7,7 +7,7 @@ import { play, selectPlayer } from '@/store/playerReducers'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/components/PlaylistControlBar'
 import { selectConfig } from '@/store/globalConfig'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export interface PlayListProps {}
 

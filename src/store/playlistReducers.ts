@@ -69,9 +69,14 @@ export const playlist = createSlice({
                 }
             })
         },
-        setItemDownloadStatus: (state, action: PayloadAction<setItemDownloadStatusPayload>) => {
+        setItemDownloadStatus: (
+            state,
+            action: PayloadAction<setItemDownloadStatusPayload>
+        ) => {
             return state.map((item) => {
-                return item.id === action.payload.id ? {...item, downloadStatus: action.payload.status} : item
+                return item.id === action.payload.id
+                    ? { ...item, downloadStatus: action.payload.status }
+                    : item
             })
         },
         setItemPlaying: (state, action: PayloadAction<string>) => {
