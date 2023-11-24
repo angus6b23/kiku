@@ -7,10 +7,7 @@ function createWindow() {
     // Create the browser window.
     const win = new BrowserWindow({
         autoHideMenuBar: true,
-        icon:
-            process.env.NODE_ENV === 'development'
-                ? `${__dirname}/../public/icons/png/512x512.png`
-                : `${__dirname}/../dist/icons/png/512x512.png}`,
+        icon: `${__dirname}/../public/icons/png/512x512.png`,
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: false,

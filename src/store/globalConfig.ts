@@ -22,6 +22,7 @@ const initConfigState: GlobalConfig = {
         location: 'US',
     },
     ui: {
+        lang: 'en',
         accentColor: '#000000',
         showTimeline: true,
         autoScroll: true,
@@ -53,10 +54,19 @@ export const globalConfig = createSlice({
                 instance: initConfigState.instance,
             }
         },
+        changeLocale: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                ui: {
+                    ...state.ui,
+                    lang: action.payload
+                }
+            }
+        }
     },
 })
 
-export const { toggleTimeline, updateInstance } = globalConfig.actions
+export const { toggleTimeline, updateInstance, changeLocale } = globalConfig.actions
 
 export default globalConfig.reducer
 export const selectConfig = (state: RootState) => state.config

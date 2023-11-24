@@ -1,4 +1,5 @@
 // i18next-parser.config.js
+const supportedLangs = ['en', 'fr', 'ja', 'zh-TW', 'zh-CN']
 
 export default {
     contextSeparator: '_',
@@ -48,7 +49,7 @@ export default {
     lineEnding: 'auto',
     // Control the line ending. See options at https://github.com/ryanve/eol
 
-    locales: ['en', 'fr', 'zh-TW', 'zh-CN', 'ja'],
+    locales: supportedLangs,
     // An array of the locales in your applications
 
     namespaceSeparator: ':',

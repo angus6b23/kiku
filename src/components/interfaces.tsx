@@ -139,6 +139,7 @@ interface GlobalConfig {
         location: string
     }
     ui: {
+        lang: string
         accentColor: string
         showTimeline: boolean
         autoScroll: boolean
