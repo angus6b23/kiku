@@ -25,7 +25,18 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const dispatch = useDispatch()
     const playlist = useSelector(selectPlaylist)
     const config = useSelector(selectConfig)
-    const { dispatchAudioBlob, audioBlobStore, abortController }: { dispatchAudioBlob: (arg0: {type: string, payload: { id: string }}) => void, audioBlobStore: AudioBlobObject[], abortController: { [key: string]: AbortController } } = useCustomContext(Store)
+    const {
+        dispatchAudioBlob,
+        audioBlobStore,
+        abortController,
+    }: {
+        dispatchAudioBlob: (arg0: {
+            type: string
+            payload: { id: string }
+        }) => void
+        audioBlobStore: AudioBlobObject[]
+        abortController: { [key: string]: AbortController }
+    } = useCustomContext(Store)
     const { t } = useTranslation(['playlist'])
     const popoverClass = useRef('popover-' + nanoid(5))
 
@@ -37,7 +48,8 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const handleItemRemoval = (item: Playitem) => {
         if (item.status === 'playing') {
             const nextSong = getNextSong(playlist)
-            if (nextSong != undefined) { // If there is next song, just play the next song and remove the item normally
+            if (nextSong != undefined) {
+                // If there is next song, just play the next song and remove the item normally
                 dispatch(setItemPlaying(nextSong.id))
                 dispatch(removeFromPlaylist(item.id))
                 dispatchAudioBlob({
@@ -50,13 +62,14 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                     type: 'REMOVE_BLOB',
                     payload: { id: item.id },
                 })
-                setTimeout(() => { // Use setTimeout to prevent previous dispatch not yet finished
-                    dispatch(setSong(undefined));
+                setTimeout(() => {
+                    // Use setTimeout to prevent previous dispatch not yet finished
+                    dispatch(setSong(undefined))
                     dispatch(stop())
                 }, 50)
             }
         } else {
-            if (abortController[item.id] !== undefined){
+            if (abortController[item.id] !== undefined) {
                 abortController[item.id].abort()
             }
             dispatch(removeFromPlaylist(item.id))
@@ -67,23 +80,26 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
         }
     }
     const handleItemDownload = (e: CustomEvent, item: Playitem) => {
-        e.stopPropagation(); // Prevent item to be played
-        if (item.downloadStatus != 'downloaded'){
+        e.stopPropagation() // Prevent item to be played
+        if (item.downloadStatus != 'downloaded') {
             return
         } else {
-            try{
-                const audioBlob = audioBlobStore.find(blobItem => blobItem.id === item.id) as AudioBlobObject // Access the audio blob store to find blob with same id
-                if (audioBlob === undefined){ // Throw error if not found
+            try {
+                const audioBlob = audioBlobStore.find(
+                    (blobItem) => blobItem.id === item.id
+                ) as AudioBlobObject // Access the audio blob store to find blob with same id
+                if (audioBlob === undefined) {
+                    // Throw error if not found
                     throw new Error('Unable to find blob')
                 }
-                const blob = audioBlob.blob as Blob;
-                const blobFormat = blob.type.includes('webm') ? 'opus' : 'm4a'; // Youtube seems to only provide audio in either opus or m4a
+                const blob = audioBlob.blob as Blob
+                const blobFormat = blob.type.includes('webm') ? 'opus' : 'm4a' // Youtube seems to only provide audio in either opus or m4a
                 const blobURL = URL.createObjectURL(blob) // Create url for download
-                const link = document.createElement("a") // Create DOM node for download
-                link.href = blobURL; // Set download link
+                const link = document.createElement('a') // Create DOM node for download
+                link.href = blobURL // Set download link
                 link.download = `${item.title}.${blobFormat}` // Set default item name
-                link.click(); // Click to start downloading
-            } catch(err){
+                link.click() // Click to start downloading
+            } catch (err) {
                 presentToast('error', err as string)
             }
         }
@@ -94,23 +110,23 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
             case 'youtube':
                 navigator.clipboard.writeText(
                     `https://youtu.be/${props.item.id}`
-            )
-                    break
-                    case 'invidious':
-                        navigator.clipboard.writeText(
-                            `${getInstanceUrl('invidious')}/watch?v=${props.item.id}}`
-                    )
-                    break
-                    case 'piped':
-                        navigator.clipboard.writeText(
-                            `${getInstanceUrl('piped')}/watch?v=${props.item.id}}`
-                    )
-                    break
-                    default:
-                        throw new Error('unknown type to copy')
-}
-presentToast('success', `Copied ${type} link`)
-// f7.popover.close(popoverClass.current)
+                )
+                break
+            case 'invidious':
+                navigator.clipboard.writeText(
+                    `${getInstanceUrl('invidious')}/watch?v=${props.item.id}}`
+                )
+                break
+            case 'piped':
+                navigator.clipboard.writeText(
+                    `${getInstanceUrl('piped')}/watch?v=${props.item.id}}`
+                )
+                break
+            default:
+                throw new Error('unknown type to copy')
+        }
+        presentToast('success', `Copied ${type} link`)
+        // f7.popover.close(popoverClass.current)
     }
     return (
         <>

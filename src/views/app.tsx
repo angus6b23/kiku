@@ -1,8 +1,12 @@
-import React, { useReducer, useRef, useState } from 'react'
-import { AudioBlobObject, Continuation } from '@/components/interfaces'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
+import {
+    AudioBlobObject,
+    Continuation,
+    Instance,
+} from '@/components/interfaces'
 import { Store } from '@/components/context'
 
-import { f7ready, App, Panel, View, Page } from 'framework7-react'
+import { f7ready, App, Panel, View, Page, f7 } from 'framework7-react'
 
 import PlayList from '@/views/PlayList'
 import { blobStoreReducer } from '@/components/reducers'
@@ -15,7 +19,8 @@ import Innertube from 'youtubei.js/agnostic'
 import InnerTube from '@/components/InnerTube'
 import { PersistGate } from 'redux-persist/integration/react'
 import HomePage from '@/views/HomePage'
-
+import { getInvInstances, getPipedInstances } from '@/js/getInstances'
+import presentToast from '@/components/Toast'
 const initBlobStore: AudioBlobObject[] = []
 const MyApp = () => {
     const audio = useRef<HTMLAudioElement>(new Audio())
@@ -24,6 +29,7 @@ const MyApp = () => {
         initBlobStore
     )
     const [abortController, setAbortController] = useState({})
+    const [instances, setInstances] = useState<Instance[]>([])
     const innertube = useRef<Innertube>(null)
     const [continuation, setContinuation] = useState<Continuation>(undefined)
     // Framework7 Parameters
@@ -39,6 +45,46 @@ const MyApp = () => {
     f7ready(() => {
         // Call F7 APIs here
     })
+    useEffect(() => {
+        getInvInstances()
+            .then((res) => {
+                if (res instanceof Error) {
+                    throw new Error('unable to fetch invidious instances')
+                }
+                setInstances((prevState) => {
+                    const newInstances = res.map((url: string) => {
+                        return {
+                            type: 'invidious',
+                            url: url,
+                            enabled: true,
+                        } as Instance
+                    })
+                    return [...prevState, ...newInstances]
+                })
+            })
+            .catch((err) => {
+                presentToast('error', err)
+            })
+        getPipedInstances()
+            .then((res) => {
+                if (res instanceof Error) {
+                    throw new Error('unable to fetch piped instances')
+                }
+                setInstances((prevState) => {
+                    const newInstances = res.map((url: string) => {
+                        return {
+                            type: 'piped',
+                            url: url,
+                            enabled: true,
+                        } as Instance
+                    })
+                    return [...prevState, ...newInstances]
+                })
+            })
+            .catch((err) => {
+                presentToast('error', err)
+            })
+    }, [])
 
     return (
         <App {...f7params}>
@@ -54,6 +100,7 @@ const MyApp = () => {
                             setAbortController: setAbortController,
                             audio: audio,
                             innertube: innertube,
+                            instanceList: instances,
                         }}
                     >
                         <Worker />

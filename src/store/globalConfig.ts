@@ -59,14 +59,15 @@ export const globalConfig = createSlice({
                 ...state,
                 ui: {
                     ...state.ui,
-                    lang: action.payload
-                }
+                    lang: action.payload,
+                },
             }
-        }
+        },
     },
 })
 
-export const { toggleTimeline, updateInstance, changeLocale } = globalConfig.actions
+export const { toggleTimeline, updateInstance, changeLocale } =
+    globalConfig.actions
 
 export default globalConfig.reducer
 export const selectConfig = (state: RootState) => state.config

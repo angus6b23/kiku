@@ -35,16 +35,21 @@ export default function Worker(): ReactElement {
     }: {
         dispatchAudioBlob: React.Dispatch<AudioBlobAction>
         innertube: React.RefObject<Innertube | null>
-        setAbortController: (arg0: AbortControllerObject) => AbortControllerObject
+        setAbortController: (
+            arg0: AbortControllerObject
+        ) => AbortControllerObject
     } = useContext(Store)
 
-    const handleAddAbortController = (id: string, controller: AbortController) => {
+    const handleAddAbortController = (
+        id: string,
+        controller: AbortController
+    ) => {
         setAbortController((prevState) => {
-            return {...prevState, [id]: controller}
+            return { ...prevState, [id]: controller }
         })
     }
     // Will only download one item at once, download when idle, pass when working
-    const [workerState, setWorkerState] = useState('idle');
+    const [workerState, setWorkerState] = useState('idle')
 
     // Get the next job from playlist
     const getNextJob: () => undefined | Playitem = () => {
@@ -173,8 +178,12 @@ export default function Worker(): ReactElement {
     // Watch for playlist, automatically play music when new song is added
     useEffect(() => {
         if (playerState.status === 'stopped') {
-            if(playlist[0] !== undefined && playlist[0].downloadStatus === 'downloaded'){
-                setTimeout(() => { // Use settimeout to prevent the audio blob dispatch not yet ready
+            if (
+                playlist[0] !== undefined &&
+                playlist[0].downloadStatus === 'downloaded'
+            ) {
+                setTimeout(() => {
+                    // Use settimeout to prevent the audio blob dispatch not yet ready
                     dispatch(setItemPlaying(playlist[0].id))
                 }, 200)
             }

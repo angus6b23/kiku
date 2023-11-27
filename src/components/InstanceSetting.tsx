@@ -6,6 +6,7 @@ import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
 import { getInvInstances, getPipedInstances } from '@/js/getInstances'
 import presentToast from './Toast'
 import { useTranslation } from 'react-i18next'
+import { Store, useCustomContext } from './context'
 /* eslint @typescript-eslint/no-var-requires: 'off' */
 const shell = require('electron').shell
 
@@ -19,6 +20,9 @@ export default function InstanceSetting(): ReactElement {
     const [instances, setInstances] = useState<Instance[]>(
         config.instance.preferType
     )
+    const { instanceList }: { instanceList: Instance[] } =
+        useCustomContext(Store)
+
     const dispatch = useDispatch()
 
     const handleInstanceCheck = (instance: Instance) => {
@@ -57,7 +61,9 @@ export default function InstanceSetting(): ReactElement {
             },
         ])
     }
+
     const autoCompletefx = (source: string[]) => {
+        // Return a function which takes query: string, render: void function, used for source in creating autocomplete
         return (query: string, render: (items: any[]) => void) => {
             if (query.length === 0) {
                 render([])
@@ -70,50 +76,81 @@ export default function InstanceSetting(): ReactElement {
         }
     }
     useEffect(() => {
-        getInvInstances()
-            .then((res: string[] | Error) => {
-                if (res instanceof Error) {
-                    throw res
-                }
-                invAutocomplete.current = f7.autocomplete.create({
-                    inputEl: '#autocomplete-invidious',
-                    openIn: 'dropdown',
-                    source: autoCompletefx(res),
-                    on: {
-                        change: (e) => {
-                            handleUrlChange(e[0], 'invidious')
-                        },
-                    },
-                })
-            })
-            .catch((err) => {
-                presentToast('error', err)
-            })
-        getPipedInstances()
-            .then((res: string[] | Error) => {
-                if (res instanceof Error) {
-                    throw res
-                }
-                pipedAutocomplete.current = f7.autocomplete.create({
-                    inputEl: '#autocomplete-piped',
-                    openIn: 'dropdown',
-                    source: autoCompletefx(res),
-                    on: {
-                        change: (e) => {
-                            handleUrlChange(e[0], 'piped')
-                        },
-                    },
-                })
-            })
-            .catch((err) => {
-                presentToast('error', err)
-            })
+        invAutocomplete.current = f7.autocomplete.create({
+            inputEl: '#autocomplete-invidious',
+            openIn: 'dropdown',
+            source: autoCompletefx(
+                instanceList
+                    .filter((item) => item.type === 'invidious')
+                    .map((item) => item.url)
+            ),
+            on: {
+                change: (e) => {
+                    handleUrlChange(e[0], 'invidious')
+                },
+            },
+        })
+
+        pipedAutocomplete.current = f7.autocomplete.create({
+            inputEl: '#autocomplete-piped',
+            openIn: 'dropdown',
+            source: autoCompletefx(
+                instanceList
+                    .filter((item) => item.type === 'piped')
+                    .map((item) => item.url)
+            ),
+            on: {
+                change: (e) => {
+                    handleUrlChange(e[0], 'piped')
+                },
+            },
+        })
+        // getInvInstances()
+        // .then((res: string[] | Error) => {
+        //     if (res instanceof Error) {
+        //         throw res
+        //     }
+        //     invAutocomplete.current = f7.autocomplete.create({
+        //         inputEl: '#autocomplete-invidious',
+        //         openIn: 'dropdown',
+        //         source: autoCompletefx(res),
+        //         on: {
+        //             change: (e) => {
+        //                 handleUrlChange(e[0], 'invidious')
+        //             },
+        //         },
+        //     })
+        // })
+        // .catch((err) => {
+        //     presentToast('error', err)
+        // })
+        // getPipedInstances()
+        // .then((res: string[] | Error) => {
+        //     if (res instanceof Error) {
+        //         throw res
+        //     }
+        //     pipedAutocomplete.current = f7.autocomplete.create({
+        //         inputEl: '#autocomplete-piped',
+        //         openIn: 'dropdown',
+        //         source: autoCompletefx(res),
+        //         on: {
+        //             change: (e) => {
+        //                 handleUrlChange(e[0], 'piped')
+        //             },
+        //         },
+        //     })
+        // })
+        // .catch((err) => {
+        //     presentToast('error', err)
+        // })
         return () => {
             invAutocomplete.current.destroy()
             pipedAutocomplete.current.destroy()
         }
-    }, [])
+    }, [instanceList])
+
     useEffect(() => {
+        // Watch for changes on instances, dispatch when changed
         dispatch(updateInstance(instances))
     }, [instances])
 

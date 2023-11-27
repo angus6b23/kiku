@@ -1,10 +1,10 @@
 {
-  "Save-to-drive": "儲存",
-  "Remove-from-playlist": "從播放清單移除",
-  "Retry": "重試",
-  "Are-you-sure-to-clear-the-playlist": "你確定要清空播放清單嗎？",
-  "Clear-playlist": "清空播放清單",
-  "Clear-Error-items": "移除錯誤項目",
-  "Clear-played-items": "移除已播放項目",
-  "Shuffle-unplayed-items": "隨機打亂未播放項目"
+    "Save-to-drive": "儲存",
+    "Remove-from-playlist": "從播放清單移除",
+    "Retry": "重試",
+    "Are-you-sure-to-clear-the-playlist": "你確定要清空播放清單嗎？",
+    "Clear-playlist": "清空播放清單",
+    "Clear-Error-items": "移除錯誤項目",
+    "Clear-played-items": "移除已播放項目",
+    "Shuffle-unplayed-items": "隨機打亂未播放項目"
 }

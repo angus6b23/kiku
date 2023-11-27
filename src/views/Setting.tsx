@@ -1,5 +1,9 @@
 import InstanceSetting from '@/components/InstanceSetting'
-import { changeLocale, selectConfig, toggleTimeline } from '@/store/globalConfig'
+import {
+    changeLocale,
+    selectConfig,
+    toggleTimeline,
+} from '@/store/globalConfig'
 import {
     AccordionContent,
     Block,
@@ -49,19 +53,40 @@ export default function Setting(): ReactElement {
                         <AccordionContent>
                             <Block className="p-6">
                                 <BlockTitle className="text-lg">
-                                    {`${t('common:Now-Playing')} ${t('common:Setting')}`}
+                                    {`${t('common:Now-Playing')} ${t(
+                                        'common:Setting'
+                                    )}`}
                                 </BlockTitle>
                                 <List>
-                                    <ListItem title={t('setting:Language')} smartSelect smartSelectParams={{openIn: 'sheet'}}>
-                                        <select name="language" defaultValue={config.ui.lang} onChange={handleLocaleChange}>
-                                        {
-                                            supportedLngs.map(lang => {
-                                                const langCode = Intl.getCanonicalLocales(lang);
-                                                const languageName = new Intl.DisplayNames([langCode], { type: "language" })
-                                                return <option value={lang} key={lang}>{languageName.of(lang)}</option>
-                                            }
-                                            )
-                                        }
+                                    <ListItem
+                                        title={t('setting:Language')}
+                                        smartSelect
+                                        smartSelectParams={{ openIn: 'sheet' }}
+                                    >
+                                        <select
+                                            name="language"
+                                            defaultValue={config.ui.lang}
+                                            onChange={handleLocaleChange}
+                                        >
+                                            {supportedLngs.map((lang) => {
+                                                const langCode =
+                                                    Intl.getCanonicalLocales(
+                                                        lang
+                                                    )
+                                                const languageName =
+                                                    new Intl.DisplayNames(
+                                                        [langCode],
+                                                        { type: 'language' }
+                                                    )
+                                                return (
+                                                    <option
+                                                        value={lang}
+                                                        key={lang}
+                                                    >
+                                                        {languageName.of(lang)}
+                                                    </option>
+                                                )
+                                            })}
                                         </select>
                                     </ListItem>
                                     <ListItem>

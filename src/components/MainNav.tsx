@@ -17,7 +17,10 @@ import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
 import { selectConfig } from '@/store/globalConfig'
 import { useTranslation } from 'react-i18next'
-import { SearchContinuation } from '@/components/interfaces'
+import { Instance, SearchContinuation } from '@/components/interfaces'
+import presentToast from './Toast'
+import {getPlayitem} from '@/js/fetchInfo'
+import {addToPlaylist} from '@/store/playlistReducers'
 
 interface MainNavProps {
     tab: string
@@ -81,15 +84,60 @@ const MainNav = (props: MainNavProps) => {
         props.setTab('main')
         autocompleteSearch.current.close()
         f7.preloader.show()
-        // handleSearchVideo(searchTerm: string, options: Search, instances: Instance[], innertube: Innertube | null)
-        const res = await handleSearchVideo(
-            searchTerm,
-            { ...search, page: 1 },
-            config.instance.preferType,
-            innertube.current
-        )
-        dispatch(newSearch({ res: res.data, searchTerm: searchTerm }))
-        setContinuation(res.continuation)
+        let fullfilled = false
+        // Try to scan for url on input
+        try {
+            const url = new URL(searchTerm) // Will jump to catch if fail
+            let id: string | null;
+            let playlistId: string | null;
+            // Extract parameters and path from url to get video id
+            if (url.hostname === 'youtu.be') {
+                id = url.pathname.replaceAll('/', '')
+                playlistId = null
+            } else {
+                id = url.searchParams.get('v')
+                playlistId = url.searchParams.get('list')
+            }
+            // Skip if fail to get video id
+            if (id === null && playlistId === null){
+                throw new Error('')
+            }
+            // Browse playlist if playlist is found
+            if (playlistId !== null){
+                fullfilled = true;
+                f7.views.get('#page-router').router.navigate(`playlist/${playlistId}`)
+            }
+            // Fetch basic information on given video id
+            const res = await getPlayitem(id as string, config.instance.preferType, innertube.current)
+            if (res instanceof Error){
+                presentToast('error', res.message)
+                throw res
+            } else {
+                // Add item to playlist if successful and end the function
+                dispatch(addToPlaylist(res));
+                fullfilled = true;
+                return;
+            }
+        } catch {
+            console.debug('Search term is not a valid url')
+        }
+        if (fullfilled){
+            f7.preloader.hide()
+            return
+        }
+        // Search with keyword starts here
+        try {
+            const res = await handleSearchVideo(
+                searchTerm,
+                { ...search, page: 1 },
+                config.instance.preferType,
+                innertube.current
+            )
+            dispatch(newSearch({ res: res.data, searchTerm: searchTerm }))
+            setContinuation(res.continuation)
+        } catch (err) {
+            presentToast('error', err as string)
+        }
         f7.preloader.hide()
     }
 

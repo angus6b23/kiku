@@ -25,8 +25,8 @@ interface AudioBlobAction {
     payload: AudioBlobObject
 }
 
-interface AbortControllerAction{
-    type: 'ADD',
+interface AbortControllerAction {
+    type: 'ADD'
     payload: AbortController
 }
 interface PlaylistAction {
