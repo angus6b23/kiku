@@ -23,6 +23,7 @@ const MyApp = () => {
         blobStoreReducer,
         initBlobStore
     )
+    const [abortController, setAbortController] = useState({})
     const innertube = useRef<Innertube>(null)
     const [continuation, setContinuation] = useState<Continuation>(undefined)
     // Framework7 Parameters
@@ -49,6 +50,8 @@ const MyApp = () => {
                             setContinuation: setContinuation,
                             audioBlobStore: audioBlobStore,
                             dispatchAudioBlob: dispatchAudioBlob,
+                            abortController: abortController,
+                            setAbortController: setAbortController,
                             audio: audio,
                             innertube: innertube,
                         }}

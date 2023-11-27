@@ -9,12 +9,13 @@ interface PipedAudio {
     weight: number
 }
 
-const fetchInfoInv = async (id: string, baseUrl: string) => {
+const fetchInfoInv = async (id: string, baseUrl: string, controller: AbortController) => {
     try {
         const res = await axios({
             method: 'get',
             baseURL: baseUrl,
             url: `api/v1/videos/${id}`,
+            signal: controller.signal
         })
         // Filter out audios from adaptive formats
         const audios = res.data.adaptiveFormats.filter((format: any) => {
@@ -45,13 +46,13 @@ const fetchInfoInv = async (id: string, baseUrl: string) => {
             },
             { weight: 0 }
         )
-        return await fetchStream(targetAudio.url as string)
+        return await fetchStream(targetAudio.url as string, controller)
     } catch (err) {
         return new Error('unable to fetch info with invidious')
     }
 }
 
-const fetchInfoPiped = async (id: string, baseUrl: string) => {
+const fetchInfoPiped = async (id: string, baseUrl: string, controller: AbortController) => {
     try {
         const res = await axios({
             method: 'get',
@@ -79,12 +80,12 @@ const fetchInfoPiped = async (id: string, baseUrl: string) => {
         ) {
             throw new Error('no audio in piped')
         }
-        return await fetchStream(targetAudio.url)
+        return await fetchStream(targetAudio.url, controller)
     } catch (err) {
         return new Error(err as string)
     }
 }
-const fetchInfoInner = async (id: string, innertube: Innertube | null) => {
+const fetchInfoInner = async (id: string, innertube: Innertube | null, controller: AbortController) => {
     try {
         if (innertube === null) {
             return new Error('innertube is null')
@@ -95,46 +96,48 @@ const fetchInfoInner = async (id: string, innertube: Innertube | null) => {
         if (url === undefined) {
             throw new Error('url is undefined in innertube')
         }
-        return await fetchStream(url)
+        return await fetchStream(url, controller)
     } catch (err) {
         return new Error(err as string)
     }
 }
 
-const fetchStream = async (url: string) => {
+const fetchStream = async (url: string, controller: AbortController) => {
     try {
         const TEN_MIB = 10 * 1024 * 1024
-        const contentLength = Number(new URL(url).searchParams.get('clen'))
-        if (contentLength < TEN_MIB) {
+        const contentLength = Number(new URL(url).searchParams.get('clen')) //clen = content length
+        if (contentLength < TEN_MIB) { // Directly download if content length is less than 10MB
             const res = await axios({
                 responseType: 'blob',
                 method: 'get',
                 url: url,
+                signal: controller.signal,
                 headers: { Range: `bytes=0-${contentLength}` },
             })
             return res.data
-        } else {
+        } else { // Split the clen into chunks of 10Mb then downloadm
             let start = 0
             const blobs = []
-            while (start < contentLength) {
-                const end =
+            while (start < contentLength && controller.signal.aborted === false ) { // Download until the starting byte is larger than content length
+                const end = //Set End byte to start + 10Mb or content Length
                     start + TEN_MIB > contentLength
                         ? contentLength
                         : start + TEN_MIB
-                const res = await axios({
-                    responseType: 'blob',
-                    method: 'get',
-                    url: url,
-                    headers: { Range: `bytes=${start}-${end}` },
-                })
-                blobs.push(res.data)
-                start += TEN_MIB + 1
+                        const res = await axios({
+                            responseType: 'blob',
+                            method: 'get',
+                            url: url,
+                            signal: controller.signal,
+                            headers: { Range: `bytes=${start}-${end}` },
+                        })
+                        blobs.push(res.data)
+                        start += TEN_MIB + 1
             }
             const type = blobs[0].type
-            const data = blobs.reduce(
-                (a, b) => new Blob([a, b], { type: type })
-            )
-            return data
+            const data = blobs.reduce( // Combine all blobs into one blob
+                                      (a, b) => new Blob([a, b], { type: type })
+                                     )
+                                     return data
         }
     } catch (err) {
         return new Error(err as string)
@@ -144,31 +147,34 @@ const fetchStream = async (url: string) => {
 export async function handleFetchStream(
     id: string,
     instances: Instance[],
-    innertube: Innertube | null
+    innertube: Innertube | null,
+    controller: AbortController
 ): Promise<Blob | Error> {
     let res: Error | Blob
     if (instances.length === 0) {
         return new Error(`unable to fetch info from ${id}`)
     }
     if (instances[0].enabled === false) {
-        return await handleFetchStream(id, instances.slice(1), innertube)
+        return await handleFetchStream(id, instances.slice(1), innertube, controller)
     }
     switch (instances[0].type) {
         case 'invidious':
-            res = await fetchInfoInv(id, instances[0].url)
-            break
+            res = await fetchInfoInv(id, instances[0].url, controller)
+        break
         case 'piped':
-            res = await fetchInfoPiped(id, instances[0].url)
-            break
+            res = await fetchInfoPiped(id, instances[0].url, controller)
+        break
         case 'local':
-            res = await fetchInfoInner(id, innertube)
-            break
+            res = await fetchInfoInner(id, innertube, controller)
+        break
         default:
             throw new Error('unknown instance type in fetch info')
     }
     if (res instanceof Error) {
-        console.error(res)
-        return await handleFetchStream(id, instances.slice(1), innertube)
+        if (controller.signal.aborted === false ){
+            console.error(res)
+            return await handleFetchStream(id, instances.slice(1), innertube, controller)
+        }
     }
     return res
 }

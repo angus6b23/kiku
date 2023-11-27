@@ -7,6 +7,7 @@ import {
     List,
     ListItem,
     Page,
+    Toolbar,
 } from 'framework7-react'
 import React, { BaseSyntheticEvent, useEffect, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +29,7 @@ export default function Setting(): ReactElement {
     return (
         <Page name="setting">
             <Block>
-                <List strong outlineIos dividersIos insetMd>
+                <List strong outlineIos dividersIos insetMd className="py-4">
                     <ListItem
                         className="text-xl"
                         accordionItem
@@ -86,6 +87,7 @@ export default function Setting(): ReactElement {
                         </AccordionContent>
                     </ListItem>
                 </List>
+                <Toolbar bottom className="bg-transparent" />
             </Block>
         </Page>
     )

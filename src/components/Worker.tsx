@@ -4,7 +4,7 @@ import React, {
     useState,
     useContext,
 } from 'react'
-import { AudioBlobAction, Playitem } from './interfaces'
+import { AbortControllerAction, AudioBlobAction, Playitem } from './interfaces'
 import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -13,10 +13,13 @@ import {
     setItemPlaying,
 } from '@/store/playlistReducers'
 import { Store } from './context'
-import { selectPlayer } from '@/store/playerReducers'
+import { play, selectPlayer } from '@/store/playerReducers'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
+interface AbortControllerObject {
+    [key: string]: AbortController
+}
 export interface WorkerProps {}
 
 export default function Worker(): ReactElement {
@@ -28,13 +31,20 @@ export default function Worker(): ReactElement {
     const {
         dispatchAudioBlob,
         innertube,
+        setAbortController,
     }: {
         dispatchAudioBlob: React.Dispatch<AudioBlobAction>
         innertube: React.RefObject<Innertube | null>
+        setAbortController: (arg0: AbortControllerObject) => AbortControllerObject
     } = useContext(Store)
 
+    const handleAddAbortController = (id: string, controller: AbortController) => {
+        setAbortController((prevState) => {
+            return {...prevState, [id]: controller}
+        })
+    }
     // Will only download one item at once, download when idle, pass when working
-    const [workerState, setWorkerState] = useState('idle')
+    const [workerState, setWorkerState] = useState('idle');
 
     // Get the next job from playlist
     const getNextJob: () => undefined | Playitem = () => {
@@ -80,7 +90,7 @@ export default function Worker(): ReactElement {
     useEffect(() => {
         // console.log('worker triggered', workerState)
         // Sometimes worker state do not come up when large item is downloading
-        if (workerState === 'idle' || !getIsDownloading()) {
+        if (workerState === 'idle') {
             const nextJob: undefined | Playitem = getNextJob()
             if (nextJob !== undefined) {
                 // Only work when the status is idle and next job exists
@@ -90,6 +100,8 @@ export default function Worker(): ReactElement {
                 console.log(
                     `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
                 )
+                const axiosController = new AbortController()
+                handleAddAbortController(nextJob.id, axiosController)
                 dispatch(
                     setItemDownloadStatus({
                         id: nextJob.id,
@@ -99,7 +111,8 @@ export default function Worker(): ReactElement {
                 handleFetchStream(
                     nextJob.id,
                     config.instance.preferType,
-                    innertube?.current
+                    innertube?.current,
+                    axiosController
                 )
                     .then((blob) => {
                         if (blob instanceof Error) {
@@ -109,6 +122,7 @@ export default function Worker(): ReactElement {
                                 type: 'ADD_BLOB',
                                 payload: { id: nextJob.id, blob: blob },
                             })
+                            setWorkerState('idle')
                             dispatch(
                                 setItemDownloadStatus({
                                     id: nextJob.id,
@@ -155,23 +169,14 @@ export default function Worker(): ReactElement {
             }
         }
     }, [playlist])
+
     // Watch for playlist, automatically play music when new song is added
     useEffect(() => {
         if (playerState.status === 'stopped') {
-            const currentPlayingIndex = playlist.findIndex(
-                (item) => item.status === 'playing'
-            )
-            for (let i = currentPlayingIndex + 1; i < playlist.length; i++) {
-                const nextSong = playlist[i]
-                if (nextSong.downloadStatus === 'downloaded') {
-                    setTimeout(() => {
-                        console.log(
-                            `[Audo Play] Auto playing ${nextSong.title}`
-                        )
-                        dispatch(setItemPlaying(nextSong.id))
-                    }, 250)
-                    break
-                }
+            if(playlist[0] !== undefined && playlist[0].downloadStatus === 'downloaded'){
+                setTimeout(() => { // Use settimeout to prevent the audio blob dispatch not yet ready
+                    dispatch(setItemPlaying(playlist[0].id))
+                }, 200)
             }
         }
     }, [playlist])

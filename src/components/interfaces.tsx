@@ -25,6 +25,10 @@ interface AudioBlobAction {
     payload: AudioBlobObject
 }
 
+interface AbortControllerAction{
+    type: 'ADD',
+    payload: AbortController
+}
 interface PlaylistAction {
     type:
         | 'ADD'
@@ -187,6 +191,7 @@ export type {
     PlayerAction,
     AudioBlobObject,
     AudioBlobAction,
+    AbortControllerAction,
     Instance,
     GlobalConfig,
     ChannelData,

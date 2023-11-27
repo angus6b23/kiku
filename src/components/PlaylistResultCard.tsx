@@ -57,7 +57,9 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                     status: 'added',
                     downloadStatus: 'pending',
                 }
-                dispatch(addToPlaylist(newPlayitem))
+                setTimeout(() => {
+                    dispatch(addToPlaylist(newPlayitem))
+                }, 100)
             }
         })
     }
