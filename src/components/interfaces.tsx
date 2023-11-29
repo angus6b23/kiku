@@ -83,7 +83,7 @@ interface VideoResult {
     author: string
     authorId: string
     videoThumbnails: Thumbnail[]
-    viewCount: number
+    viewCount?: number
     lengthSeconds: number
 }
 interface ChannelResult {

@@ -18,7 +18,6 @@ import { selectConfig } from '@/store/globalConfig'
 import {
     fetchChannelDetails,
     handleChannelContinuation,
-    handleChannelVideoContinuation,
 } from '@/js/channel'
 import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
@@ -76,6 +75,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
             f7.preloader.show()
             if (channel?.videoContinuation !== undefined) {
                 const res = await handleChannelContinuation(
+                    props.channelId,
                     innertube.current,
                     channel?.videoContinuation,
                     'video'

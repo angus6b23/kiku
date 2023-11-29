@@ -5,6 +5,7 @@ import {
     Thumbnail,
     VideoResult,
 } from '@/components/interfaces'
+import {extractInvidiousVideos} from '@/utils/extractResults'
 import { stringToNumber } from '@/utils/format'
 import {
     extractInnertubeThumbnail,
@@ -14,20 +15,6 @@ import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { PlaylistVideo } from 'youtubei.js/dist/src/parser/nodes'
 
-interface InvidiousRes {
-    title?: string
-    author: string
-    authorId: string
-    videoId?: string
-    playlistId?: string
-    videoThumbnails?: Thumbnail[]
-    lengthSeconds?: number
-    viewCount?: number
-    videoCount?: number
-    subCount?: number
-    videos?: { videoThumbnails: Thumbnail[] }[]
-    authorThumbnails: { url: string; width: number; height: number }[]
-}
 
 interface PipedRes {
     url: string
@@ -95,22 +82,8 @@ const playlistInv = async (id: string, baseUrl: string) => {
             authorId: res.data.authorId as string,
             author: res.data.author as string,
         }
-        const resVideos: VideoResult[] = res.data.videos.map(
-            (video: InvidiousRes) => {
-                return {
-                    type: 'video',
-                    title: video.title as string,
-                    videoId: video.videoId as string,
-                    author: video.author,
-                    authorId: video.authorId,
-                    videoThumbnails: extractInnertubeThumbnail(
-                        video.videoThumbnails as Thumbnail[]
-                    ),
-                    viewCount: 0,
-                    lengthSeconds: video.lengthSeconds as number,
-                }
-            }
-        )
+        const resVideos: VideoResult[] = extractInvidiousVideos(res.data.videos)
+        console.log(resVideos)
         return {
             playlistInfo: playlistInfo,
             videos: resVideos,
