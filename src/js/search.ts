@@ -6,7 +6,6 @@ import {
     SearchContinuation,
     SearchOption,
     SearchResult,
-    Thumbnail,
     VideoResult,
 } from '../components/interfaces'
 import { Search } from 'youtubei.js/dist/src/parser/youtube'
@@ -14,40 +13,14 @@ import Innertube from 'youtubei.js/agnostic'
 import { Channel, Playlist, Video } from 'youtubei.js/dist/src/parser/nodes'
 import { Author } from 'youtubei.js/dist/src/parser/misc'
 import presentToast from '@/components/Toast'
-import { formatViewNumber } from '@/utils/format'
 import {
-    extractInnertubeThumbnail,
-    extractInvidiousChannelThumbnail,
-    generatePipedThumbnail,
+    extractInnertubeThumbnail 
 } from '@/utils/thumbnailExtract'
-interface InvidiousRes {
-    type: 'video' | 'playlist' | 'channel'
-    title?: string
-    author: string
-    authorId: string
-    videoId?: string
-    playlistId?: string
-    videoThumbnails?: Thumbnail[]
-    lengthSeconds?: number
-    viewCount?: number
-    videoCount?: number
-    subCount?: number
-    videos?: { videoThumbnails: Thumbnail[] }[]
-    authorThumbnails: { url: string; width: number; height: number }[]
-}
-interface PipedRes {
-    type: 'stream' | 'channel' | 'playlist'
-    url: string
-    name?: string
-    title?: string
-    uploaderName?: string
-    uploaderUrl?: string
-    duration?: number
-    views?: number
-    videos?: number
-    thumbnail: string
-    subscribers?: number
-}
+import {InvidiousChannel, InvidiousPlaylist, InvidiousVideo, PipedChannel, PipedPlaylist, PipedVideo, extractInvidiousChannels, extractInvidiousPlaylists, extractInvidiousVideos, extractPipedChannel, extractPipedPlaylist, extractPipedVideos} from '@/utils/extractResults'
+
+type InvidiousRes = InvidiousVideo | InvidiousPlaylist | InvidiousChannel
+type PipedRes = PipedVideo | PipedPlaylist | PipedChannel
+
 interface Res {
     continuation: Search | undefined | string
     data: SearchResult[]
@@ -74,58 +47,11 @@ async function searchInv(
         const searchResults: (SearchResult | undefined)[] = res.data.map(
             (item: InvidiousRes) => {
                 if (item.type === 'video') {
-                    const {
-                        title,
-                        videoId,
-                        author,
-                        authorId,
-                        viewCount,
-                        lengthSeconds,
-                    } = item
-                    const newVideo: VideoResult = {
-                        type: 'video',
-                        title: title as string,
-                        videoId: videoId as string,
-                        author: author,
-                        authorId: authorId,
-                        videoThumbnails: item.videoThumbnails as Thumbnail[],
-                        viewCount: viewCount as number,
-                        lengthSeconds: lengthSeconds as number,
-                    }
-                    return newVideo
+                    return extractInvidiousVideos(item as InvidiousVideo)
                 } else if (item.type === 'playlist') {
-                    const {
-                        title,
-                        playlistId,
-                        author,
-                        authorId,
-                        videos,
-                        videoCount,
-                    } = item
-                    const thumbnails =
-                        videos === undefined ? [] : videos[0].videoThumbnails
-                    const newPlaylist: PlaylistResult = {
-                        type: 'playlist',
-                        title: title as string,
-                        playlistId: playlistId as string,
-                        author: author,
-                        authorId: authorId,
-                        playlistThumbnails: thumbnails,
-                        vidCount: videoCount as number,
-                    }
-                    return newPlaylist
+                    return extractInvidiousPlaylists(item as InvidiousPlaylist)
                 } else if (item.type === 'channel') {
-                    const { author, authorId, subCount, authorThumbnails } =
-                        item
-                    const newChannel: ChannelResult = {
-                        type: 'channel',
-                        author: author,
-                        authorId: authorId,
-                        channelThumbnails:
-                            extractInvidiousChannelThumbnail(authorThumbnails),
-                        subCount: formatViewNumber(subCount as number),
-                    }
-                    return newChannel
+                    return extractInvidiousChannels(item as InvidiousChannel)
                 } else {
                     return undefined
                 }
@@ -289,61 +215,11 @@ async function searchPiped(
         const searchResults: (SearchResult | undefined)[] = resJson.items.map(
             (item: PipedRes) => {
                 if (item.type === 'stream') {
-                    const {
-                        title,
-                        url,
-                        uploaderName,
-                        uploaderUrl,
-                        views,
-                        duration,
-                        thumbnail,
-                    } = item
-                    const newVideo: VideoResult = {
-                        type: 'video',
-                        title: title as string,
-                        videoId: url.replace(/^\/watch\?v=/, ''),
-                        author: uploaderName as string,
-                        authorId: uploaderUrl?.replace(
-                            /^\/channel\//,
-                            ''
-                        ) as string,
-                        videoThumbnails: generatePipedThumbnail(thumbnail),
-                        viewCount: views as number,
-                        lengthSeconds: duration as number,
-                    }
-                    return newVideo
+                    return extractPipedVideos(item as PipedVideo)
                 } else if (item.type === 'playlist') {
-                    const {
-                        name,
-                        url,
-                        uploaderName,
-                        uploaderUrl,
-                        thumbnail,
-                        videos,
-                    } = item
-                    const newPlaylist: PlaylistResult = {
-                        type: 'playlist',
-                        title: name as string,
-                        playlistId: url.replace(/\/playlist\?list=/, ''),
-                        author: uploaderName as string,
-                        authorId: uploaderUrl?.replace(
-                            /\/channel\//,
-                            ''
-                        ) as string,
-                        playlistThumbnails: generatePipedThumbnail(thumbnail),
-                        vidCount: videos as number,
-                    }
-                    return newPlaylist
+                    return extractPipedPlaylist(item as PipedPlaylist)
                 } else if (item.type === 'channel') {
-                    const { url, name, subscribers, thumbnail } = item
-                    const newChannel: ChannelResult = {
-                        type: 'channel',
-                        author: name as string,
-                        authorId: url.replace(/\/channel\//, '') as string,
-                        channelThumbnails: generatePipedThumbnail(thumbnail),
-                        subCount: subscribers?.toString() as string,
-                    }
-                    return newChannel
+                    return extractPipedChannel(item as PipedChannel)
                 } else {
                     return undefined
                 }

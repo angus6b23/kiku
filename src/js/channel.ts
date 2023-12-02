@@ -19,7 +19,7 @@ import {
 } from 'youtubei.js/dist/src/parser/youtube'
 import { Author } from 'youtubei.js/dist/src/parser/misc'
 import { ChannelData } from '@/components/interfaces'
-import {extractInvidiousPlaylists, extractInvidiousVideos} from '@/utils/extractResults'
+import {extractInvidiousPlaylists, extractInvidiousVideos, extractPipedPlaylist, extractPipedVideos} from '@/utils/extractResults'
 import {getInstanceLists} from '@/utils/storeAccess'
 
 interface PipedRes { // Results returned from piped
@@ -161,8 +161,8 @@ const channelInv = async (id: string, baseUrl: string) => {
             videoCount: basicInfo.data.latestVideos.length as number,
         }
         // Extract videos and playlist from results
-        const videos: VideoResult[] = extractInvidiousVideos(videoRes.data.videos)
-        const playlists: PlaylistResult[] = extractInvidiousPlaylists(playlistRes.data.playlists);
+        const videos: VideoResult[] = extractInvidiousVideos(videoRes.data.videos) as VideoResult[]
+        const playlists: PlaylistResult[] = extractInvidiousPlaylists(playlistRes.data.playlists) as PlaylistResult[]
         return {
             channelInfo: info,
             videos: videos,
@@ -186,31 +186,22 @@ const channelPiped = async (id: string, baseUrl: string) => {
             subscribers: formatViewNumber(data.subscriberCount),
             videoCount: data.relatedStreams.length as number,
         }
-        let videos: VideoResult[] = data.relatedStreams.map(
-            (video: PipedRes) => {
-                if (video.type === 'stream') {
-                    return {
-                        type: 'video',
-                        title: video.title,
-                        videoId: video.url.replace(/^\/watch\?v=/, ''),
-                        author: data.author,
-                        authorId: id,
-                        videoThumbnails: generatePipedThumbnail(
-                            video.thumbnail
-                        ),
-                        viewCount: video.views,
-                        lengthSeconds: video.duration,
-                    }
-                } else {
-                    return undefined
-                }
-            }
-        )
+        const pipedPlaylistUrl = new URL(`${baseUrl}/channels/tabs`);
+        const tabData = data.tabs.find((tab: {name: string, data:string}) => tab.name === 'playlists')?.data
+        pipedPlaylistUrl.searchParams.set('data', tabData)
+        const pipedPlaylistRes = await fetch(pipedPlaylistUrl);
+        const pipedPlaylist = await pipedPlaylistRes.json();
+        const playlists: PlaylistResult[] = extractPipedPlaylist(pipedPlaylist.content) as PlaylistResult[]
+
+        let videos: VideoResult[] = extractPipedVideos(data.relatedStreams) as VideoResult[]
         videos = videos.filter((item) => item !== undefined) as VideoResult[]
         return {
             channelInfo: info,
             videos: videos,
-            continuation: data.nextpage as string,
+            playlists: playlists,
+            videoContinuation: data.nextpage !== null ? data.nextpage : undefined,
+            playlistContinuation: pipedPlaylist.nextpage !== null ? pipedPlaylist.nextpage : undefined,
+
         }
     } catch (err) {
         return new Error('piped > ' + err)

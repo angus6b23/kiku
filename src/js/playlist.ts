@@ -2,10 +2,9 @@ import presentToast from '@/components/Toast'
 import {
     Instance,
     PlaylistData,
-    Thumbnail,
     VideoResult,
 } from '@/components/interfaces'
-import {extractInvidiousVideos} from '@/utils/extractResults'
+import { PipedVideo, extractInvidiousVideos, extractPipedVideos } from '@/utils/extractResults'
 import { stringToNumber } from '@/utils/format'
 import {
     extractInnertubeThumbnail,
@@ -16,14 +15,6 @@ import Innertube from 'youtubei.js/agnostic'
 import { PlaylistVideo } from 'youtubei.js/dist/src/parser/nodes'
 
 
-interface PipedRes {
-    url: string
-    title: string
-    uploaderUrl: string
-    duration: number
-    views: number
-    thumbnail: string
-}
 const playlistInner = async (id: string, innertube: Innertube | null) => {
     try {
         if (innertube === undefined || innertube === null) {
@@ -82,7 +73,7 @@ const playlistInv = async (id: string, baseUrl: string) => {
             authorId: res.data.authorId as string,
             author: res.data.author as string,
         }
-        const resVideos: VideoResult[] = extractInvidiousVideos(res.data.videos)
+        const resVideos: VideoResult[] = extractInvidiousVideos(res.data.videos) as VideoResult[]
         console.log(resVideos)
         return {
             playlistInfo: playlistInfo,
@@ -105,29 +96,17 @@ const playlistPiped = async (id: string, baseUrl: string) => {
             authorId: res.data.uploaderUrl.replace('/channel/', '') as string,
             author: res.data.uploader as string,
         }
-        const uploaderName = res.data.uploader as string
-        let videos: PipedRes[] = res.data.relatedStreams
+        let videos: PipedVideo[] = res.data.relatedStreams
         let nextPage = res.data.nextpage
         while (nextPage !== null) {
             const url = new URL(`${baseUrl}/nextpage/playlists/${id}`)
             url.searchParams.set('nextpage', nextPage)
             const continuationRes = await fetch(url)
             const resJson = await continuationRes.json()
-            videos = [...videos, ...(resJson.relatedStreams as PipedRes[])]
+            videos = [...videos, ...(resJson.relatedStreams as PipedVideo[])]
             nextPage = resJson.nextpage
         }
-        const resVideos: VideoResult[] = videos.map((video) => {
-            return {
-                type: 'video',
-                title: video.title as string,
-                videoId: video.url.replace(/\/watch\?v=/, ''),
-                author: uploaderName,
-                authorId: video.uploaderUrl.replace(/\/channel\//, ''),
-                videoThumbnails: generatePipedThumbnail(video.thumbnail),
-                viewCount: video.views,
-                lengthSeconds: video.duration,
-            }
-        })
+        const resVideos: VideoResult[] = extractPipedVideos(videos) as VideoResult[]
         return {
             playlistInfo: playlistInfo,
             videos: resVideos,
@@ -136,6 +115,7 @@ const playlistPiped = async (id: string, baseUrl: string) => {
         throw new Error('piped > ' + err)
     }
 }
+
 export async function handleGetPlaylist(
     id: string,
     instances: Instance[],
