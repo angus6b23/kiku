@@ -21,7 +21,11 @@ export default function HomePage(props: HomePageProps): ReactElement {
                         <NowPlaying />
                     </Tab>
                     <Tab tabActive={tab === 'main'}>
-                        <View id="page-router" url="/" className="h-page"></View>
+                        <View
+                            id="page-router"
+                            url="/"
+                            className="h-page"
+                        ></View>
                     </Tab>
                     <Tab tabActive={tab === 'setting'}>
                         <Setting />

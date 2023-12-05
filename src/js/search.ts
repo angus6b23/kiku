@@ -13,10 +13,21 @@ import Innertube from 'youtubei.js/agnostic'
 import { Channel, Playlist, Video } from 'youtubei.js/dist/src/parser/nodes'
 import { Author } from 'youtubei.js/dist/src/parser/misc'
 import presentToast from '@/components/Toast'
+import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import {
-    extractInnertubeThumbnail 
-} from '@/utils/thumbnailExtract'
-import {InvidiousChannel, InvidiousPlaylist, InvidiousVideo, PipedChannel, PipedPlaylist, PipedVideo, extractInvidiousChannels, extractInvidiousPlaylists, extractInvidiousVideos, extractPipedChannel, extractPipedPlaylist, extractPipedVideos} from '@/utils/extractResults'
+    InvidiousChannel,
+    InvidiousPlaylist,
+    InvidiousVideo,
+    PipedChannel,
+    PipedPlaylist,
+    PipedVideo,
+    extractInvidiousChannels,
+    extractInvidiousPlaylists,
+    extractInvidiousVideos,
+    extractPipedChannel,
+    extractPipedPlaylist,
+    extractPipedVideos,
+} from '@/utils/extractResults'
 
 type InvidiousRes = InvidiousVideo | InvidiousPlaylist | InvidiousChannel
 type PipedRes = PipedVideo | PipedPlaylist | PipedChannel
@@ -121,6 +132,7 @@ async function searchInner(
                     // console.log(newVideo)
                     return newVideo
                 } else if (item.type === 'Playlist') {
+                    console.log(item)
                     const i = item as Playlist
                     const author = i.author as Author
                     let videoCount = Number(
@@ -131,7 +143,7 @@ async function searchInner(
                         type: 'playlist',
                         title: i.title.text as string,
                         playlistId: i.id,
-                        author: author.name,
+                        author: author.name.replace(/ · Playlist$/, ''),
                         authorId: author.id,
                         playlistThumbnails: extractInnertubeThumbnail(
                             i.thumbnails

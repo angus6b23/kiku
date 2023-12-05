@@ -32,30 +32,30 @@ export default function VideoResultCard(props: VideoResultCardProps) {
             (item: Playitem) => item.id === props.data.videoId
         )
         if (sameId.length > 0) return
-            const newPlayitem: Playitem = {
-                id: props.data.videoId,
-                title: props.data.title,
-                thumbnailURL: highResImage === undefined ? '' : highResImage.url,
-                duration: convertSecond(props.data.lengthSeconds),
-                status: 'added',
-                downloadStatus: 'pending',
-            }
-            dispatch(addToPlaylist(newPlayitem))
+        const newPlayitem: Playitem = {
+            id: props.data.videoId,
+            title: props.data.title,
+            thumbnailURL: highResImage === undefined ? '' : highResImage.url,
+            duration: convertSecond(props.data.lengthSeconds),
+            status: 'added',
+            downloadStatus: 'pending',
+        }
+        dispatch(addToPlaylist(newPlayitem))
     }
     const handleAddToNextSong = () => {
         const sameId = playlist.filter(
             (item: Playitem) => item.id === props.data.videoId
         )
         if (sameId.length > 0) return
-            const newPlayitem: Playitem = {
-                id: props.data.videoId,
-                title: props.data.title,
-                thumbnailURL: targetImage === undefined ? '' : targetImage.url,
-                duration: convertSecond(props.data.lengthSeconds),
-                status: 'added',
-                downloadStatus: 'pending',
-            }
-            dispatch(addToNextSong(newPlayitem))
+        const newPlayitem: Playitem = {
+            id: props.data.videoId,
+            title: props.data.title,
+            thumbnailURL: targetImage === undefined ? '' : targetImage.url,
+            duration: convertSecond(props.data.lengthSeconds),
+            status: 'added',
+            downloadStatus: 'pending',
+        }
+        dispatch(addToNextSong(newPlayitem))
     }
     const onPlaylist = () => {
         return playlist.some((item) => item.id === props.data.videoId)
@@ -88,7 +88,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                 onMouseEnter={() =>
                                     setIconText(
                                         t('search-result:Add-to-playlist')
-                                )
+                                    )
                                 }
                                 onMouseLeave={() => setIconText('')}
                                 onClick={handleAddToPlaylist}
@@ -104,21 +104,11 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                 </p>
                             </div>
                             <div
-                                className="flex justify-center align-middle row-span-4 cursor-pointer items-center"
-                                onMouseEnter={() => setIconText('Play Now')}
-                                onMouseLeave={() => setIconText('')}
-                            >
-                                <Icon
-                                    className="text-lg lg:text-2xl xl:text-4xl"
-                                    f7="play_fill"
-                                />
-                            </div>
-                            <div
                                 className="flex justify-center row-span-4 align-middle cursor-pointer items-center"
                                 onMouseEnter={() =>
                                     setIconText(
                                         t('search-result:Add-to-next-song')
-                                )
+                                    )
                                 }
                                 onMouseLeave={() => setIconText('')}
                                 onClick={handleAddToNextSong}
@@ -128,6 +118,19 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                     f7="arrow_right_to_line"
                                 />
                             </div>
+                            <a
+                                className="flex justify-center align-middle row-span-4 cursor-pointer items-center"
+                                onMouseEnter={() =>
+                                    setIconText(t('search-result:Details'))
+                                }
+                                onMouseLeave={() => setIconText('')}
+                                href={`/details/${props.data.videoId}`}
+                            >
+                                <Icon
+                                    className="text-lg lg:text-2xl xl:text-4xl"
+                                    f7="info_circle"
+                                />
+                            </a>
                         </div>
                     )}
                     {/* Image here */}
@@ -153,12 +156,12 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                     >
                         {props.data.author}
                     </Link>
-                    {props.data.viewCount !== undefined &&
-                    <p>
-                        {formatViewNumber(props.data.viewCount)}{' '}
-                        {t('common:views')}
-                    </p>
-                    }
+                    {props.data.viewCount !== undefined && (
+                        <p>
+                            {formatViewNumber(props.data.viewCount)}{' '}
+                            {t('common:views')}
+                        </p>
+                    )}
                 </div>
             </article>
         </>

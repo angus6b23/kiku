@@ -1,8 +1,12 @@
-import { Icon, Link } from 'framework7-react'
+import { Icon, Link, f7 } from 'framework7-react'
 import React, { useState } from 'react'
 import { Playitem, PlaylistResult, Thumbnail, PlaylistData } from './interfaces'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToPlaylist, selectPlaylist } from '@/store/playlistReducers'
+import {
+    addToPlaylist,
+    clearAllItems,
+    selectPlaylist,
+} from '@/store/playlistReducers'
 import { handleGetPlaylist } from '@/js/playlist'
 import { selectConfig } from '@/store/globalConfig'
 import { Store, useCustomContext } from './context'
@@ -63,7 +67,16 @@ export default function PlaylistResultCard(props: SearchResultProps) {
             }
         })
     }
-    const handleAddToNextSong = () => {}
+    const handleReplacePlaylist = (playlistId: string) => {
+        f7.dialog.confirm(
+            t('search-result:Replace-Playlist-Prompt'),
+            t('search-result:Replace-current-playlist'),
+            () => {
+                dispatch(clearAllItems())
+                handleAddAlltoPlaylist(playlistId)
+            }
+        )
+    }
     return (
         <>
             <article className="p-4">
@@ -123,7 +136,9 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                                 )
                             }
                             onMouseLeave={() => setIconText('')}
-                            onClick={handleAddToNextSong}
+                            onClick={() =>
+                                handleReplacePlaylist(props.data.playlistId)
+                            }
                         >
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"
@@ -139,7 +154,6 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                 </div>
                 {/* Video Title Here */}
                 <Link
-                    animate={false}
                     href={`/playlist/${props.data.playlistId}`}
                     className="mt-2  line-clamp-2"
                 >

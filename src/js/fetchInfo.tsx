@@ -1,9 +1,9 @@
 import Innertube from 'youtubei.js/agnostic'
 import { Instance, Playitem } from '../components/interfaces'
 import axios from 'axios'
-import {extractInnertubeThumbnail} from '@/utils/thumbnailExtract'
+import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import { convertSecond } from '@/utils/format'
-import {Thumbnail} from 'youtubei.js/dist/src/parser/misc'
+import { Thumbnail } from 'youtubei.js/dist/src/parser/misc'
 
 interface PipedAudio {
     url: string
@@ -144,15 +144,15 @@ const fetchStream = async (url: string, controller: AbortController) => {
                     start + TEN_MIB > contentLength
                         ? contentLength
                         : start + TEN_MIB
-                        const res = await axios({
-                            responseType: 'blob',
-                            method: 'get',
-                            url: url,
-                            signal: controller.signal,
-                            headers: { Range: `bytes=${start}-${end}` },
-                        })
-                        blobs.push(res.data)
-                        start += TEN_MIB + 1
+                const res = await axios({
+                    responseType: 'blob',
+                    method: 'get',
+                    url: url,
+                    signal: controller.signal,
+                    headers: { Range: `bytes=${start}-${end}` },
+                })
+                blobs.push(res.data)
+                start += TEN_MIB + 1
             }
             const type = blobs[0].type
             const data = blobs.reduce(
@@ -187,13 +187,13 @@ export async function handleFetchStream(
     switch (instances[0].type) {
         case 'invidious':
             res = await fetchInfoInv(id, instances[0].url, controller)
-        break
+            break
         case 'piped':
             res = await fetchInfoPiped(id, instances[0].url, controller)
-        break
+            break
         case 'local':
             res = await fetchInfoInner(id, innertube, controller)
-        break
+            break
         default:
             throw new Error('unknown instance type in fetch info')
     }
@@ -210,29 +210,36 @@ export async function handleFetchStream(
     }
     return res
 }
-const fetchBasicInv: (id: string, baseUrl: string) => Promise<Playitem | Error> = async (id, baseUrl) => {
-    try{
+const fetchBasicInv: (
+    id: string,
+    baseUrl: string
+) => Promise<Playitem | Error> = async (id, baseUrl) => {
+    try {
         const res = await axios({
             method: 'get',
             baseURL: baseUrl,
             url: `/api/v1/videos/${id}`,
         })
-        const thumbnails = extractInnertubeThumbnail(res.data.videoThumbnails);
+        const thumbnails = extractInnertubeThumbnail(res.data.videoThumbnails)
         return {
             id: id,
             title: res.data.title as string,
             duration: convertSecond(res.data.lengthSeconds),
             downloadStatus: 'pending',
             status: 'added',
-            thumbnailURL: thumbnails.find(item => item.quality === 'medium')?.url
+            thumbnailURL: thumbnails.find((item) => item.quality === 'medium')
+                ?.url,
         } as Playitem
-    } catch (err){
+    } catch (err) {
         return new Error('invidious > ' + err)
     }
 }
 
-const fetchBasicPiped: (id: string, baseUrl: string) => Promise<Playitem | Error> = async (id, baseUrl) => {
-    try{
+const fetchBasicPiped: (
+    id: string,
+    baseUrl: string
+) => Promise<Playitem | Error> = async (id, baseUrl) => {
+    try {
         const res = await axios({
             method: 'get',
             baseURL: baseUrl,
@@ -244,52 +251,58 @@ const fetchBasicPiped: (id: string, baseUrl: string) => Promise<Playitem | Error
             duration: convertSecond(res.data.lengthSeconds),
             downloadStatus: 'pending',
             status: 'added',
-            thumbnailURL: res.data.thumbnailUrl
+            thumbnailURL: res.data.thumbnailUrl,
         } as Playitem
-    } catch (err){
+    } catch (err) {
         return new Error('piped > ' + err)
     }
 }
 
-const fetchBasicInner: (id: string, innertube: Innertube | null) => Promise<Playitem | Error> = async (id, innertube) => {
-    if (innertube === null){
-        return new Error('Innertube is null');
+const fetchBasicInner: (
+    id: string,
+    innertube: Innertube | null
+) => Promise<Playitem | Error> = async (id, innertube) => {
+    if (innertube === null) {
+        return new Error('Innertube is null')
     }
-    try{
-        const res = await innertube.getBasicInfo(id);
-        const thumbnails = extractInnertubeThumbnail(res.basic_info.thumbnail as Thumbnail[]);
+    try {
+        const res = await innertube.getBasicInfo(id)
+        const thumbnails = extractInnertubeThumbnail(
+            res.basic_info.thumbnail as Thumbnail[]
+        )
         return {
             id: id,
             title: res.basic_info.title,
             duration: convertSecond(res.basic_info.duration as number),
             downloadStatus: 'pending',
             status: 'added',
-            thumbnailURL: thumbnails.find(item => item.quality === 'medium')?.url
+            thumbnailURL: thumbnails.find((item) => item.quality === 'medium')
+                ?.url,
         } as Playitem
-    } catch(err) {
+    } catch (err) {
         return new Error('innertube >' + err)
     }
 }
 
-const getPlayitem: (id: string, instances: Instance[], innertube: Innertube | null) => Promise<Playitem | Error> = async (id, instances, innertube) => {
+const getPlayitem: (
+    id: string,
+    instances: Instance[],
+    innertube: Innertube | null
+) => Promise<Playitem | Error> = async (id, instances, innertube) => {
     let res: Playitem | Error
     if (instances[0].enabled === false) {
-        return await getPlayitem(
-            id,
-            instances.slice(1),
-            innertube,
-        )
+        return await getPlayitem(id, instances.slice(1), innertube)
     }
     switch (instances[0].type) {
         case 'invidious':
             res = await fetchBasicInv(id, instances[0].url)
-        break
+            break
         case 'piped':
             res = await fetchBasicPiped(id, instances[0].url)
-        break
+            break
         case 'local':
             res = await fetchBasicInner(id, innertube)
-        break
+            break
         default:
             throw new Error('unknown instance type in fetch info')
     }

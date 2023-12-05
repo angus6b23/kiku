@@ -60,11 +60,6 @@ export default function PlaylistView(props: PlaylistViewProps): ReactElement {
             })
     }, [props.playlistId])
 
-    // Nagvigate back to search results automatically when user create a new search
-    useEffect(() => {
-        props.f7router.navigate('/')
-    }, [search.searchTerm])
-
     return (
         <Page>
             <Navbar>

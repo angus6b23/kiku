@@ -1,8 +1,8 @@
-import { store } from "@/store/store";
+import { store } from '@/store/store'
 
 const getInstanceLists = () => {
-    const state = store.getState();
+    const state = store.getState()
     return state.config.instance.preferType
 }
 
-export {getInstanceLists}
+export { getInstanceLists }

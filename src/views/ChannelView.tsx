@@ -15,10 +15,7 @@ import {
 } from 'framework7-react'
 import { useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
-import {
-    fetchChannelDetails,
-    handleChannelContinuation,
-} from '@/js/channel'
+import { fetchChannelDetails, handleChannelContinuation } from '@/js/channel'
 import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
 import { ChannelData, VideoResult } from '@/components/interfaces'
@@ -64,11 +61,6 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                 presentToast('error', err)
             })
     }, [props.channelId])
-
-    // Nagvigate back to search results automatically when user create a new search
-    useEffect(() => {
-        props.f7router.navigate('/')
-    }, [search.searchTerm])
 
     const handleVideoContinuation = async () => {
         try {

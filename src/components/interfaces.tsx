@@ -1,3 +1,4 @@
+import { InvidiousVideo } from '@/utils/extractResults'
 import {
     Channel,
     ChannelListContinuation,
@@ -102,6 +103,14 @@ interface PlaylistResult {
     playlistThumbnails: Thumbnail[]
     vidCount: number
 }
+interface VideoDetails extends VideoResult {
+    description: string
+    published: number
+    keywords: string[]
+    likeCount: number
+    genre: string
+    recommendedVideos: VideoResult[]
+}
 type SearchResult = VideoResult | PlaylistResult | ChannelResult
 // interface SearchResult {
 //     type: string
@@ -184,6 +193,7 @@ export type {
     ChannelResult,
     PlaylistResult,
     SearchResult,
+    VideoDetails,
     SearchAction,
     Playitem,
     PlaylistAction,

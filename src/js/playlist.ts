@@ -1,19 +1,15 @@
 import presentToast from '@/components/Toast'
+import { Instance, PlaylistData, VideoResult } from '@/components/interfaces'
 import {
-    Instance,
-    PlaylistData,
-    VideoResult,
-} from '@/components/interfaces'
-import { PipedVideo, extractInvidiousVideos, extractPipedVideos } from '@/utils/extractResults'
+    PipedVideo,
+    extractInvidiousVideos,
+    extractPipedVideos,
+} from '@/utils/extractResults'
 import { stringToNumber } from '@/utils/format'
-import {
-    extractInnertubeThumbnail,
-    generatePipedThumbnail,
-} from '@/utils/thumbnailExtract'
+import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { PlaylistVideo } from 'youtubei.js/dist/src/parser/nodes'
-
 
 const playlistInner = async (id: string, innertube: Innertube | null) => {
     try {
@@ -73,7 +69,9 @@ const playlistInv = async (id: string, baseUrl: string) => {
             authorId: res.data.authorId as string,
             author: res.data.author as string,
         }
-        const resVideos: VideoResult[] = extractInvidiousVideos(res.data.videos) as VideoResult[]
+        const resVideos: VideoResult[] = extractInvidiousVideos(
+            res.data.videos
+        ) as VideoResult[]
         console.log(resVideos)
         return {
             playlistInfo: playlistInfo,
@@ -106,7 +104,9 @@ const playlistPiped = async (id: string, baseUrl: string) => {
             videos = [...videos, ...(resJson.relatedStreams as PipedVideo[])]
             nextPage = resJson.nextpage
         }
-        const resVideos: VideoResult[] = extractPipedVideos(videos) as VideoResult[]
+        const resVideos: VideoResult[] = extractPipedVideos(
+            videos
+        ) as VideoResult[]
         return {
             playlistInfo: playlistInfo,
             videos: resVideos,

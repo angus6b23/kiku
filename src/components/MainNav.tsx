@@ -19,8 +19,8 @@ import { selectConfig } from '@/store/globalConfig'
 import { useTranslation } from 'react-i18next'
 import { Instance, SearchContinuation } from '@/components/interfaces'
 import presentToast from './Toast'
-import {getPlayitem} from '@/js/fetchInfo'
-import {addToPlaylist} from '@/store/playlistReducers'
+import { getPlayitem } from '@/js/fetchInfo'
+import { addToPlaylist } from '@/store/playlistReducers'
 
 interface MainNavProps {
     tab: string
@@ -85,11 +85,15 @@ const MainNav = (props: MainNavProps) => {
         autocompleteSearch.current.close()
         f7.preloader.show()
         let fullfilled = false
+        if (searchTerm === '') {
+            // Do not perform search if the searchTerm is empty
+            return
+        }
         // Try to scan for url on input
         try {
             const url = new URL(searchTerm) // Will jump to catch if fail
-            let id: string | null;
-            let playlistId: string | null;
+            let id: string | null
+            let playlistId: string | null
             // Extract parameters and path from url to get video id
             if (url.hostname === 'youtu.be') {
                 id = url.pathname.replaceAll('/', '')
@@ -99,29 +103,35 @@ const MainNav = (props: MainNavProps) => {
                 playlistId = url.searchParams.get('list')
             }
             // Skip if fail to get video id
-            if (id === null && playlistId === null){
+            if (id === null && playlistId === null) {
                 throw new Error('')
             }
             // Browse playlist if playlist is found
-            if (playlistId !== null){
-                fullfilled = true;
-                f7.views.get('#page-router').router.navigate(`playlist/${playlistId}`)
+            if (playlistId !== null) {
+                fullfilled = true
+                f7.views
+                    .get('#page-router')
+                    .router.navigate(`playlist/${playlistId}`)
             }
             // Fetch basic information on given video id
-            const res = await getPlayitem(id as string, config.instance.preferType, innertube.current)
-            if (res instanceof Error){
+            const res = await getPlayitem(
+                id as string,
+                config.instance.preferType,
+                innertube.current
+            )
+            if (res instanceof Error) {
                 presentToast('error', res.message)
                 throw res
             } else {
                 // Add item to playlist if successful and end the function
-                dispatch(addToPlaylist(res));
-                fullfilled = true;
-                return;
+                dispatch(addToPlaylist(res))
+                fullfilled = true
+                return
             }
         } catch {
             console.debug('Search term is not a valid url')
         }
-        if (fullfilled){
+        if (fullfilled) {
             f7.preloader.hide()
             return
         }
@@ -138,6 +148,7 @@ const MainNav = (props: MainNavProps) => {
         } catch (err) {
             presentToast('error', err as string)
         }
+        f7.views.get('#page-router').router.navigate('/')
         f7.preloader.hide()
     }
 

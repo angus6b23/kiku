@@ -1,8 +1,16 @@
-import {ChannelResult, PlaylistResult, Thumbnail, VideoResult} from "@/components/interfaces"
-import {extractInvidiousChannelThumbnail, generatePipedThumbnail} from "./thumbnailExtract"
-import {formatViewNumber} from "./format"
+import {
+    ChannelResult,
+    PlaylistResult,
+    Thumbnail,
+    VideoResult,
+} from '@/components/interfaces'
+import {
+    extractInvidiousChannelThumbnail,
+    generatePipedThumbnail,
+} from './thumbnailExtract'
+import { formatViewNumber } from './format'
 
-export interface InvidiousVideo{
+export interface InvidiousVideo {
     author: string
     authorId: string
     authorUrl: string
@@ -16,13 +24,13 @@ export interface InvidiousVideo{
     published: number
     publishedText: string
     title: string
-    type: "video"
+    type: 'video'
     videoThumbnails: Thumbnail[]
     videoId: string
     viewCount: number
     viewCountText: string
 }
-export interface InvidiousPlaylist{
+export interface InvidiousPlaylist {
     author: string
     authorId: string
     authorThumbnails: {
@@ -38,10 +46,19 @@ export interface InvidiousPlaylist{
     playlistThumbnail: string
     subtitle: string | null
     title: string
-    type: "playlist"
+    type: 'playlist'
     updated: number
     videoCount: number
-    videos: Pick<InvidiousVideo, "author" | "authorId" | "authorUrl" | "lengthSeconds" | "title" | "videoId" | "videoThumbnails">[]
+    videos: Pick<
+        InvidiousVideo,
+        | 'author'
+        | 'authorId'
+        | 'authorUrl'
+        | 'lengthSeconds'
+        | 'title'
+        | 'videoId'
+        | 'videoThumbnails'
+    >[]
     viewCount: number
 }
 export interface InvidiousChannel {
@@ -91,7 +108,7 @@ export interface PipedPlaylist {
     videos: number
 }
 
-export interface PipedChannel{
+export interface PipedChannel {
     url: string
     type: string
     name: string
@@ -102,8 +119,10 @@ export interface PipedChannel{
     verified: boolean
 }
 
-export function extractInvidiousVideos(videos: InvidiousVideo[] | InvidiousVideo){
-    if (videos.constructor.name !== "Array"){
+export function extractInvidiousVideos(
+    videos: InvidiousVideo[] | InvidiousVideo
+) {
+    if (videos.constructor.name !== 'Array') {
         const video = videos as InvidiousVideo
         return {
             type: 'video',
@@ -113,12 +132,11 @@ export function extractInvidiousVideos(videos: InvidiousVideo[] | InvidiousVideo
             authorId: video.authorId,
             videoThumbnails: video.videoThumbnails,
             viewCount: video.viewCount,
-            lengthSeconds: video.lengthSeconds
+            lengthSeconds: video.lengthSeconds,
         } as VideoResult
-    }
-    else {
+    } else {
         const videoArr = videos as InvidiousVideo[]
-        return videoArr.map(video => {
+        return videoArr.map((video) => {
             return {
                 type: 'video',
                 title: video.title,
@@ -127,66 +145,78 @@ export function extractInvidiousVideos(videos: InvidiousVideo[] | InvidiousVideo
                 authorId: video.authorId,
                 videoThumbnails: video.videoThumbnails,
                 viewCount: video.viewCount,
-                lengthSeconds: video.lengthSeconds
+                lengthSeconds: video.lengthSeconds,
             } as VideoResult
         })
     }
 }
 
-export function extractInvidiousPlaylists(playlists: InvidiousPlaylist[] | InvidiousPlaylist){
-    if (playlists.constructor.name !== "Array"){
+export function extractInvidiousPlaylists(
+    playlists: InvidiousPlaylist[] | InvidiousPlaylist
+) {
+    if (playlists.constructor.name !== 'Array') {
         const playlist = playlists as InvidiousPlaylist
         return {
-            type: "playlist",
+            type: 'playlist',
             title: playlist.title,
             playlistId: playlist.playlistId,
             author: playlist.author,
             authorId: playlist.authorId,
-            playlistThumbnails: generatePipedThumbnail(playlist.playlistThumbnail),
-            vidCount: playlist.videoCount
+            playlistThumbnails: generatePipedThumbnail(
+                playlist.playlistThumbnail
+            ),
+            vidCount: playlist.videoCount,
         } as PlaylistResult
     } else {
-        const playlistArr = playlists as InvidiousPlaylist[];
-        return playlistArr.map(playlist => {
+        const playlistArr = playlists as InvidiousPlaylist[]
+        return playlistArr.map((playlist) => {
             return {
-                type: "playlist",
+                type: 'playlist',
                 title: playlist.title,
                 playlistId: playlist.playlistId,
                 author: playlist.author,
                 authorId: playlist.authorId,
-                playlistThumbnails: generatePipedThumbnail(playlist.playlistThumbnail),
-                vidCount: playlist.videoCount
+                playlistThumbnails: generatePipedThumbnail(
+                    playlist.playlistThumbnail
+                ),
+                vidCount: playlist.videoCount,
             } as PlaylistResult
         })
     }
 }
 
-export function extractInvidiousChannels(channels: InvidiousChannel[] | InvidiousChannel){
-    if (channels.constructor.name !== "Array"){
+export function extractInvidiousChannels(
+    channels: InvidiousChannel[] | InvidiousChannel
+) {
+    if (channels.constructor.name !== 'Array') {
         const channel = channels as InvidiousChannel
         return {
             type: 'channel',
             author: channel.author,
             authorId: channel.authorId,
-            channelThumbnails: extractInvidiousChannelThumbnail(channel.authorThumbnails),
-            subCount: formatViewNumber(channel.subCount)
+            channelThumbnails: extractInvidiousChannelThumbnail(
+                channel.authorThumbnails
+            ),
+            subCount: formatViewNumber(channel.subCount),
         } as ChannelResult
     } else {
         const channelArr = channels as InvidiousChannel[]
-        return channelArr.map(channel => {
+        return channelArr.map((channel) => {
             return {
                 type: 'channel',
                 author: channel.author,
                 authorId: channel.authorId,
-                channelThumbnails: extractInvidiousChannelThumbnail(channel.authorThumbnails),
-                subCount: formatViewNumber(channel.subCount)
+                channelThumbnails: extractInvidiousChannelThumbnail(
+                    channel.authorThumbnails
+                ),
+                subCount: formatViewNumber(channel.subCount),
             } as ChannelResult
         })
     }
 }
 
-export function extractPipedVideos(videos: PipedVideo[] | PipedVideo){
-    if(videos.constructor.name !== "Array"){
+export function extractPipedVideos(videos: PipedVideo[] | PipedVideo) {
+    if (videos.constructor.name !== 'Array') {
         const video = videos as PipedVideo
         return {
             type: 'video',
@@ -194,74 +224,76 @@ export function extractPipedVideos(videos: PipedVideo[] | PipedVideo){
             videoId: video.url.replace(/^\/watch\?v=/, ''),
             author: video.uploaderName,
             authorId: video.uploaderUrl.replace(/^\/channel\//, ''),
-                videoThumbnails: generatePipedThumbnail(video.thumbnail),
+            videoThumbnails: generatePipedThumbnail(video.thumbnail),
             viewCount: video.views,
-            lengthSeconds: video.duration
+            lengthSeconds: video.duration,
         }
     } else {
         const videoArr = videos as PipedVideo[]
-        return videoArr.map(video => {
+        return videoArr.map((video) => {
             return {
                 type: 'video',
                 title: video.title,
                 videoId: video.url.replace(/^\/watch\?v=/, ''),
                 author: video.uploaderName,
                 authorId: video.uploaderUrl.replace(/^\/channel\//, ''),
-                    videoThumbnails: generatePipedThumbnail(video.thumbnail),
+                videoThumbnails: generatePipedThumbnail(video.thumbnail),
                 viewCount: video.views,
-                lengthSeconds: video.duration
+                lengthSeconds: video.duration,
             }
         })
     }
 }
 
-export function extractPipedPlaylist(playlists: PipedPlaylist[] | PipedPlaylist){
-    if (playlists.constructor.name !== "Array"){
+export function extractPipedPlaylist(
+    playlists: PipedPlaylist[] | PipedPlaylist
+) {
+    if (playlists.constructor.name !== 'Array') {
         const playlist = playlists as PipedPlaylist
         return {
-            type: "playlist",
+            type: 'playlist',
             title: playlist.name,
             playlistId: playlist.url.replace(/\/playlist\?list=/, ''),
             author: playlist.uploaderName,
             authorId: playlist.uploaderUrl.replace(/^\/channel\//, ''),
-                playlistThumbnails: generatePipedThumbnail(playlist.thumbnail),
-            vidCount: playlist.videos
+            playlistThumbnails: generatePipedThumbnail(playlist.thumbnail),
+            vidCount: playlist.videos,
         } as PlaylistResult
     } else {
         const playlistArr = playlists as PipedPlaylist[]
-        return playlistArr.map(playlist => {
+        return playlistArr.map((playlist) => {
             return {
-                type: "playlist",
+                type: 'playlist',
                 title: playlist.name,
                 playlistId: playlist.url.replace(/\/playlist\?list=/, ''),
                 author: playlist.uploaderName,
                 authorId: playlist.uploaderUrl.replace(/^\/channel\//, ''),
-                    playlistThumbnails: generatePipedThumbnail(playlist.thumbnail),
-                vidCount: playlist.videos
+                playlistThumbnails: generatePipedThumbnail(playlist.thumbnail),
+                vidCount: playlist.videos,
             } as PlaylistResult
         })
     }
 }
 
-export function extractPipedChannel(channels: PipedChannel[] | PipedChannel){
-    if (channels.constructor.name !== "Array"){
+export function extractPipedChannel(channels: PipedChannel[] | PipedChannel) {
+    if (channels.constructor.name !== 'Array') {
         const channel = channels as PipedChannel
         return {
             type: 'channel',
             author: channel.name,
             authorId: channel.url.replace(/^\/channel\//, ''),
             channelThumbnails: generatePipedThumbnail(channel.thumbnail),
-            subCount: formatViewNumber(channel.subscribers)
+            subCount: formatViewNumber(channel.subscribers),
         } as ChannelResult
     } else {
         const channelArr = channels as PipedChannel[]
-        return channelArr.map(channel => {
+        return channelArr.map((channel) => {
             return {
                 type: 'channel',
                 author: channel.name,
                 authorId: channel.url.replace(/^\/channel\//, ''),
                 channelThumbnails: generatePipedThumbnail(channel.thumbnail),
-                subCount: formatViewNumber(channel.subscribers)
+                subCount: formatViewNumber(channel.subscribers),
             } as ChannelResult
         })
     }
