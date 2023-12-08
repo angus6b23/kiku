@@ -15,15 +15,17 @@ export default function ChannelResultCard(props: ChannelResultCardProps) {
         <>
             <article className="p-4">
                 <div className="relative group w-full asepect-square flex justify-center">
-                    {/* Overlay for time */}
+                    {/* Overlay for subscribers */}
                     <div className="absolute right-0 bottom-0">
                         <p className="bg-black/60 p-1 align-middle">
                             {props.data.subCount} Subscribers
                         </p>
                     </div>
+                    {/* Left top badge for channel */}
                     <div className="absolute top-0 left-0">
                         <p className="bg-black/60 p-1 align-middle">Channel</p>
                     </div>
+                    {/* Overlays */}
                     <a
                         className="absolute w-full h-full hidden group-hover:flex bg-black/60 backdrop-blur-sm flex-wrap justify-center items-center"
                         href={`channel/${props.data.authorId}`}

@@ -1,10 +1,10 @@
 {
-    "Save-to-drive": "Save to drive",
-    "Remove-from-playlist": "Remove from playlist",
-    "Retry": "Retry",
-    "Are-you-sure-to-clear-the-playlist": "Are you sure to clear the playlist",
-    "Clear-playlist": "Clear playlist",
-    "Clear-Error-items": "Clear Error items",
-    "Clear-played-items": "Clear played items",
-    "Shuffle-unplayed-items": "Shuffle unplayed items"
+  "Save-to-drive": "Save to drive",
+  "Remove-from-playlist": "Remove from playlist",
+  "Retry": "Retry",
+  "Are-you-sure-to-clear-the-playlist": "Are you sure to clear the playlist",
+  "Clear-playlist": "Clear playlist",
+  "Clear-Error-items": "Clear Error items",
+  "Clear-played-items": "Clear played items",
+  "Shuffle-unplayed-items": "Shuffle unplayed items"
 }

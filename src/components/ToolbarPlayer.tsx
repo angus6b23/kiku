@@ -33,7 +33,7 @@ export default function ToolbarPlayer(props: ToolbarPlayerProps): ReactElement {
                             src={playerState.currentPlaying.thumbnailURL}
                         />
                         <p
-                            className="ml-4 cursor-pointer"
+                            className="ml-4 cursor-pointer line-clamp-1"
                             onClick={props.showNowPlaying}
                         >
                             {playerState.currentPlaying.title}

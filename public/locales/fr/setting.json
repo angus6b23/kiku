@@ -1,11 +1,11 @@
 {
-    "Source": "Source",
-    "View-Invidious-Instances": "",
-    "View-Piped-Instances": "",
-    "Reset-to-default": "",
-    "Instance-Configuration": "Instance Configuration",
-    "UI-Preference": "",
-    "Language": "",
-    "Choose-Layout": "",
-    "Show-Timeline-in-wavesurfer": ""
+  "Source": "Source",
+  "View-Invidious-Instances": "",
+  "View-Piped-Instances": "",
+  "Reset-to-default": "",
+  "Instance-Configuration": "Instance Configuration",
+  "UI-Preference": "",
+  "Language": "",
+  "Choose-Layout": "",
+  "Show-Timeline-in-wavesurfer": ""
 }

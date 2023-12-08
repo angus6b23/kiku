@@ -1,10 +1,10 @@
 {
-    "Save-to-drive": "",
-    "Remove-from-playlist": "",
-    "Retry": "",
-    "Are-you-sure-to-clear-the-playlist": "",
-    "Clear-playlist": "",
-    "Clear-Error-items": "",
-    "Clear-played-items": "",
-    "Shuffle-unplayed-items": ""
+  "Save-to-drive": "",
+  "Remove-from-playlist": "",
+  "Retry": "",
+  "Are-you-sure-to-clear-the-playlist": "",
+  "Clear-playlist": "",
+  "Clear-Error-items": "",
+  "Clear-played-items": "",
+  "Shuffle-unplayed-items": ""
 }

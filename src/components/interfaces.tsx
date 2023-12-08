@@ -154,6 +154,7 @@ interface GlobalConfig {
     ui: {
         lang: string
         accentColor: string
+        theme: 'dark' | 'light'
         showTimeline: boolean
         autoScroll: boolean
     }

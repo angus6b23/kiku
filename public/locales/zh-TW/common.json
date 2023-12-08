@@ -1,14 +1,15 @@
 {
-    "URL": "鏈結:",
-    "Search-here": "在此搜尋",
-    "Search": "搜尋",
-    "Now-Playing": "現正播放",
-    "Search-Result": "搜尋結果",
-    "Setting": "設定",
-    "Videos": "影片",
-    "views": "觀看次數",
-    "Playlists": "播放清單",
-    "Playlist": "播放清單",
-    "Load-More": "載入更多",
-    "setting": ""
+  "URL": "鏈結:",
+  "Search-here": "在此搜尋",
+  "Search": "搜尋",
+  "Now-Playing": "現正播放",
+  "Search-Result": "搜尋結果",
+  "Setting": "設定",
+  "Videos": "影片",
+  "views": "觀看次數",
+  "Channel": "頻道",
+  "Playlists": "播放清單",
+  "Playlist": "播放清單",
+  "Load-More": "載入更多",
+  "setting": ""
 }

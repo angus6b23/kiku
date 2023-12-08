@@ -21,7 +21,6 @@ import Innertube from 'youtubei.js/agnostic'
 import { ChannelData, VideoResult } from '@/components/interfaces'
 import { nanoid } from 'nanoid'
 import VideoResultCard from '@/components/VideoResultCard'
-import { selectSearch } from '@/store/searchReducers'
 import { Router } from 'framework7/types'
 import presentToast from '@/components/Toast'
 import { useTranslation } from 'react-i18next'
@@ -29,16 +28,14 @@ import PlaylistResultCard from '@/components/PlaylistResultCard'
 
 export interface ChannelViewProps {
     channelId: string
-    f7router: Router
 }
 
 export default function ChannelView(props: ChannelViewProps): ReactElement {
     const config = useSelector(selectConfig)
-    const search = useSelector(selectSearch)
     const [channel, setChannel] = useState<ChannelData | undefined>(undefined)
     const { innertube }: { innertube: React.RefObject<Innertube | null> } =
         useCustomContext(Store)
-    const { t } = useTranslation(['common', 'search-result'])
+    const { t } = useTranslation(['common'])
 
     // Auto fetch channel details when changing channel
     useEffect(() => {
@@ -110,7 +107,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                         <Icon f7="chevron_left" />
                     </Link>
                 </NavLeft>
-                <NavTitle>Channel {channel?.channelInfo.name}</NavTitle>
+                <NavTitle>{t('common:Channel')} {channel?.channelInfo.name}</NavTitle>
             </Navbar>
             <Toolbar tabbar top>
                 <Link tabLink="#videos" tabLinkActive>
@@ -142,7 +139,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                                             f7="chevron_down_circle"
                                             className="mr-2"
                                         />
-                                        Load More
+                                        { t('common:Load-More') }
                                     </Button>
                                 </Block>
                             )}
@@ -167,7 +164,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                                             f7="chevron_down_circle"
                                             className="mr-2"
                                         />
-                                        Load More
+                                        { t('common:Load-More') }
                                     </Button>
                                 </Block>
                             )}

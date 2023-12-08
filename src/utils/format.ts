@@ -19,7 +19,7 @@ const convertSecond: (arg0: number) => string = (seconds) => {
             : Number(Math.floor(seconds / 60).toFixed())
     const minuteString: string =
         minute == 0 ? '00:' : `${minute.toString().padStart(2, '0')}:`
-    const second = (seconds % 60).toString().padStart(2, '0')
+    const second = Math.floor(seconds % 60).toString().padStart(2, '0')
     return `${hourString}${minuteString}${second}`
 }
 const toSecond: (arg0: string) => number = (string) => {

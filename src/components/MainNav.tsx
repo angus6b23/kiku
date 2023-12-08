@@ -166,6 +166,10 @@ const MainNav = (props: MainNavProps) => {
         >
             {/* Top Navbar */}
             <Subnavbar inner={false} className="flex p-2">
+                <div className="flex items-center w-24">
+                    <img className="h-8 w-8" src="icon.svg" />
+                    <h1 className="text-xl font-black font-sans">KiKu</h1>
+                </div>
                 <Searchbar
                     init={false}
                     placeholder={t('common:Search-here')}

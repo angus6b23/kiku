@@ -130,7 +130,6 @@ const videoDetailInner = async (id: string, innertube: Innertube | null) => {
     }
     try {
         const res = await innertube.getInfo(id)
-        console.log(res)
         const thumbnails = res.basic_info.thumbnail as {
             url: string
             height: number

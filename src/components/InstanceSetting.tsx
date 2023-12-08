@@ -3,19 +3,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig, updateInstance } from '@/store/globalConfig'
 import { Instance } from './interfaces'
 import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
-import { getInvInstances, getPipedInstances } from '@/js/getInstances'
-import presentToast from './Toast'
 import { useTranslation } from 'react-i18next'
 import { Store, useCustomContext } from './context'
 /* eslint @typescript-eslint/no-var-requires: 'off' */
-const shell = require('electron').shell
+const shell = require('electron').shell // To open link in external browser
 
 export interface InstanceSettingProps {}
 
 export default function InstanceSetting(): ReactElement {
     const config = useSelector(selectConfig)
-    const invAutocomplete = useRef<any>(null)
-    const pipedAutocomplete = useRef<any>(null)
+    const invAutocomplete = useRef<any>(null) // For holding autocomplete for invidious instances
+    const pipedAutocomplete = useRef<any>(null) // For holding autocomplete for piped instances
     const { t } = useTranslation(['setting'])
     const [instances, setInstances] = useState<Instance[]>(
         config.instance.preferType
@@ -25,7 +23,7 @@ export default function InstanceSetting(): ReactElement {
 
     const dispatch = useDispatch()
 
-    const handleInstanceCheck = (instance: Instance) => {
+    const handleInstanceCheck = (instance: Instance) => { // For handling Enabling or disabling the instance via checkbox
         setInstances((state) => {
             return state.map((item) =>
                 item.type === instance.type
@@ -34,19 +32,19 @@ export default function InstanceSetting(): ReactElement {
             )
         })
     }
-    const handleUrlChange = (newUrl: string, instanceType: string) => {
+    const handleUrlChange = (newUrl: string, instanceType: string) => { // For handling the change of url of instances
         setInstances((state) => {
             return state.map((item) =>
                 item.type === instanceType ? { ...item, url: newUrl } : item
             )
         })
     }
-    const handleInstanceSort = (e: { to: number; from: number }) => {
+    const handleInstanceSort = (e: { to: number; from: number }) => { // For handling the dragging and dropping of instance
         const stateClone = [...instances]
         stateClone.splice(e.to, 0, ...stateClone.splice(e.from, 1))
         setInstances(stateClone)
     }
-    const resetInstances = () => {
+    const resetInstances = () => { // Reset the default settings when reset button is pressed
         setInstances([
             { type: 'local', url: '', enabled: true },
             {
@@ -75,7 +73,7 @@ export default function InstanceSetting(): ReactElement {
             }
         }
     }
-    useEffect(() => {
+    useEffect(() => { // Create autocompletes when instance list download is ready
         invAutocomplete.current = f7.autocomplete.create({
             inputEl: '#autocomplete-invidious',
             openIn: 'dropdown',
@@ -157,9 +155,11 @@ export default function InstanceSetting(): ReactElement {
     return (
         <>
             <Block className="p-6">
+                {/* Title here */}
                 <BlockTitle className="text-lg">
                     {t('setting:Source')}
                 </BlockTitle>
+                {/* Draggable list here */}
                 <List
                     sortable
                     sortableEnabled
@@ -175,7 +175,9 @@ export default function InstanceSetting(): ReactElement {
                                 onChange={() => handleInstanceCheck(instance)}
                             >
                                 <div>
+                                    {/* Instance Type indicator */}
                                     <p>{instance.type}</p>
+                                    {/* Url input for instance */}
                                     {instance.type !== 'local' && (
                                         <div>
                                             <label>{t('common:URL')}</label>
@@ -201,6 +203,7 @@ export default function InstanceSetting(): ReactElement {
                     })}
                 </List>
             </Block>
+            {/* Buttons here */}
             <Block className="p-10 flex flex-wrap justify-center items-center gap-10">
                 <Button
                     fill

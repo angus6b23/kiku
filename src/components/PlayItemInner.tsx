@@ -1,6 +1,6 @@
 import React, { useRef, type ReactElement } from 'react'
 import { AudioBlobObject, Playitem } from './interfaces'
-import { Button, Icon } from 'framework7-react'
+import { Button, Icon, f7 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     removeFromPlaylist,
@@ -150,6 +150,19 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                         </p>
                     </div>
                     <div className="flex gap-2">
+                        <Button
+                            className="w-8 h-8 flex justify-center items-center"
+                            tooltip={t('search-result:Details')}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                f7.views.get('#page-router').router.navigate(`/details/${props.item.id}`)
+                            }}
+                        >
+                            <Icon
+                                className="text-lg -translate-y-1"
+                                f7="info"
+                            />
+                        </Button>
                         <Button
                             className="w-8 h-8 flex justify-center items-center"
                             tooltip={t('playlist:Save-to-drive')}

@@ -132,6 +132,9 @@ export const playlist = createSlice({
             )
             return clone
         },
+        loadPlaylist: (_, action: PayloadAction<Playitem[]>) => {
+            return action.payload
+        }
     },
 })
 
@@ -149,6 +152,7 @@ export const {
     shuffleAll,
     shuffleUnplayed,
     sort,
+    loadPlaylist,
 } = playlist.actions
 
 export default playlist.reducer

@@ -3,20 +3,23 @@ import React, {
     useEffect,
     useState,
     useContext,
+    useRef,
 } from 'react'
-import { AbortControllerAction, AudioBlobAction, Playitem } from './interfaces'
+import { AudioBlobAction, Playitem } from './interfaces'
 import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    loadPlaylist,
     selectPlaylist,
     setItemDownloadStatus,
     setItemPlaying,
 } from '@/store/playlistReducers'
 import { Store } from './context'
-import { play, selectPlayer } from '@/store/playerReducers'
+import { selectPlayer } from '@/store/playerReducers'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
+import localforage from 'localforage'
 interface AbortControllerObject {
     [key: string]: AbortController
 }
@@ -28,6 +31,12 @@ export default function Worker(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
     const dispatch = useDispatch()
+    const [playlistLoaded, setPlaylistLoaded] = useState(false);
+    const playlistStore = useRef(localforage.createInstance({
+        name: 'kiku-db',
+        storeName: 'current-playlist',
+        description: 'Storage for current playlist'
+    }))
     const {
         dispatchAudioBlob,
         innertube,
@@ -44,6 +53,7 @@ export default function Worker(): ReactElement {
         id: string,
         controller: AbortController
     ) => {
+        AbortController
         setAbortController((prevState) => {
             return { ...prevState, [id]: controller }
         })
@@ -119,44 +129,44 @@ export default function Worker(): ReactElement {
                     innertube?.current,
                     axiosController
                 )
-                    .then((blob) => {
-                        if (blob instanceof Error) {
-                            throw new Error(blob as unknown as string)
-                        } else {
-                            dispatchAudioBlob({
-                                type: 'ADD_BLOB',
-                                payload: { id: nextJob.id, blob: blob },
-                            })
-                            setWorkerState('idle')
-                            dispatch(
-                                setItemDownloadStatus({
-                                    id: nextJob.id,
-                                    status: 'downloaded',
-                                })
-                            )
-                        }
-                    })
-                    // .then((res: Blob) => {
-                    //     setWorkerState('idle')
-                    //     // console.log('[Worker] Download Finished')
-                    //     dispatchAudioBlob({
-                    //         type: 'ADD_BLOB',
-                    //         payload: { id: nextJob.id, blob: res },
-                    //     })
-                    //     dispatch(setItemDownloaded(nextJob.id))
-                    // })
-                    .catch((err) => {
+                .then((blob) => {
+                    if (blob instanceof Error) {
+                        throw new Error(blob as unknown as string)
+                    } else {
+                        dispatchAudioBlob({
+                            type: 'ADD_BLOB',
+                            payload: { id: nextJob.id, blob: blob },
+                        })
                         setWorkerState('idle')
-                        console.log(err)
-                        presentToast('error', err)
-                        // Show toast
                         dispatch(
                             setItemDownloadStatus({
                                 id: nextJob.id,
-                                status: 'error',
+                                status: 'downloaded',
                             })
                         )
-                    })
+                    }
+                })
+                // .then((res: Blob) => {
+                //     setWorkerState('idle')
+                //     // console.log('[Worker] Download Finished')
+                //     dispatchAudioBlob({
+                //         type: 'ADD_BLOB',
+                //         payload: { id: nextJob.id, blob: res },
+                //     })
+                //     dispatch(setItemDownloaded(nextJob.id))
+                // })
+                .catch((err) => {
+                    setWorkerState('idle')
+                    console.log(err)
+                    presentToast('error', err)
+                    // Show toast
+                    dispatch(
+                        setItemDownloadStatus({
+                            id: nextJob.id,
+                            status: 'error',
+                        })
+                    )
+                })
                 // } else {
                 //     // only download blob if the url is already there
                 //     fetchStream(nextJob.streamUrl)
@@ -189,5 +199,31 @@ export default function Worker(): ReactElement {
             }
         }
     }, [playlist])
+    // Automatically store playlist
+    useEffect(() => {
+        if (playlistLoaded){
+            const playlistClone = playlist.map(item => {
+                return {
+                    ...item,
+                    downloadStatus: "pending",
+                    status: "added"
+                }
+            })
+            playlistStore.current.setItem("current-playlist", playlistClone)
+        }
+    }, [playlist, playlistLoaded])
+
+    // Automatically load playlist after innertube is loaded
+    useEffect(() =>{
+        setTimeout(() => {
+            playlistStore.current.getItem("current-playlist").then((res) => {
+                setPlaylistLoaded(true)
+                const loadedRes = res as Playitem[] | null
+                if ( loadedRes !== null) {
+                    dispatch(loadPlaylist(loadedRes))
+                }
+            })
+        }, 200)
+    }, [])
     return <></>
 }

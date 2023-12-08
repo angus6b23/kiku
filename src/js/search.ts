@@ -132,7 +132,7 @@ async function searchInner(
                     // console.log(newVideo)
                     return newVideo
                 } else if (item.type === 'Playlist') {
-                    console.log(item)
+                    // console.log(item)
                     const i = item as Playlist
                     const author = i.author as Author
                     let videoCount = Number(

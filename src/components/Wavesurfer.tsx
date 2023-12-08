@@ -41,26 +41,10 @@ const useWavesurfer = (
 // Props are wavesurfer options.
 function WaveSurferPlayer(props: any) {
     const containerRef = useRef<HTMLDivElement>(null)
-    const [currentTime, setCurrentTime] = useState(0)
     const wavesurfer = useWavesurfer(containerRef, props)
-    useEffect(() => {
-        if (!wavesurfer) return
-
-        const subscriptions = [
-            wavesurfer.on('timeupdate', (currentTime) =>
-                setCurrentTime(currentTime)
-            ),
-        ]
-
-        return () => {
-            subscriptions.forEach((unsub) => unsub())
-        }
-    }, [wavesurfer])
     return (
         <>
             <div ref={containerRef} style={{ minHeight: '120px' }} />
-
-            <p>Seconds played: {currentTime}</p>
         </>
     )
 }
