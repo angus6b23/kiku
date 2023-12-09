@@ -83,7 +83,7 @@ const MainNav = (props: MainNavProps) => {
     const handleSearch = async () => {
         props.setTab('main')
         autocompleteSearch.current.close()
-        f7.preloader.show()
+        f7.preloader.showIn('#page-router')
         let fullfilled = false
         if (searchTerm === '') {
             // Do not perform search if the searchTerm is empty
@@ -132,7 +132,7 @@ const MainNav = (props: MainNavProps) => {
             console.debug('Search term is not a valid url')
         }
         if (fullfilled) {
-            f7.preloader.hide()
+            f7.preloader.hideIn('#page-router')
             return
         }
         // Search with keyword starts here
@@ -149,7 +149,7 @@ const MainNav = (props: MainNavProps) => {
             presentToast('error', err as string)
         }
         f7.views.get('#page-router').router.navigate('/')
-        f7.preloader.hide()
+        f7.preloader.hideIn('#page-router')
     }
 
     useEffect(() => {

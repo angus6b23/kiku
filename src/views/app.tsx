@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react'
 import {
+    AbortControllerObject,
     AudioBlobObject,
     Continuation,
     Instance,
@@ -28,7 +29,8 @@ const MyApp = () => {
         blobStoreReducer,
         initBlobStore
     )
-    const [abortController, setAbortController] = useState({})
+    const [abortController, setAbortController] =
+        useState<AbortControllerObject>({})
     const [instances, setInstances] = useState<Instance[]>([])
     const innertube = useRef<Innertube>(null)
     const [continuation, setContinuation] = useState<Continuation>(undefined)

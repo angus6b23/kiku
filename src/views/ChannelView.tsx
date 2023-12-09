@@ -39,7 +39,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
 
     // Auto fetch channel details when changing channel
     useEffect(() => {
-        // f7.preloader.show()
+        f7.preloader.showIn('#page-router')
         fetchChannelDetails(
             props.channelId,
             config.instance.preferType,
@@ -47,14 +47,14 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
         )
             .then((res) => {
                 if (!(res instanceof Error)) {
+                    f7.preloader.hideIn('#page-router')
                     setChannel(res)
-                    // f7.preloader.hide()
                 } else {
                     throw res
                 }
             })
             .catch((err) => {
-                // f7.preloader.hide()
+                f7.preloader.hideIn('#page-router')
                 presentToast('error', err)
             })
     }, [props.channelId])
@@ -107,7 +107,9 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                         <Icon f7="chevron_left" />
                     </Link>
                 </NavLeft>
-                <NavTitle>{t('common:Channel')} {channel?.channelInfo.name}</NavTitle>
+                <NavTitle>
+                    {t('common:Channel')} {channel?.channelInfo.name}
+                </NavTitle>
             </Navbar>
             <Toolbar tabbar top>
                 <Link tabLink="#videos" tabLinkActive>
@@ -139,7 +141,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                                             f7="chevron_down_circle"
                                             className="mr-2"
                                         />
-                                        { t('common:Load-More') }
+                                        {t('common:Load-More')}
                                     </Button>
                                 </Block>
                             )}
@@ -164,7 +166,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                                             f7="chevron_down_circle"
                                             className="mr-2"
                                         />
-                                        { t('common:Load-More') }
+                                        {t('common:Load-More')}
                                     </Button>
                                 </Block>
                             )}

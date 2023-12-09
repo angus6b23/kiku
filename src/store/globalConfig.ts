@@ -25,11 +25,17 @@ const initConfigState: GlobalConfig = {
         lang: 'en',
         accentColor: '#000000',
         theme: 'dark',
-        showTimeline: true,
         autoScroll: true,
     },
+    nowPlaying: {
+        seekDuration: 15,
+        showTimeline: false,
+    },
 }
-
+interface NowPlayingAction {
+    key: keyof GlobalConfig['nowPlaying']
+    value: unknown
+}
 export const globalConfig = createSlice({
     name: 'globalConfig',
     initialState: initConfigState,
@@ -37,7 +43,10 @@ export const globalConfig = createSlice({
         toggleTimeline: (state) => {
             return {
                 ...state,
-                ui: { ...state.ui, showTimeline: !state.ui.showTimeline },
+                nowPlaying: {
+                    ...state.nowPlaying,
+                    showTimeline: !state.nowPlaying.showTimeline,
+                },
             }
         },
         updateInstance: (state, action: PayloadAction<Instance[]>) => {
@@ -55,6 +64,15 @@ export const globalConfig = createSlice({
                 instance: initConfigState.instance,
             }
         },
+        changeNowPlaying: (state, action: PayloadAction<NowPlayingAction>) => {
+            return {
+                ...state,
+                nowPlaying: {
+                    ...state.nowPlaying,
+                    [action.payload.key]: action.payload.value,
+                },
+            }
+        },
         changeLocale: (state, action: PayloadAction<string>) => {
             return {
                 ...state,
@@ -69,15 +87,20 @@ export const globalConfig = createSlice({
                 ...state,
                 ui: {
                     ...state.ui,
-                    theme: action.payload
-                }
+                    theme: action.payload,
+                },
             }
-        }
+        },
     },
 })
 
-export const { toggleTimeline, updateInstance, changeLocale, changeTheme } =
-    globalConfig.actions
+export const {
+    toggleTimeline,
+    updateInstance,
+    changeLocale,
+    changeTheme,
+    changeNowPlaying,
+} = globalConfig.actions
 
 export default globalConfig.reducer
 export const selectConfig = (state: RootState) => state.config

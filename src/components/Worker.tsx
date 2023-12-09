@@ -5,7 +5,7 @@ import React, {
     useContext,
     useRef,
 } from 'react'
-import { AudioBlobAction, Playitem } from './interfaces'
+import { AudioBlobAction, Playitem, AbortControllerObject } from './interfaces'
 import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -20,9 +20,7 @@ import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
 import localforage from 'localforage'
-interface AbortControllerObject {
-    [key: string]: AbortController
-}
+import { getNextSong } from '@/utils/songControl'
 export interface WorkerProps {}
 
 export default function Worker(): ReactElement {
@@ -31,12 +29,14 @@ export default function Worker(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
     const dispatch = useDispatch()
-    const [playlistLoaded, setPlaylistLoaded] = useState(false);
-    const playlistStore = useRef(localforage.createInstance({
-        name: 'kiku-db',
-        storeName: 'current-playlist',
-        description: 'Storage for current playlist'
-    }))
+    const [playlistLoaded, setPlaylistLoaded] = useState(false)
+    const playlistStore = useRef(
+        localforage.createInstance({
+            name: 'kiku-db',
+            storeName: 'current-playlist',
+            description: 'Storage for current playlist',
+        })
+    )
     const {
         dispatchAudioBlob,
         innertube,
@@ -45,16 +45,15 @@ export default function Worker(): ReactElement {
         dispatchAudioBlob: React.Dispatch<AudioBlobAction>
         innertube: React.RefObject<Innertube | null>
         setAbortController: (
-            arg0: AbortControllerObject
-        ) => AbortControllerObject
+            arg0: (prevState: AbortControllerObject) => AbortControllerObject
+        ) => void
     } = useContext(Store)
 
     const handleAddAbortController = (
         id: string,
         controller: AbortController
     ) => {
-        AbortController
-        setAbortController((prevState) => {
+        setAbortController((prevState: AbortControllerObject) => {
             return { ...prevState, [id]: controller }
         })
     }
@@ -97,9 +96,9 @@ export default function Worker(): ReactElement {
         }
         return result
     }
-    const getIsDownloading = () => {
-        return playlist.some((item) => item.downloadStatus === 'downloading')
-    }
+    // const getIsDownloading = () => {
+    //     return playlist.some((item) => item.downloadStatus === 'downloading')
+    // }
 
     // Watcher for playlist, automatically download info and audio blob when available
     useEffect(() => {
@@ -129,58 +128,35 @@ export default function Worker(): ReactElement {
                     innertube?.current,
                     axiosController
                 )
-                .then((blob) => {
-                    if (blob instanceof Error) {
-                        throw new Error(blob as unknown as string)
-                    } else {
-                        dispatchAudioBlob({
-                            type: 'ADD_BLOB',
-                            payload: { id: nextJob.id, blob: blob },
-                        })
+                    .then((blob) => {
+                        if (blob instanceof Error) {
+                            throw new Error(blob as unknown as string)
+                        } else {
+                            dispatchAudioBlob({
+                                type: 'ADD_BLOB',
+                                payload: { id: nextJob.id, blob: blob },
+                            })
+                            setWorkerState('idle')
+                            dispatch(
+                                setItemDownloadStatus({
+                                    id: nextJob.id,
+                                    status: 'downloaded',
+                                })
+                            )
+                        }
+                    })
+                    .catch((err) => {
                         setWorkerState('idle')
+                        console.log(err)
+                        presentToast('error', err)
+                        // Show toast
                         dispatch(
                             setItemDownloadStatus({
                                 id: nextJob.id,
-                                status: 'downloaded',
+                                status: 'error',
                             })
                         )
-                    }
-                })
-                // .then((res: Blob) => {
-                //     setWorkerState('idle')
-                //     // console.log('[Worker] Download Finished')
-                //     dispatchAudioBlob({
-                //         type: 'ADD_BLOB',
-                //         payload: { id: nextJob.id, blob: res },
-                //     })
-                //     dispatch(setItemDownloaded(nextJob.id))
-                // })
-                .catch((err) => {
-                    setWorkerState('idle')
-                    console.log(err)
-                    presentToast('error', err)
-                    // Show toast
-                    dispatch(
-                        setItemDownloadStatus({
-                            id: nextJob.id,
-                            status: 'error',
-                        })
-                    )
-                })
-                // } else {
-                //     // only download blob if the url is already there
-                //     fetchStream(nextJob.streamUrl)
-                //         .then(() => {
-                //             setWorkerState('idle')
-                //             dispatch(setItemDownloaded(nextJob.id))
-                //             // console.log('[Worker] Download Finished')
-                //         })
-                //         .catch((err) => {
-                //             setWorkerState('idle')
-                //             console.log(err)
-                //             dispatch(setItemError(nextJob.id))
-                //         })
-                // }
+                    })
             }
         }
     }, [playlist])
@@ -194,32 +170,39 @@ export default function Worker(): ReactElement {
             ) {
                 setTimeout(() => {
                     // Use settimeout to prevent the audio blob dispatch not yet ready
-                    dispatch(setItemPlaying(playlist[0].id))
+                    if (playerState.currentPlaying === undefined) {
+                        dispatch(setItemPlaying(playlist[0].id))
+                    } else {
+                        const nextSong = getNextSong(playlist)
+                        nextSong !== undefined &&
+                            dispatch(setItemPlaying(nextSong.id))
+                    }
                 }, 200)
             }
         }
     }, [playlist])
+
     // Automatically store playlist
     useEffect(() => {
-        if (playlistLoaded){
-            const playlistClone = playlist.map(item => {
+        if (playlistLoaded) {
+            const playlistClone = playlist.map((item) => {
                 return {
                     ...item,
-                    downloadStatus: "pending",
-                    status: "added"
+                    downloadStatus: 'pending',
+                    status: 'added',
                 }
             })
-            playlistStore.current.setItem("current-playlist", playlistClone)
+            playlistStore.current.setItem('current-playlist', playlistClone)
         }
     }, [playlist, playlistLoaded])
 
     // Automatically load playlist after innertube is loaded
-    useEffect(() =>{
+    useEffect(() => {
         setTimeout(() => {
-            playlistStore.current.getItem("current-playlist").then((res) => {
+            playlistStore.current.getItem('current-playlist').then((res) => {
                 setPlaylistLoaded(true)
                 const loadedRes = res as Playitem[] | null
-                if ( loadedRes !== null) {
+                if (loadedRes !== null) {
                     dispatch(loadPlaylist(loadedRes))
                 }
             })

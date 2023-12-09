@@ -18,14 +18,12 @@ import { PlaylistData } from '@/components/interfaces'
 import { nanoid } from 'nanoid'
 import VideoResultCard from '@/components/VideoResultCard'
 import { selectSearch } from '@/store/searchReducers'
-import { Router } from 'framework7/types'
 import presentToast from '@/components/Toast'
 import { handleGetPlaylist } from '@/js/playlist'
 import { useTranslation } from 'react-i18next'
 
 export interface PlaylistViewProps {
     playlistId: string
-    f7router: Router
 }
 
 export default function PlaylistView(props: PlaylistViewProps): ReactElement {
@@ -40,7 +38,7 @@ export default function PlaylistView(props: PlaylistViewProps): ReactElement {
 
     // Auto fetch channel details when changing channel
     useEffect(() => {
-        // f7.preloader.show()
+        f7.preloader.showIn('#page-router')
         handleGetPlaylist(
             props.playlistId,
             config.instance.preferType,
@@ -48,14 +46,14 @@ export default function PlaylistView(props: PlaylistViewProps): ReactElement {
         )
             .then((res) => {
                 if (!(res instanceof Error)) {
+                    f7.preloader.hideIn('#page-router')
                     setPlaylist(res)
-                    // f7.preloader.hide()
                 } else {
                     throw res
                 }
             })
             .catch((err) => {
-                // f7.preloader.hide()
+                f7.preloader.hideIn('#page-router')
                 presentToast('error', err)
             })
     }, [props.playlistId])

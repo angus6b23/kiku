@@ -1,13 +1,13 @@
 {
-  "No-search-results": "",
-  "Search-something-on-the-search-bar": "",
-  "Details": "",
-  "Replace-Playlist-Prompt": "",
-  "Replace-current-playlist": "",
-  "Browse-playlist": "",
-  "Add-all-to-playlist": "",
-  "Already-on-playlist": "",
-  "Add-to-playlist": "",
-  "Add-to-next-song": "",
-  "Search-Results": ""
+    "No-search-results": "",
+    "Search-something-on-the-search-bar": "",
+    "Details": "",
+    "Replace-Playlist-Prompt": "",
+    "Replace-current-playlist": "",
+    "Browse-playlist": "",
+    "Add-all-to-playlist": "",
+    "Already-on-playlist": "",
+    "Add-to-playlist": "",
+    "Add-to-next-song": "",
+    "Search-Results": ""
 }

@@ -43,3 +43,6 @@
 ::-webkit-scrollbar-thumb {
     background: var(--f7-color-primary);
 }
+div:focus {
+    outline: none;
+}

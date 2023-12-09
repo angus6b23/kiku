@@ -134,7 +134,7 @@ export const playlist = createSlice({
         },
         loadPlaylist: (_, action: PayloadAction<Playitem[]>) => {
             return action.payload
-        }
+        },
     },
 })
 

@@ -155,7 +155,11 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                             tooltip={t('search-result:Details')}
                             onClick={(e) => {
                                 e.stopPropagation()
-                                f7.views.get('#page-router').router.navigate(`/details/${props.item.id}`)
+                                f7.views
+                                    .get('#page-router')
+                                    .router.navigate(
+                                        `/details/${props.item.id}`
+                                    )
                             }}
                         >
                             <Icon

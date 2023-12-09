@@ -39,7 +39,7 @@ export default function SearchResults(): ReactElement {
     const dispatch = useDispatch()
 
     const handleLoadMore = async () => {
-        f7.preloader.show()
+        f7.preloader.showIn('#page-router')
         const res = await handleContinuation(
             search,
             continuation,
@@ -48,7 +48,7 @@ export default function SearchResults(): ReactElement {
         )
         dispatch(nextPage(res.data))
         setContinuation(res.continuation)
-        f7.preloader.hide()
+        f7.preloader.hideIn('#page-router')
     }
     useEffect(() => {
         if (search.page === 1) {

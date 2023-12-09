@@ -1,4 +1,3 @@
-import { InvidiousVideo } from '@/utils/extractResults'
 import {
     Channel,
     ChannelListContinuation,
@@ -29,6 +28,9 @@ interface AudioBlobAction {
 interface AbortControllerAction {
     type: 'ADD'
     payload: AbortController
+}
+interface AbortControllerObject {
+    [key: string]: AbortController
 }
 interface PlaylistAction {
     type:
@@ -155,8 +157,11 @@ interface GlobalConfig {
         lang: string
         accentColor: string
         theme: 'dark' | 'light'
-        showTimeline: boolean
         autoScroll: boolean
+    }
+    nowPlaying: {
+        seekDuration: number
+        showTimeline: boolean
     }
 }
 
@@ -203,6 +208,7 @@ export type {
     AudioBlobObject,
     AudioBlobAction,
     AbortControllerAction,
+    AbortControllerObject,
     Instance,
     GlobalConfig,
     ChannelData,

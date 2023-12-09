@@ -1,11 +1,15 @@
 {
-  "Source": "Source",
-  "View-Invidious-Instances": "View Invidious Instances",
-  "View-Piped-Instances": "View Piped Instances",
-  "Reset-to-default": "Reset to default",
-  "Instance-Configuration": "Instance Configuration",
-  "UI-Preference": "UI Preference",
-  "Language": "Language",
-  "Choose-Layout": "Choose Layout",
-  "Show-Timeline-in-wavesurfer": "Show Timeline in wavesurfer"
+    "Source": "Source",
+    "View-Invidious-Instances": "View Invidious Instances",
+    "View-Piped-Instances": "View Piped Instances",
+    "Reset-to-default": "Reset to default",
+    "Instance-Configuration": "Instance Configuration",
+    "UI-Preference": "UI Preference",
+    "Language": "Language",
+    "Theme": "Theme",
+    "Light": "Light",
+    "Dark": "Dark",
+    "Seek-Time": "Seek Time",
+    "Choose-Layout": "Choose Layout",
+    "Show-Timeline-in-wavesurfer": "Show Timeline in wavesurfer"
 }

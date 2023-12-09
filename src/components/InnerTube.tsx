@@ -16,7 +16,7 @@ export default function InnerTube(): ReactElement {
         Innertube.create({
             lang: config.instance.lang,
             location: config.instance.location,
-            fetch: async (input: RequestInfo | URL, init?: RequestInit) =>{
+            fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
                 return fetch(input, init)
             },
             generate_session_locally: true,

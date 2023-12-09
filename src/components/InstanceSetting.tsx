@@ -23,7 +23,8 @@ export default function InstanceSetting(): ReactElement {
 
     const dispatch = useDispatch()
 
-    const handleInstanceCheck = (instance: Instance) => { // For handling Enabling or disabling the instance via checkbox
+    const handleInstanceCheck = (instance: Instance) => {
+        // For handling Enabling or disabling the instance via checkbox
         setInstances((state) => {
             return state.map((item) =>
                 item.type === instance.type
@@ -32,19 +33,22 @@ export default function InstanceSetting(): ReactElement {
             )
         })
     }
-    const handleUrlChange = (newUrl: string, instanceType: string) => { // For handling the change of url of instances
+    const handleUrlChange = (newUrl: string, instanceType: string) => {
+        // For handling the change of url of instances
         setInstances((state) => {
             return state.map((item) =>
                 item.type === instanceType ? { ...item, url: newUrl } : item
             )
         })
     }
-    const handleInstanceSort = (e: { to: number; from: number }) => { // For handling the dragging and dropping of instance
+    const handleInstanceSort = (e: { to: number; from: number }) => {
+        // For handling the dragging and dropping of instance
         const stateClone = [...instances]
         stateClone.splice(e.to, 0, ...stateClone.splice(e.from, 1))
         setInstances(stateClone)
     }
-    const resetInstances = () => { // Reset the default settings when reset button is pressed
+    const resetInstances = () => {
+        // Reset the default settings when reset button is pressed
         setInstances([
             { type: 'local', url: '', enabled: true },
             {
@@ -73,7 +77,8 @@ export default function InstanceSetting(): ReactElement {
             }
         }
     }
-    useEffect(() => { // Create autocompletes when instance list download is ready
+    useEffect(() => {
+        // Create autocompletes when instance list download is ready
         invAutocomplete.current = f7.autocomplete.create({
             inputEl: '#autocomplete-invidious',
             openIn: 'dropdown',

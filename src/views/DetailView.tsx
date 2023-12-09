@@ -10,6 +10,7 @@ import {
     Icon,
     Toolbar,
     BlockTitle,
+    f7,
 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
@@ -21,7 +22,7 @@ import presentToast from '@/components/Toast'
 import { useTranslation } from 'react-i18next'
 import { getVideoDetail } from '@/js/videoDetail'
 import { convertSecond } from '@/utils/format'
-import {addToNextSong, selectPlaylist} from '@/store/playlistReducers'
+import { addToNextSong, selectPlaylist } from '@/store/playlistReducers'
 import { Playitem } from '@/components/interfaces'
 import { addToPlaylist } from '@/store/playlistReducers'
 import Innertube from 'youtubei.js/agnostic'
@@ -31,25 +32,30 @@ export interface DetailViewProps {
 }
 
 export default function DetailView(props: DetailViewProps): ReactElement {
-    const config = useSelector(selectConfig);
+    const config = useSelector(selectConfig)
     const playlist = useSelector(selectPlaylist)
-    const { innertube }: {innertube: React.RefObject<Innertube | null>} = useCustomContext(Store)
+    const { innertube }: { innertube: React.RefObject<Innertube | null> } =
+        useCustomContext(Store)
     const { t } = useTranslation(['search-result', 'video-detail'])
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const [details, setDetails] = useState<VideoDetails | undefined>(undefined) // Local state for storing page data of video details
 
-    const highResImage = details?.videoThumbnails.find( // For extracting max res thumbnail from video details
+    const highResImage = details?.videoThumbnails.find(
+        // For extracting max res thumbnail from video details
         (thumbnail) => thumbnail.quality === 'maxres' || 'maxresdefault'
     )
-    const getIntlDate = (timestamp: number) => { // Helper function for translating published timestamp to readable local time
+
+    const getIntlDate = (timestamp: number) => {
+        // Helper function for translating published timestamp to readable local time
         const date = new Date(timestamp * 1000)
         const intlTime = new Intl.DateTimeFormat(config.ui.lang, {
-            dateStyle: 'full'
+            dateStyle: 'full',
         }).format(date)
         return intlTime
     }
-    const handleAddToPlaylist = (nextSong: boolean = false) => { // Helper function for adding song to playlist
+    const handleAddToPlaylist = (nextSong: boolean = false) => {
+        // Helper function for adding song to playlist
         const sameId = playlist.filter(
             (item: Playitem) => item.id === props.videoId
         )
@@ -62,7 +68,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
             status: 'added',
             downloadStatus: 'pending',
         }
-        if (nextSong){
+        if (nextSong) {
             dispatch(addToNextSong(newPlayitem))
         } else {
             dispatch(addToPlaylist(newPlayitem))
@@ -71,19 +77,25 @@ export default function DetailView(props: DetailViewProps): ReactElement {
 
     // Auto fetch channel details when changing channel
     useEffect(() => {
-        // f7.preloader.show()
+        f7.preloader.showIn('#page-router')
         getVideoDetail(
             props.videoId,
             config.instance.preferType,
             innertube.current
-        ).then((res) => {
-            if (res instanceof Error) {
-                presentToast('error', res.message)
-                setDetails(undefined)
-            } else {
-                setDetails(res)
-            }
-        })
+        )
+            .then((res) => {
+                if (res instanceof Error) {
+                    presentToast('error', res.message)
+                    setDetails(undefined)
+                } else {
+                    f7.preloader.hideIn('#page-router')
+                    setDetails(res)
+                }
+            })
+            .catch((err) => {
+                f7.preloader.hideIn('#page-router')
+                presentToast('error', err)
+            })
     }, [props.videoId])
 
     return (
@@ -133,16 +145,16 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                 <div className="col-span-4">
                                     {getIntlDate(details.published)}
                                 </div>
-                                { details.viewCount &&
-                                <>
-                                    <div className="col-span-2">
-                                        {t('video-detail:Views')}
-                                    </div>
-                                    <div className="col-span-4">
-                                        {details.viewCount}
-                                    </div>
-                                </>
-                                }
+                                {details.viewCount && (
+                                    <>
+                                        <div className="col-span-2">
+                                            {t('video-detail:Views')}
+                                        </div>
+                                        <div className="col-span-4">
+                                            {details.viewCount}
+                                        </div>
+                                    </>
+                                )}
                                 <div className="col-span-2">
                                     {t('video-detail:Likes')}
                                 </div>
@@ -151,12 +163,26 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                 </div>
                             </div>
                             <div className="flex gap-8">
-                                <Button fill onClick={() => handleAddToPlaylist(false)}>{t('search-result:Add-to-playlist')}</Button>
-                                <Button fill onClick={() => handleAddToPlaylist(true)}>{t('search-result:Add-to-next-song')}</Button>
+                                <Button
+                                    fill
+                                    onClick={() => handleAddToPlaylist(false)}
+                                >
+                                    {t('search-result:Add-to-playlist')}
+                                </Button>
+                                <Button
+                                    fill
+                                    onClick={() => handleAddToPlaylist(true)}
+                                >
+                                    {t('search-result:Add-to-next-song')}
+                                </Button>
                             </div>
                         </div>
-                        <h3 className="text-xl col-span-6 mb-2">{t('video-detail:Description')}</h3>
-                        <p className="col-span-6 whitespace-pre-line">{details.description}</p>
+                        <h3 className="text-xl col-span-6 mb-2">
+                            {t('video-detail:Description')}
+                        </h3>
+                        <p className="col-span-6 whitespace-pre-line">
+                            {details.description}
+                        </p>
                     </Block>
                     <Block>
                         <BlockTitle className="text-xl">

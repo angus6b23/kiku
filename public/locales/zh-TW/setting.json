@@ -1,11 +1,15 @@
 {
-  "Source": "來源",
-  "View-Invidious-Instances": "顯示 Invidious 站台",
-  "View-Piped-Instances": "顯示 Piped 站台",
-  "Reset-to-default": "重設至預設",
-  "Instance-Configuration": "站台設定",
-  "UI-Preference": "介面偏好",
-  "Language": "語言",
-  "Choose-Layout": "選擇版面",
-  "Show-Timeline-in-wavesurfer": "在wavesurfer 中顯示時間列"
+    "Source": "來源",
+    "View-Invidious-Instances": "顯示 Invidious 站台",
+    "View-Piped-Instances": "顯示 Piped 站台",
+    "Reset-to-default": "重設至預設",
+    "Instance-Configuration": "站台設定",
+    "UI-Preference": "介面偏好",
+    "Language": "語言",
+    "Theme": "",
+    "Light": "",
+    "Dark": "",
+    "Seek-Time": "",
+    "Choose-Layout": "選擇版面",
+    "Show-Timeline-in-wavesurfer": "在wavesurfer 中顯示時間列"
 }

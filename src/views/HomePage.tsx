@@ -1,6 +1,6 @@
 import MainNav from '@/components/MainNav'
-import React, { useState, type ReactElement } from 'react'
-import { Block, Tabs, Tab, View, Toolbar } from 'framework7-react'
+import React, { useState, type ReactElement, useEffect } from 'react'
+import { Block, Tabs, Tab, View, Toolbar, f7 } from 'framework7-react'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
 import Setting from './Setting'
@@ -12,6 +12,16 @@ export interface HomePageProps {}
 export default function HomePage(props: HomePageProps): ReactElement {
     const [tab, setTab] = useState('main')
     const playerState = useSelector(selectPlayer)
+    useEffect(() => {
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if (e.code === 'ArrowLeft' && e.altKey) {
+                f7.views.get('#page-router').router.back()
+                setTab('main')
+            }
+        }
+        document.addEventListener('keydown', handleKeyPress)
+        return () => document.removeEventListener('keydown', handleKeyPress)
+    }, [])
     return (
         <>
             <MainNav tab={tab} setTab={setTab} />

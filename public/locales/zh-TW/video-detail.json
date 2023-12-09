@@ -1,8 +1,8 @@
 {
-  "Duration": "影片長度",
-  "Published-at": "上載日期",
-  "Views": "觀看次數",
-  "Likes": "喜歡次數",
-  "Description": "介紹",
-  "Relevant-Videos": "相關影片"
+    "Duration": "影片長度",
+    "Published-at": "上載日期",
+    "Views": "觀看次數",
+    "Likes": "喜歡次數",
+    "Description": "介紹",
+    "Relevant-Videos": "相關影片"
 }

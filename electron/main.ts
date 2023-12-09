@@ -1,10 +1,9 @@
 /* eslint-disable */
-const path = require("path")
-const os = require("node:os")
+const path = require('path')
+const os = require('node:os')
 const { app, BrowserWindow, session } = require('electron')
 const serve = require('electron-serve')
 const loadURL = serve({ directory: 'dist' })
-
 
 function createWindow() {
     // Create the browser window.

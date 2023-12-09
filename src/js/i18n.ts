@@ -31,5 +31,4 @@ i18n
 
 i18n.loadNamespaces(['common', 'search-result', 'video-detail']) //Preload name spaces to prevent crash
 
-
 export default i18n

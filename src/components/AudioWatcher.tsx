@@ -149,12 +149,12 @@ export default function AudioWatcher(): ReactElement {
             const currentTime = audio.current.currentTime
             audio.current.currentTime = Math.min(
                 audio.current.duration,
-                currentTime + 5
+                currentTime + 15
             )
         })
         navigator.mediaSession.setActionHandler('seekbackward', () => {
             const currentTime = audio.current.currentTime
-            audio.current.currentTime = Math.max(0, currentTime - 5)
+            audio.current.currentTime = Math.max(0, currentTime - 15)
         })
         window.onkeydown = (e: KeyboardEvent) => {
             switch (e.key) {
@@ -167,9 +167,9 @@ export default function AudioWatcher(): ReactElement {
                 case 'MediaPlayPause':
                     dispatch(togglePlay())
                     break
-                case 'MediaStop':
-                    dispatch(stop())
-                    break
+                // case 'MediaStop':
+                //     dispatch(stop())
+                //     break
                 default:
             }
         }
