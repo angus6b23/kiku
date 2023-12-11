@@ -5,7 +5,11 @@ import React, {
     useContext,
     useRef,
 } from 'react'
-import { AudioBlobAction, Playitem, AbortControllerObject } from './interfaces'
+import {
+    AudioBlobAction,
+    Playitem,
+    AbortControllerObject,
+} from '@/typescript/interfaces'
 import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -21,15 +25,20 @@ import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
 import localforage from 'localforage'
 import { getNextSong } from '@/utils/songControl'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const {ipcRenderer} = require('electron')
+
 export interface WorkerProps {}
 
 export default function Worker(): ReactElement {
     // Spawn a worker which will automatically download bolb in the background
+    // Get variables from redux store
     const playlist = useSelector(selectPlaylist)
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
     const dispatch = useDispatch()
-    const [playlistLoaded, setPlaylistLoaded] = useState(false)
+    const [playlistLoaded, setPlaylistLoaded] = useState(false);
+    // Spawn different instance of local forage for corresponding purpose
     const playlistStore = useRef(
         localforage.createInstance({
             name: 'kiku-db',
@@ -37,6 +46,7 @@ export default function Worker(): ReactElement {
             description: 'Storage for current playlist',
         })
     )
+    // Get variables from react context
     const {
         dispatchAudioBlob,
         innertube,
@@ -49,6 +59,7 @@ export default function Worker(): ReactElement {
         ) => void
     } = useContext(Store)
 
+    // Helper function of adding abort controller to react context
     const handleAddAbortController = (
         id: string,
         controller: AbortController
@@ -114,14 +125,18 @@ export default function Worker(): ReactElement {
                 console.log(
                     `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
                 )
+                // Create an abort controller for axios
                 const axiosController = new AbortController()
+                // Add the abort controller to react context
                 handleAddAbortController(nextJob.id, axiosController)
+                // Tell redux that the current job is downloading
                 dispatch(
                     setItemDownloadStatus({
                         id: nextJob.id,
                         status: 'downloading',
                     })
                 )
+                // Pass parameters to fetch stream, including an abort controller to stop downloading if the item is removed
                 handleFetchStream(
                     nextJob.id,
                     config.instance.preferType,
@@ -129,9 +144,11 @@ export default function Worker(): ReactElement {
                     axiosController
                 )
                     .then((blob) => {
+                        // Check if the result is an error
                         if (blob instanceof Error) {
                             throw new Error(blob as unknown as string)
                         } else {
+                            // Dispatch the audio blob to react context
                             dispatchAudioBlob({
                                 type: 'ADD_BLOB',
                                 payload: { id: nextJob.id, blob: blob },

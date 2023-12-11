@@ -1,4 +1,4 @@
-import { Playitem } from '@/components/interfaces'
+import { Playitem } from '@/typescript/interfaces'
 
 export const getNextSong: (arg0: Playitem[]) => Playitem | undefined = (
     playlist

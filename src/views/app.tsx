@@ -4,10 +4,10 @@ import {
     AudioBlobObject,
     Continuation,
     Instance,
-} from '@/components/interfaces'
+} from '@/typescript/interfaces'
 import { Store } from '@/components/context'
 
-import { f7ready, App, Panel, View, Page, f7 } from 'framework7-react'
+import { f7ready, App, Panel, View, Page } from 'framework7-react'
 
 import PlayList from '@/views/PlayList'
 import { blobStoreReducer } from '@/components/reducers'

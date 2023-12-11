@@ -1,4 +1,4 @@
-import { Thumbnail } from '@/components/interfaces'
+import { Thumbnail } from '@/typescript/interfaces'
 
 // Helper functions for extracting thumbnails for different api / innertube
 export const extractInnertubeThumbnail = (

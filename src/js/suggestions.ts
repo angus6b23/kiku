@@ -1,4 +1,4 @@
-import { Instance } from '@/components/interfaces'
+import { Instance } from '@/typescript/interfaces'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 

@@ -1,9 +1,11 @@
 /* eslint-disable */
 const path = require('path')
 const os = require('node:os')
-const { app, BrowserWindow, session } = require('electron')
+const { app, BrowserWindow, session, ipcMain } = require('electron')
 const serve = require('electron-serve')
 const loadURL = serve({ directory: 'dist' })
+
+let ipcInterval
 
 function createWindow() {
     // Create the browser window.
@@ -111,6 +113,9 @@ function createWindow() {
     if (process.env.NODE_ENV === 'development') {
         win.webContents.openDevTools()
     }
+    ipcInterval = setInterval( () => {
+        win.webContents.send('userDataPath', app.getPath('userData'))
+    }, 200)
 }
 
 // This method will be called when Electron has finished
@@ -138,3 +143,6 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on('getUserDataPath', () => {
+    clearInterval(ipcInterval)
+})

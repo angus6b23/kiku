@@ -1,5 +1,5 @@
 import presentToast from '@/components/Toast'
-import { Instance, Thumbnail, VideoDetails } from '@/components/interfaces'
+import { Instance, Thumbnail, VideoDetails } from '@/typescript/interfaces'
 import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'

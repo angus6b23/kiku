@@ -1,5 +1,5 @@
 import presentToast from '@/components/Toast'
-import { Instance, PlaylistData, VideoResult } from '@/components/interfaces'
+import { Instance, PlaylistData, VideoResult } from '@/typescript/interfaces'
 import {
     PipedVideo,
     extractInvidiousVideos,

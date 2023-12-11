@@ -17,7 +17,7 @@ import { Store, useCustomContext } from '@/components/context'
 import Innertube from 'youtubei.js/agnostic'
 import { selectConfig } from '@/store/globalConfig'
 import { useTranslation } from 'react-i18next'
-import { Instance, SearchContinuation } from '@/components/interfaces'
+import { SearchContinuation } from '@/typescript/interfaces'
 import presentToast from './Toast'
 import { getPlayitem } from '@/js/fetchInfo'
 import { addToPlaylist } from '@/store/playlistReducers'
@@ -71,6 +71,7 @@ const MainNav = (props: MainNavProps) => {
             on: {
                 change: (e: string[]) => {
                     setSearchTerm(e[0])
+                    autocompleteSearch.current.$inputEl.focus()
                 },
             },
         })

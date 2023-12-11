@@ -10,12 +10,15 @@ import {
     Icon,
     Toolbar,
     BlockTitle,
+    Popover,
     f7,
+    ListItem,
+    List,
 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
 import { Store, useCustomContext } from '@/components/context'
-import { VideoDetails } from '@/components/interfaces'
+import { VideoDetails } from '@/typescript/interfaces'
 import { nanoid } from 'nanoid'
 import VideoResultCard from '@/components/VideoResultCard'
 import presentToast from '@/components/Toast'
@@ -23,10 +26,12 @@ import { useTranslation } from 'react-i18next'
 import { getVideoDetail } from '@/js/videoDetail'
 import { convertSecond } from '@/utils/format'
 import { addToNextSong, selectPlaylist } from '@/store/playlistReducers'
-import { Playitem } from '@/components/interfaces'
+import { Playitem } from '@/typescript/interfaces'
 import { addToPlaylist } from '@/store/playlistReducers'
 import Innertube from 'youtubei.js/agnostic'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { shell } = require('electron')
 export interface DetailViewProps {
     videoId: string
 }
@@ -74,7 +79,40 @@ export default function DetailView(props: DetailViewProps): ReactElement {
             dispatch(addToPlaylist(newPlayitem))
         }
     }
-
+    const copyLink = (type: string) => {
+        const invidiousUrl = config.instance.preferType.find(
+            (item) => item.type === 'invidious'
+        )?.url
+        switch (type) {
+            case 'youtube':
+                navigator.clipboard.writeText(
+                    `https://youtu.be/${details?.videoId}`
+                )
+                break
+            case 'invidious':
+                navigator.clipboard.writeText(
+                    invidiousUrl + `/${details?.videoId}`
+                )
+                break
+            default:
+        }
+    }
+    const openLink = (type: string) => {
+        const invidiousUrl = config.instance.preferType.find(
+            (item) => item.type === 'invidious'
+        )?.url
+        switch (type) {
+            case 'youtube':
+                shell.openExternal(`https://youtu.be/${details?.videoId}`)
+                break
+            case 'invidious':
+                shell.openExternal(
+                    invidiousUrl + `/watch?v=${details?.videoId}`
+                )
+                break
+            default:
+        }
+    }
     // Auto fetch channel details when changing channel
     useEffect(() => {
         f7.preloader.showIn('#page-router')
@@ -162,21 +200,40 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                     {details.likeCount}
                                 </div>
                             </div>
-                            <div className="flex gap-8">
-                                <Button
-                                    fill
-                                    onClick={() => handleAddToPlaylist(false)}
-                                >
-                                    {t('search-result:Add-to-playlist')}
-                                </Button>
-                                <Button
-                                    fill
-                                    onClick={() => handleAddToPlaylist(true)}
-                                >
-                                    {t('search-result:Add-to-next-song')}
-                                </Button>
-                            </div>
+                            {/* Buttons */}
+                            <section className="flex flex-wrap gap-2">
+                                <div className="flex gap-8 w-full">
+                                    <Button
+                                        fill
+                                        onClick={() =>
+                                            handleAddToPlaylist(false)
+                                        }
+                                    >
+                                        {t('search-result:Add-to-playlist')}
+                                    </Button>
+                                    <Button
+                                        fill
+                                        onClick={() =>
+                                            handleAddToPlaylist(true)
+                                        }
+                                    >
+                                        {t('search-result:Add-to-next-song')}
+                                    </Button>
+                                </div>
+                                <div className="flex gap-8 w-full">
+                                    <Button fill popoverOpen=".copy-popover">
+                                        {t('search-result:Copy-Link')}
+                                    </Button>
+                                    <Button
+                                        fill
+                                        popoverOpen=".open-link-popover"
+                                    >
+                                        {t('search-result:Open-link')}
+                                    </Button>
+                                </div>
+                            </section>
                         </div>
+                        {/* Video Description */}
                         <h3 className="text-xl col-span-6 mb-2">
                             {t('video-detail:Description')}
                         </h3>
@@ -184,6 +241,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                             {details.description}
                         </p>
                     </Block>
+                    {/* Recommend Videos */}
                     <Block>
                         <BlockTitle className="text-xl">
                             {t('video-detail:Relevant-Videos')}
@@ -199,6 +257,50 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                             })}
                         </div>
                     </Block>
+                    <Popover
+                        className="copy-popover"
+                        backdrop={false}
+                        arrow={false}
+                    >
+                        <List>
+                            <ListItem
+                                popoverClose
+                                title="Youtube"
+                                onClick={() => copyLink('youtube')}
+                                link="#"
+                                noChevron={true}
+                            ></ListItem>
+                            <ListItem
+                                popoverClose
+                                title="Invidious"
+                                onClick={() => copyLink('invidious')}
+                                link="#"
+                                noChevron={true}
+                            ></ListItem>
+                        </List>
+                    </Popover>
+                    <Popover
+                        className="open-link-popover"
+                        backdrop={false}
+                        arrow={false}
+                    >
+                        <List>
+                            <ListItem
+                                popoverClose
+                                title="Youtube"
+                                onClick={() => openLink('youtube')}
+                                link="#"
+                                noChevron={true}
+                            ></ListItem>
+                            <ListItem
+                                popoverClose
+                                title="Invidious"
+                                onClick={() => openLink('invidious')}
+                                link="#"
+                                noChevron={true}
+                            ></ListItem>
+                        </List>
+                    </Popover>
                 </>
             )}
             {/* Toolbar placeholder */}

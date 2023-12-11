@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store'
-import { GlobalConfig, Instance } from '@/components/interfaces'
+import { GlobalConfig, Instance } from '@/typescript/interfaces'
 
 const initConfigState: GlobalConfig = {
     instance: {

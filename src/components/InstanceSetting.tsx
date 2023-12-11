@@ -1,7 +1,7 @@
 import React, { useState, type ReactElement, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig, updateInstance } from '@/store/globalConfig'
-import { Instance } from './interfaces'
+import { Instance } from '@/typescript/interfaces'
 import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
 import { useTranslation } from 'react-i18next'
 import { Store, useCustomContext } from './context'

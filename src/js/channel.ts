@@ -1,5 +1,5 @@
 import presentToast from '@/components/Toast'
-import { Instance, PlaylistResult, VideoResult } from '@/components/interfaces'
+import { Instance, PlaylistResult, VideoResult } from '@/typescript/interfaces'
 import Innertube from 'youtubei.js/agnostic'
 import {
     C4TabbedHeader,
@@ -18,7 +18,7 @@ import {
     ChannelListContinuation,
 } from 'youtubei.js/dist/src/parser/youtube'
 import { Author } from 'youtubei.js/dist/src/parser/misc'
-import { ChannelData } from '@/components/interfaces'
+import { ChannelData } from '@/typescript/interfaces'
 import {
     extractInvidiousPlaylists,
     extractInvidiousVideos,

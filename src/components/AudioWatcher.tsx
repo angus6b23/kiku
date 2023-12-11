@@ -10,7 +10,7 @@ import {
     stop,
 } from '@/store/playerReducers'
 import { selectPlaylist, setItemPlaying } from '@/store/playlistReducers'
-import { AudioBlobObject } from '@/components/interfaces'
+import { AudioBlobObject } from '@/typescript/interfaces'
 import { getNextSong, getPrevSong } from '@/utils/songControl'
 
 export interface AudioWatcherProps {}

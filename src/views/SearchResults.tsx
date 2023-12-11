@@ -18,7 +18,7 @@ import { handleContinuation } from '@/js/search'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import { Store, useCustomContext } from '@/components/context'
-import { Continuation } from '@/components/interfaces'
+import { Continuation } from '@/typescript/interfaces'
 import ChannelResultCard from '@/components/ChannelResultCard'
 import { useTranslation } from 'react-i18next'
 

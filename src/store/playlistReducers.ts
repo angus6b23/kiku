@@ -1,4 +1,4 @@
-import { Playitem } from '@/components/interfaces'
+import { Playitem } from '@/typescript/interfaces'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '@/store/store'

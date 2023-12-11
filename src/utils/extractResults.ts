@@ -3,7 +3,7 @@ import {
     PlaylistResult,
     Thumbnail,
     VideoResult,
-} from '@/components/interfaces'
+} from '@/typescript/interfaces'
 import {
     extractInvidiousChannelThumbnail,
     generatePipedThumbnail,
