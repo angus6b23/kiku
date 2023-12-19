@@ -31,6 +31,10 @@ const initConfigState: GlobalConfig = {
         seekDuration: 15,
         showTimeline: false,
     },
+    storage: {
+        enalbeBlobStorage: true,
+        blobStorageSize: 100, // IN MB
+    },
 }
 interface NowPlayingAction {
     key: keyof GlobalConfig['nowPlaying']
@@ -46,6 +50,15 @@ export const globalConfig = createSlice({
                 nowPlaying: {
                     ...state.nowPlaying,
                     showTimeline: !state.nowPlaying.showTimeline,
+                },
+            }
+        },
+        toggleBlobStorage: (state) => {
+            return {
+                ...state,
+                storage: {
+                    ...state.storage,
+                    enalbeBlobStorage: !state.storage.enalbeBlobStorage,
                 },
             }
         },
@@ -91,14 +104,25 @@ export const globalConfig = createSlice({
                 },
             }
         },
+        changeStorage: (state, action: PayloadAction<number>) => {
+            return {
+                ...state,
+                storage: {
+                    ...state.storage,
+                    blobStorageSize: action.payload,
+                },
+            }
+        },
     },
 })
 
 export const {
     toggleTimeline,
+    toggleBlobStorage,
     updateInstance,
     changeLocale,
     changeTheme,
+    changeStorage,
     changeNowPlaying,
 } = globalConfig.actions
 

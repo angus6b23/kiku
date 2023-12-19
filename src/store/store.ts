@@ -5,11 +5,12 @@ import playlistReducer from '@/store/playlistReducers'
 import playerReducer from '@/store/playerReducers'
 import searchReducer from '@/store/searchReducers'
 import configReducer from '@/store/globalConfig'
+import blobReducer from '@/store/blobStorage'
 
 const persistConfig = {
     key: 'root',
     storage: storage('kiku-db'),
-    whitelist: ['config'],
+    whitelist: ['config', 'localBlobs'],
 }
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
     player: playerReducer,
     search: searchReducer,
     config: configReducer,
+    localBlobs: blobReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

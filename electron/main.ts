@@ -1,15 +1,21 @@
 /* eslint-disable */
 const path = require('path')
+const fs = require('fs')
 const os = require('node:os')
+const du = require('du')
+const Readable = require('stream').Readable
 const { app, BrowserWindow, session, ipcMain } = require('electron')
 const serve = require('electron-serve')
 const loadURL = serve({ directory: 'dist' })
 
-let ipcInterval
-
+async function base64ToBlob(data) {
+    const base64Response = await fetch(data)
+    return await base64Response.blob()
+}
+let win
 function createWindow() {
     // Create the browser window.
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         autoHideMenuBar: true,
         icon: `${__dirname}/../public/icons/png/512x512.png`,
         webPreferences: {
@@ -113,9 +119,6 @@ function createWindow() {
     if (process.env.NODE_ENV === 'development') {
         win.webContents.openDevTools()
     }
-    ipcInterval = setInterval( () => {
-        win.webContents.send('userDataPath', app.getPath('userData'))
-    }, 200)
 }
 
 // This method will be called when Electron has finished
@@ -143,6 +146,58 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-ipcMain.on('getUserDataPath', () => {
-    clearInterval(ipcInterval)
+
+// Blob storage
+const downloadPath = path.join(app.getPath('userData'), '/download')
+
+// Create folder if not present
+fs.promises
+    .readdir(downloadPath)
+    .then()
+    .catch(() => {
+        fs.promises.mkdir(downloadPath)
+    })
+
+const sendDirSize = async () => {
+    const dirSize = await du(downloadPath)
+    win.webContents.send('dir-size', dirSize)
+}
+ipcMain.on('create-blob', async (e, data) => {
+    const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
+    const base64Audio = data.blob.split(';base64,').pop()
+    fs.promises
+        .writeFile(`${downloadPath}/${data.id}.${extension}`, base64Audio, {
+            encoding: 'base64',
+        })
+        .then(sendDirSize)
+})
+ipcMain.on('delete-blob', (_, data) => {
+    const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
+    fs.promises
+        .rm(path.join(downloadPath, `${data.id}.${extension}`))
+        .catch((err) => {
+            console.log(err)
+        })
+        .finally(sendDirSize)
+})
+ipcMain.handle('get-blob', async (_, id) => {
+    const folder = await fs.promises.readdir(downloadPath)
+    const fileMatch = folder.find((file) => file.includes(id))
+    if (fileMatch !== undefined) {
+        const targetFile = await fs.promises.readFile(
+            path.join(downloadPath, fileMatch)
+        )
+        return {
+            exist: true,
+            data:
+                `data:audio/${fileMatch.replace(/^.*\./, '')}` +
+                ';base64,' +
+                targetFile.toString('base64'),
+        }
+    } else {
+        return {
+            exist: false,
+            data: undefined,
+        }
+    }
 })

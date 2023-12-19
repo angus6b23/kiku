@@ -20,16 +20,11 @@ export async function getPipedInstances(): Promise<string[] | Error> {
             'https://raw.githubusercontent.com/wiki/TeamPiped/Piped-Frontend/Instances.md'
         )
         const lines = data.split('\n')
-        const instances: (string | undefined)[] = lines.map(
-            (line: string, index: number) => {
-                if (index < 4) {
-                    return undefined
-                } else {
-                    return line.split('|')[1].trim()
-                }
-            }
-        )
-        return instances.filter((item) => item !== undefined) as string[]
+        lines.splice(0, 8) // Skip the first 8 lines of md
+        const instances: string[] = lines.map((line: string) => {
+            return line.split('|')[1].trim()
+        })
+        return instances
     } catch (err) {
         return err as Error
     }

@@ -163,6 +163,10 @@ interface GlobalConfig {
         seekDuration: number
         showTimeline: boolean
     }
+    storage: {
+        enalbeBlobStorage: boolean
+        blobStorageSize: number
+    }
 }
 
 interface ChannelData {
@@ -186,6 +190,14 @@ interface PlaylistData {
         author: string
     }
     videos: VideoResult[]
+}
+
+interface LocalBlobEntry {
+    id: string
+    extension: string
+    title: string
+    created: number
+    lastAccess: number
 }
 
 type Continuation = Search | string | undefined
@@ -214,4 +226,5 @@ export type {
     ChannelData,
     PlaylistData,
     Continuation,
+    LocalBlobEntry,
 }

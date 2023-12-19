@@ -145,10 +145,14 @@ export default function NowPlaying(): ReactElement {
     }
     return (
         <Page name="now-playing" className="h-page overflow-auto">
-            <div ref={nowPlayingRef} tabIndex={-1} onKeyDown={handleKeyPress}>
-                {playerState.currentPlaying === undefined ? (
-                    <NoPlaying />
-                ) : (
+            {playerState.currentPlaying === undefined ? (
+                <NoPlaying />
+            ) : (
+                <div
+                    ref={nowPlayingRef}
+                    tabIndex={-1}
+                    onKeyDown={handleKeyPress}
+                >
                     <Block>
                         <div className="w-full 2xl:h-80 lg:h-64 md:h-48 h-36">
                             <img
@@ -229,8 +233,8 @@ export default function NowPlaying(): ReactElement {
                             </Button>
                         </div>
                     </Block>
-                )}
-            </div>
+                </div>
+            )}
         </Page>
     )
 }
