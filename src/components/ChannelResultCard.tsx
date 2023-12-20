@@ -1,6 +1,6 @@
 import { Icon, Link } from 'framework7-react'
 import React from 'react'
-import { ChannelResult } from './interfaces'
+import { ChannelResult } from '@/typescript/interfaces'
 
 interface ChannelResultCardProps {
     data: ChannelResult

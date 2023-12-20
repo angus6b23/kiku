@@ -7,7 +7,7 @@ import {
     SearchOption,
     SearchResult,
     VideoResult,
-} from '../components/interfaces'
+} from '@/typescript/interfaces'
 import { Search } from 'youtubei.js/dist/src/parser/youtube'
 import Innertube from 'youtubei.js/agnostic'
 import { Channel, Playlist, Video } from 'youtubei.js/dist/src/parser/nodes'
@@ -112,9 +112,7 @@ async function searchInner(
                 if (item.type === 'Video') {
                     const i = item as Video
                     let views = Number(
-                        i.view_count.text
-                            ?.replace(/ views$/, '')
-                            .replaceAll(',', '')
+                        i.view_count.text?.replaceAll(',', '').match(/\d+/)[0]
                     )
                     views = isNaN(views) ? 0 : views
                     const newVideo: VideoResult = {

@@ -1,7 +1,6 @@
 import { Icon, Link } from 'framework7-react'
 import React, { useState } from 'react'
-import { VideoResult } from './interfaces'
-import { Playitem } from './interfaces'
+import { VideoResult, Playitem } from '@/typescript/interfaces'
 import { formatViewNumber, convertSecond } from '../utils/format'
 import { useDispatch, useSelector } from 'react-redux'
 import {

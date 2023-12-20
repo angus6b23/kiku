@@ -1,5 +1,5 @@
 import Innertube from 'youtubei.js/agnostic'
-import { Instance, Playitem } from '../components/interfaces'
+import { Instance, Playitem } from '@/typescript/interfaces'
 import axios from 'axios'
 import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import { convertSecond } from '@/utils/format'

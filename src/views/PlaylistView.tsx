@@ -12,12 +12,11 @@ import {
 } from 'framework7-react'
 import { useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
-import { Store, useCustomContext } from '@/components/context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import Innertube from 'youtubei.js/agnostic'
 import { PlaylistData } from '@/typescript/interfaces'
 import { nanoid } from 'nanoid'
 import VideoResultCard from '@/components/VideoResultCard'
-import { selectSearch } from '@/store/searchReducers'
 import presentToast from '@/components/Toast'
 import { handleGetPlaylist } from '@/js/playlist'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +27,6 @@ export interface PlaylistViewProps {
 
 export default function PlaylistView(props: PlaylistViewProps): ReactElement {
     const config = useSelector(selectConfig)
-    const search = useSelector(selectSearch)
     const [playlist, setPlaylist] = useState<PlaylistData | undefined>(
         undefined
     )

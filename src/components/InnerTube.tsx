@@ -2,7 +2,7 @@ import React, { useEffect, type ReactElement } from 'react'
 import { selectConfig } from '@/store/globalConfig'
 import { useSelector } from 'react-redux'
 import { Innertube } from 'youtubei.js/web'
-import { Store, useCustomContext } from './context'
+import { Store, useCustomContext } from '@/store/reactContext'
 
 // console.log(Innertube)
 export interface InnerTubeProps {}

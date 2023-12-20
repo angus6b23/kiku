@@ -32,7 +32,7 @@ const initConfigState: GlobalConfig = {
         showTimeline: false,
     },
     storage: {
-        enalbeBlobStorage: true,
+        enalbeBlobStorage: false,
         blobStorageSize: 100, // IN MB
     },
 }
@@ -68,6 +68,18 @@ export const globalConfig = createSlice({
                 instance: {
                     ...state.instance,
                     preferType: action.payload,
+                },
+            }
+        },
+        updateInstancei18n: (
+            state,
+            action: PayloadAction<{ type: 'lang' | 'location'; value: string }>
+        ) => {
+            return {
+                ...state,
+                instance: {
+                    ...state.instance,
+                    [action.payload.type]: action.payload.value,
                 },
             }
         },
@@ -120,6 +132,7 @@ export const {
     toggleTimeline,
     toggleBlobStorage,
     updateInstance,
+    updateInstancei18n,
     changeLocale,
     changeTheme,
     changeStorage,

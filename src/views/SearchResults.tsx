@@ -13,14 +13,14 @@ import {
 import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectSearch, nextPage } from '@/store/searchReducers'
-import NoResult from '@/components/NoResult'
 import { handleContinuation } from '@/js/search'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
-import { Store, useCustomContext } from '@/components/context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import { Continuation } from '@/typescript/interfaces'
 import ChannelResultCard from '@/components/ChannelResultCard'
 import { useTranslation } from 'react-i18next'
+import NoResult from '@/views/Search-modules/NoResult'
 
 export default function SearchResults(): ReactElement {
     const search = useSelector(selectSearch)

@@ -7,10 +7,7 @@ import {
     Playlist,
     Video,
 } from 'youtubei.js/dist/src/parser/nodes'
-import {
-    extractInnertubeThumbnail,
-    generatePipedThumbnail,
-} from '@/utils/thumbnailExtract'
+import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import { formatViewNumber, toSecond } from '@/utils/format'
 import axios from 'axios'
 import {
@@ -27,20 +24,6 @@ import {
 } from '@/utils/extractResults'
 import { getInstanceLists } from '@/utils/storeAccess'
 
-interface PipedRes {
-    // Results returned from piped
-    type: 'stream' | 'channel' | 'playlist'
-    url: string
-    name?: string
-    title?: string
-    uploaderName?: string
-    uploaderUrl?: string
-    duration?: number
-    views?: number
-    videos?: number
-    thumbnail: string
-    subscribers?: number
-}
 interface VideoContinuationRes {
     videos: VideoResult[]
     videoContinuation: undefined | string | ChannelListContinuation | Channel

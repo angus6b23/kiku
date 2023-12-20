@@ -10,6 +10,7 @@ import {
     Playitem,
     AbortControllerObject,
     LocalBlobEntry,
+    LocalPlaylist,
 } from '@/typescript/interfaces'
 import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,15 +20,16 @@ import {
     setItemDownloadStatus,
     setItemPlaying,
 } from '@/store/playlistReducers'
-import { Store } from './context'
+import { Store } from '@/store/reactContext'
 import { selectPlayer } from '@/store/playerReducers'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
-import localforage from 'localforage'
 import { getNextSong } from '@/utils/songControl'
 import { base64ToBlob, blobToBase64 } from '@/utils/base64'
 import { deleteBlob, saveBlob, selectLocalBlobs } from '@/store/blobStorage'
+import {savePlaylist, selectLocalPlaylist} from '@/store/localPlaylistReducers'
+import {Playlist} from 'youtubei.js/dist/src/parser/nodes'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer } = require('electron')
 
@@ -40,19 +42,10 @@ export default function Worker(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
     const localBlobs = useSelector(selectLocalBlobs)
+    const localPlaylists = useSelector(selectLocalPlaylist)
     const dispatch = useDispatch()
-    const [playlistLoaded, setPlaylistLoaded] = useState(false)
-
     // Spawn different instance of local forage for corresponding purpose
-    const playlistStore = useRef(
-        localforage.createInstance({
-            name: 'kiku-db',
-            storeName: 'current-playlist',
-            description: 'Storage for current playlist',
-        })
-    )
     const localBlobsRef = useRef(localBlobs)
-    const playlistRef = useRef(playlist)
     // Get variables from react context
     const {
         dispatchAudioBlob,
@@ -65,7 +58,6 @@ export default function Worker(): ReactElement {
             arg0: (prevState: AbortControllerObject) => AbortControllerObject
         ) => void
     } = useContext(Store)
-
     // Helper function of adding abort controller to react context
     const handleAddAbortController = (
         id: string,
@@ -189,6 +181,7 @@ export default function Worker(): ReactElement {
     useEffect(() => {
         // console.log('worker triggered', workerState)
         // Sometimes worker state do not come up when large item is downloading
+        // Wait for innertube to be ready
         if (workerState === 'idle') {
             const nextJob: undefined | Playitem = getNextJob()
             if (nextJob !== undefined) {
@@ -284,34 +277,6 @@ export default function Worker(): ReactElement {
         }
     }, [playlist])
 
-    // Automatically store playlist
-    useEffect(() => {
-        if (playlistLoaded) {
-            const playlistClone = playlist.map((item) => {
-                return {
-                    ...item,
-                    downloadStatus: 'pending',
-                    status: 'added',
-                }
-            })
-            playlistStore.current.setItem('current-playlist', playlistClone)
-        }
-    }, [playlist, playlistLoaded])
-
-    // Automatically load playlist after innertube is loaded
-    useEffect(() => {
-        setTimeout(() => {
-            playlistStore.current.getItem('current-playlist').then((res) => {
-                setPlaylistLoaded(true)
-                const loadedRes = res as Playitem[] | null
-                if (loadedRes !== null) {
-                    dispatch(loadPlaylist(loadedRes))
-                }
-            })
-        }, 200)
-    }, [])
-
-    // Handle ipcRenderer
     useEffect(() => {
         ipcRenderer.on('dir-size', (_: Event, size: number) => {
             // ipcMain will report the disk usage after each creation and deletion
@@ -338,9 +303,38 @@ export default function Worker(): ReactElement {
             }
         })
     }, [])
+
+    // Load playlist on startup or changing
+    useEffect(() => {
+        console.log('triggered load playlist')
+        const currentPlaylist = localPlaylists.playlists.find(playlist => playlist.id === localPlaylists.currentPlaylistId) as LocalPlaylist
+        dispatch(loadPlaylist(currentPlaylist.data))
+    }, [localPlaylists.currentPlaylistId])
+
+    useEffect(() => {
+        let changed = false
+        const newPlaylist: Playitem[] = playlist.map(item => {
+            return {
+                ...item,
+                downloadStatus: 'pending',
+                status: 'added'
+            }
+        })
+        const currentPlaylist = localPlaylists.playlists.find(item => item.id === localPlaylists.currentPlaylistId) as LocalPlaylist
+        newPlaylist.forEach((item, index) => {
+            const playlistItem = currentPlaylist.data[index];
+           if (playlistItem === undefined || item.id !== playlistItem.id){
+               changed = true
+           }
+        })
+        if (changed){
+            console.log('change detected')
+            dispatch(savePlaylist(newPlaylist))
+        }
+    }, [playlist])
+
     useEffect(() => {
         localBlobsRef.current = localBlobs
-        playlistRef.current = playlist
     }, [localBlobs, playlist])
     return <></>
 }

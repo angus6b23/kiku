@@ -16,14 +16,13 @@ import {
 import { useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
 import { fetchChannelDetails, handleChannelContinuation } from '@/js/channel'
-import { Store, useCustomContext } from '@/components/context'
-import Innertube from 'youtubei.js/agnostic'
+import { Store, useCustomContext } from '@/store/reactContext'
 import { ChannelData, VideoResult } from '@/typescript/interfaces'
 import { nanoid } from 'nanoid'
-import VideoResultCard from '@/components/VideoResultCard'
-import { Router } from 'framework7/types'
-import presentToast from '@/components/Toast'
 import { useTranslation } from 'react-i18next'
+import VideoResultCard from '@/components/VideoResultCard'
+import presentToast from '@/components/Toast'
+import Innertube from 'youtubei.js/agnostic'
 import PlaylistResultCard from '@/components/PlaylistResultCard'
 
 export interface ChannelViewProps {

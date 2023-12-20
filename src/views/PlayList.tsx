@@ -1,12 +1,11 @@
-import React, { useRef, type ReactElement, useEffect } from 'react'
+import React, { useRef, type ReactElement } from 'react'
 import { Block, List, ListItem, Navbar } from 'framework7-react'
-import { Playitem } from '../components/interfaces'
+import { Playitem } from '@/typescript/interfaces'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectPlaylist, setItemPlaying, sort } from '@/store/playlistReducers'
 import { play, selectPlayer } from '@/store/playerReducers'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/components/PlaylistControlBar'
-import { selectConfig } from '@/store/globalConfig'
 import { useTranslation } from 'react-i18next'
 
 export interface PlayListProps {}
@@ -19,7 +18,6 @@ export default function PlayList(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const playlist = useSelector(selectPlaylist)
     const dispatch = useDispatch()
-    const config = useSelector(selectConfig)
     const playingRef = useRef<HTMLElement>(null)
     const { t } = useTranslation(['common', 'playlist'])
 
