@@ -1,74 +1,67 @@
+<div align = center>
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/public/icon.svg" width="800" height="300" alt="kiku-logo">
+</div>
+
 # Kiku
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; margin-left: -0.5rem">
+<img alt="GitHub License" src="https://img.shields.io/github/license/angus6b23/kiku">
+<img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/angus6b23/kiku">
+<img alt="Liberapay receiving" src="https://img.shields.io/liberapay/receives/12a.app">
+</div>
 
-## Framework7 CLI Options
+An electron application for playing music from youtube on desktop. The application supports using [local api](https://github.com/LuanRT/YouTube.js), [invidious](https://github.com/iv-org/invidious) and [piped](https://github.com/TeamPiped/Piped) as source.
 
-Framework7 app created with following options:
+**Note: This is a music application. If you want a video client, please see [Freetube](https://github.com/FreeTubeApp/FreeTube)**
 
-```
-{
-  "cwd": "/media/Data/Web/kiku",
-  "type": [
-    "web"
-  ],
-  "name": "Kiku",
-  "framework": "react",
-  "template": "split-view",
-  "bundler": "vite",
-  "cssPreProcessor": false,
-  "theming": {
-    "customColor": true,
-    "color": "#89a0c2",
-    "darkMode": true,
-    "iconFonts": true
-  },
-  "customBuild": false
-}
-```
+**Warning: The application is currently under development and can be unstable in terms of behaviour and performance **
 
-## Install Dependencies
+## Screenshots
+<div style="display: flex; flex-wrap: wrap; gap: 1rem">
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot1.png" width="640" height="360" alt="kiku-screenshot">
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot2.png" width="640" height="360" alt="kiku-screenshot">
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot3.png" width="640" height="360" alt="kiku-screenshot">
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot4.png" width="640" height="360" alt="kiku-screenshot">
+</div>
 
-First of all we need to install dependencies, run in terminal
 
-```
-npm install
-```
 
-## NPM Scripts
+## Features 
 
--   🔥 `start` - run development server
--   🔧 `dev` - run development server
--   🔧 `build` - build web app for production
+- Select from source you like (Youtube, invidious, piped)
+- Automatical fallback to another source when one source failed
+- Available on Windows, Mac and Linux thanks to electron
+- Translation available
 
-## Vite
+## Installing
 
-There is a [Vite](https://vitejs.dev) bundler setup. It compiles and bundles all "front-end" resources. You should work only with files located in `/src` folder. Vite config located in `vite.config.js`.
+Binaries are available in release.
 
-## Assets
+## Building the application by yourself
 
-Assets (icons, splash screens) source images located in `assets-src` folder. To generate your own icons and splash screen images, you will need to replace all assets in this directory with your own images (pay attention to image size and format), and run the following command in the project directory:
+1.  Clone the git repository
 
-```
-framework7 assets
-```
+    `git clone https://github.com/angus6b23/kiku`
 
-Or launch UI where you will be able to change icons and splash screens:
+2.  Run yarn / npm to install dependencies
 
-```
-framework7 assets --ui
-```
+	Using yarn
+	`yarn`
 
-## Documentation & Resources
+	Using npm
+	`npm install`
 
--   [Framework7 Core Documentation](https://framework7.io/docs/)
+3.  Build and package the files
 
--   [Framework7 React Documentation](https://framework7.io/react/)
+	Using yarn
+	`yarn build && yarn package`
+	
+	Using npm
+	`npn run build && npm run package`
 
--   [Framework7 Icons Reference](https://framework7.io/icons/)
--   [Community Forum](https://forum.framework7.io)
+4. If the building process is successful, the binaries will be "out" folder
 
-## Support Framework7
+## License
 
-Love Framework7? Support project by donating or pledging on:
+![img](https://www.gnu.org/graphics/gplv3-or-later.svg)
 
--   Patreon: https://patreon.com/framework7
--   OpenCollective: https://opencollective.com/framework7
+This app is provided under GPL v3.0 or later. For details, please see https://www.gnu.org/licenses/gpl-3.0.en.html
