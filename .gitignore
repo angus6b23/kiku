@@ -41,5 +41,6 @@ Thumbs.db
 # Production build
 www/
 dist/
-
+dist-electron/
 out/
+release/

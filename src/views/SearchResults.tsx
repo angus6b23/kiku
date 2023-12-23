@@ -12,8 +12,8 @@ import {
 } from 'framework7-react'
 import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectSearch, nextPage } from '@/store/searchReducers'
-import { handleContinuation } from '@/js/search'
+import { selectSearch, nextPage, newSearch } from '@/store/searchReducers'
+import { handleContinuation, handleSearchVideo } from '@/js/search'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import { Store, useCustomContext } from '@/store/reactContext'
@@ -21,19 +21,25 @@ import { Continuation } from '@/typescript/interfaces'
 import ChannelResultCard from '@/components/ChannelResultCard'
 import { useTranslation } from 'react-i18next'
 import NoResult from '@/views/Search-modules/NoResult'
+import presentToast from '@/components/Toast'
 
-export default function SearchResults(): ReactElement {
+interface SearchResultsProps{
+    searchTerm: string
+}
+
+export default function SearchResults(props: SearchResultsProps): ReactElement {
     const search = useSelector(selectSearch)
     const config = useSelector(selectConfig)
     const { t } = useTranslation(['search-result', 'common'])
     const {
+        innertube,
         continuation,
         setContinuation,
     }: {
+        innertube: React.RefObject<null | Innertube>
         continuation: Continuation
         setContinuation: (arg0: Continuation) => void
     } = useCustomContext(Store)
-    const { innertube }: { innertube: React.RefObject<Innertube | null> } =
         useCustomContext(Store)
     const resultTop = useRef<HTMLElement>(null)
     const dispatch = useDispatch()
@@ -50,6 +56,17 @@ export default function SearchResults(): ReactElement {
         setContinuation(res.continuation)
         f7.preloader.hideIn('#page-router')
     }
+    useEffect(() => {
+        console.log('triggered')
+        handleSearchVideo(props.searchTerm, search, config.instance.preferType, innertube.current)
+            .then((res) => {
+                dispatch(newSearch({ res: res.data, searchTerm: props.searchTerm }))
+                setContinuation(res.continuation)
+            })
+            .catch(err => {
+                presentToast('error', err)
+            })
+    }, [props.searchTerm])
     useEffect(() => {
         if (search.page === 1) {
             resultTop.current?.scrollIntoView({ block: 'end' })

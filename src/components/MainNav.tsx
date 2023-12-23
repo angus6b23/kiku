@@ -82,9 +82,7 @@ const MainNav = (props: MainNavProps) => {
     }
 
     const handleSearch = async () => {
-        props.setTab('main')
         autocompleteSearch.current.close()
-        f7.preloader.showIn('#page-router')
         let fullfilled = false
         if (searchTerm === '') {
             // Do not perform search if the searchTerm is empty
@@ -136,21 +134,9 @@ const MainNav = (props: MainNavProps) => {
             f7.preloader.hideIn('#page-router')
             return
         }
-        // Search with keyword starts here
-        try {
-            const res = await handleSearchVideo(
-                searchTerm,
-                { ...search, page: 1 },
-                config.instance.preferType,
-                innertube.current
-            )
-            dispatch(newSearch({ res: res.data, searchTerm: searchTerm }))
-            setContinuation(res.continuation)
-        } catch (err) {
-            presentToast('error', err as string)
-        }
-        f7.views.get('#page-router').router.navigate('/')
-        f7.preloader.hideIn('#page-router')
+        // Route to search results
+        props.setTab('main')
+        f7.views.get('#page-router').router.navigate(`/search/${searchTerm}`)
     }
 
     useEffect(() => {
