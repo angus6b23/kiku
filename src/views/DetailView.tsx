@@ -17,7 +17,7 @@ import {
 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
-import { Store, useCustomContext } from '@/components/context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import { VideoDetails } from '@/typescript/interfaces'
 import { nanoid } from 'nanoid'
 import VideoResultCard from '@/components/VideoResultCard'
@@ -177,12 +177,16 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                 <div className="col-span-4">
                                     {convertSecond(details.lengthSeconds)}
                                 </div>
-                                <div className="col-span-2">
-                                    {t('video-detail:Published-at')}
-                                </div>
-                                <div className="col-span-4">
-                                    {getIntlDate(details.published)}
-                                </div>
+                                {!isNaN(details.published) && (
+                                    <>
+                                        <div className="col-span-2">
+                                            {t('video-detail:Published-at')}
+                                        </div>
+                                        <div className="col-span-4">
+                                            {getIntlDate(details.published)}
+                                        </div>
+                                    </>
+                                )}
                                 {details.viewCount && (
                                     <>
                                         <div className="col-span-2">

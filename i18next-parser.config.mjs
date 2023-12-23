@@ -1,5 +1,5 @@
 // i18next-parser.config.js
-const supportedLangs = ['en', 'fr', 'ja', 'zh-TW', 'zh-CN']
+const supportedLangs = ['en', 'zh-TW']
 
 export default {
     contextSeparator: '_',

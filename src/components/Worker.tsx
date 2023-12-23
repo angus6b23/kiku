@@ -10,6 +10,7 @@ import {
     Playitem,
     AbortControllerObject,
     LocalBlobEntry,
+    LocalPlaylist,
 } from '@/typescript/interfaces'
 import { handleFetchStream } from '@/js/fetchInfo'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,15 +20,15 @@ import {
     setItemDownloadStatus,
     setItemPlaying,
 } from '@/store/playlistReducers'
-import { Store } from './context'
+import { Store } from '@/store/reactContext'
 import { selectPlayer } from '@/store/playerReducers'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
-import localforage from 'localforage'
 import { getNextSong } from '@/utils/songControl'
 import { base64ToBlob, blobToBase64 } from '@/utils/base64'
 import { deleteBlob, saveBlob, selectLocalBlobs } from '@/store/blobStorage'
+import {savePlaylist, selectLocalPlaylist} from '@/store/localPlaylistReducers'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer } = require('electron')
 
@@ -40,19 +41,10 @@ export default function Worker(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
     const localBlobs = useSelector(selectLocalBlobs)
+    const localPlaylists = useSelector(selectLocalPlaylist)
     const dispatch = useDispatch()
-    const [playlistLoaded, setPlaylistLoaded] = useState(false)
-
     // Spawn different instance of local forage for corresponding purpose
-    const playlistStore = useRef(
-        localforage.createInstance({
-            name: 'kiku-db',
-            storeName: 'current-playlist',
-            description: 'Storage for current playlist',
-        })
-    )
     const localBlobsRef = useRef(localBlobs)
-    const playlistRef = useRef(playlist)
     // Get variables from react context
     const {
         dispatchAudioBlob,
@@ -66,6 +58,10 @@ export default function Worker(): ReactElement {
         ) => void
     } = useContext(Store)
 
+    const [queue, setQueue] = useState<Playitem[]>([])
+    const [workerState, setWorkerState] = useState<string>('idle')
+
+
     // Helper function of adding abort controller to react context
     const handleAddAbortController = (
         id: string,
@@ -75,6 +71,7 @@ export default function Worker(): ReactElement {
             return { ...prevState, [id]: controller }
         })
     }
+
     // Helper function for fetching stream via different api
     const fetchStream = (
         nextJob: Playitem,
@@ -86,62 +83,60 @@ export default function Worker(): ReactElement {
             innertube?.current,
             axiosController
         )
-            // Pass parameters to fetch stream, including an abort controller to stop downloading if the item is removed
-            .then((blob: Blob | Error) => {
-                // Check if the result is an error
-                if (blob instanceof Error) {
-                    throw new Error(blob as unknown as string)
-                } else {
-                    // Dispatch the audio blob to react context
-                    dispatchAudioBlob({
-                        type: 'ADD_BLOB',
-                        payload: { id: nextJob.id, blob: blob },
-                    })
-                    if (config.storage.enalbeBlobStorage) {
-                        // Store to local disk if enabled
-                        blobToBase64(blob).then((base64) => {
-                            ipcRenderer.send('create-blob', {
-                                id: nextJob.id,
-                                blob: base64,
-                                extension: blob.type,
-                            })
-                            const timeNow = new Date().getTime()
-                            dispatch(
-                                saveBlob({
-                                    id: nextJob.id,
-                                    title: nextJob.title,
-                                    extension: blob.type,
-                                    created: timeNow,
-                                    lastAccess: timeNow,
-                                })
-                            )
-                        })
-                    }
-                    setWorkerState('idle')
-                    dispatch(
-                        setItemDownloadStatus({
+        // Pass parameters to fetch stream, including an abort controller to stop downloading if the item is removed
+        .then((blob: Blob | Error) => {
+            // Check if the result is an error
+            if (blob instanceof Error) {
+                throw new Error(blob as unknown as string)
+            } else {
+                // Dispatch the audio blob to react context
+                dispatchAudioBlob({
+                    type: 'ADD_BLOB',
+                    payload: { id: nextJob.id, blob: blob },
+                })
+                if (config.storage.enalbeBlobStorage) {
+                    // Store to local disk if enabled
+                    blobToBase64(blob).then((base64) => {
+                        // Send data as base64 to ipcMain
+                        ipcRenderer.send('create-blob', {
                             id: nextJob.id,
-                            status: 'downloaded',
+                            blob: base64,
+                            extension: blob.type,
                         })
-                    )
+                        const timeNow = new Date().getTime()
+                        // Make a record of the blob for deletion later
+                        dispatch(
+                            saveBlob({
+                                id: nextJob.id,
+                                title: nextJob.title,
+                                extension: blob.type,
+                                created: timeNow,
+                                lastAccess: timeNow,
+                            })
+                        )
+                    })
                 }
-            })
-            .catch((err: Error) => {
                 setWorkerState('idle')
-                console.log(err)
-                presentToast('error', err.message)
-                // Show toast
                 dispatch(
                     setItemDownloadStatus({
                         id: nextJob.id,
-                        status: 'error',
+                        status: 'downloaded',
                     })
                 )
-            })
+            }
+        })
+        .catch((err: Error) => {
+            setWorkerState('idle')
+            console.log(err)
+            // Show toast
+            dispatch(
+                setItemDownloadStatus({
+                    id: nextJob.id,
+                    status: 'error',
+                })
+            )
+        })
     }
-
-    // Will only download one item at once, download when idle, pass when working
-    const [workerState, setWorkerState] = useState('idle')
 
     // Get the next job from playlist
     const getNextJob: () => undefined | Playitem = () => {
@@ -181,87 +176,184 @@ export default function Worker(): ReactElement {
         }
         return result
     }
+
+    const generateQueue = () => {
+        let newQueue: Playitem[] = []
+        const currentPlayingIndex = playlist.findIndex(item => item.status === 'playing')
+        if (currentPlayingIndex === -1) {
+            newQueue = playlist.filter(item => item.downloadStatus !== 'downloaded')
+        } else {
+            for (let i = currentPlayingIndex + 1; i < playlist.length; i++){
+                if (playlist[i].downloadStatus !== 'downloaded'){
+                    newQueue.push(playlist[i])
+                }
+            }
+            for (let i = 0; i < currentPlayingIndex; i++){
+                if (playlist[i].downloadStatus !== 'downloaded'){
+                    newQueue.push(playlist[i])
+                }
+            }
+        }
+        return newQueue
+    }
+
+    const queueChanged = (newQueue: Playitem[]) => {
+        if (newQueue.length !== queue.length){
+            return true
+        } else {
+            return !newQueue.every((item, index) => item.id === queue[index].id)
+        }
+    }
+
+    useEffect(() => {
+        const newQueue = generateQueue()
+        if (queueChanged(newQueue)){
+            setQueue(newQueue)
+        }
+    }, [playlist])
+
+    useEffect(() => {
+        // console.log(workerState)
+        // Only work when the status is idle and next job exists
+        if (workerState !== 'idle' || queue.length === 0){
+            return 
+        }
+        setWorkerState('working');
+        const nextJob = queue[0]
+        console.log(`[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`)
+        // Create an abort controller for axios
+        const axiosController = new AbortController();
+        // Add the abort controller to react context
+        handleAddAbortController(nextJob.id, axiosController)
+        // Tell redux that the current job is downloading
+        dispatch(
+            setItemDownloadStatus({
+                id: nextJob.id,
+                status: 'downloading',
+            })
+        )
+        const matchingLocalBlob = localBlobs.find(
+            (item) => item.id === nextJob.id
+        ) // Try to find currently existing local blob first
+        if (matchingLocalBlob !== undefined) {
+            // If localBlob can be found, try to invoke a request to main process through ipcRenderer
+            ipcRenderer.invoke('get-blob', nextJob.id)
+            .then((res: {exist: boolean, data: undefined | string}) =>{ // ipcMain will return the data in base64 format
+                if (res.exist && res.data !== undefined){
+                    return base64ToBlob(res.data) // Convert back to blob if retrieved successfully
+                } else {
+                    throw new Error('Failed to fetch from local storage')
+                }
+            })
+            .then((blob: Blob) => {
+                // Add the blob the blob store afterwards
+                dispatchAudioBlob({
+                    type: 'ADD_BLOB',
+                    payload: {
+                        id: nextJob.id,
+                        blob: blob,
+                    },
+                })
+                dispatch(
+                    setItemDownloadStatus({
+                        id: nextJob.id,
+                        status: 'downloaded',
+                    })
+                )
+                setWorkerState('idle')
+            })
+            .catch(()=>{
+                fetchStream(nextJob, axiosController)
+            })
+        } else {
+            fetchStream(nextJob, axiosController)
+        }
+    }, [queue, workerState])
+
+
+
     // const getIsDownloading = () => {
     //     return playlist.some((item) => item.downloadStatus === 'downloading')
     // }
 
     // Watcher for playlist, automatically download info and audio blob when available
-    useEffect(() => {
-        // console.log('worker triggered', workerState)
-        // Sometimes worker state do not come up when large item is downloading
-        if (workerState === 'idle') {
-            const nextJob: undefined | Playitem = getNextJob()
-            if (nextJob !== undefined) {
-                // Only work when the status is idle and next job exists
-                setWorkerState('working')
-                // try to fetch stream url first from info
-                // if (!nextJob.streamUrl) {
-                console.log(
-                    `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
-                )
-                // Create an abort controller for axios
-                const axiosController = new AbortController()
-                // Add the abort controller to react context
-                handleAddAbortController(nextJob.id, axiosController)
-                // Tell redux that the current job is downloading
-                dispatch(
-                    setItemDownloadStatus({
-                        id: nextJob.id,
-                        status: 'downloading',
-                    })
-                )
-                const matchingLocalBlob = localBlobs.find(
-                    (item) => item.id === nextJob.id
-                ) // Try to find currently existing local blob
-                if (matchingLocalBlob !== undefined) {
-                    // If localBlob can be found, try to invoke a request to main process through ipcRenderer
-                    ipcRenderer
-                        .invoke('get-blob', nextJob.id)
-                        .then(
-                            (res: {
-                                exist: boolean
-                                data: undefined | string
-                            }) => {
-                                // ipcMain will return exist: boolean, data: string(base64)
-                                if (res.exist && res.data !== undefined) {
-                                    base64ToBlob(res.data)
-                                        .then((blob) => {
-                                            dispatchAudioBlob({
-                                                type: 'ADD_BLOB',
-                                                payload: {
-                                                    id: nextJob.id,
-                                                    blob: blob,
-                                                },
-                                            })
-                                            dispatch(
-                                                setItemDownloadStatus({
-                                                    id: nextJob.id,
-                                                    status: 'downloaded',
-                                                })
-                                            )
-                                            setWorkerState('idle')
-                                        })
-                                        .catch((err) => {
-                                            // Fetch Stream if any error occurs
-                                            console.error(err)
-                                            fetchStream(
-                                                nextJob,
-                                                axiosController
-                                            )
-                                        })
-                                } else {
-                                    // Fetch Stream if the id do not exist in local storage
-                                    fetchStream(nextJob, axiosController)
-                                }
-                            }
-                        )
-                } else {
-                    // Simply fetch from internet if local blob is not found
-                    fetchStream(nextJob, axiosController)
-                }
-            }
-        }
-    }, [playlist])
+    // useEffect(() => {
+    //     // console.log('worker triggered', workerState)
+    //     // Sometimes worker state do not come up when large item is downloading
+    //     // Wait for innertube to be ready
+    //     if (workerState === 'idle') {
+    //         const nextJob: undefined | Playitem = getNextJob()
+    //         if (nextJob !== undefined) {
+    //             // Only work when the status is idle and next job exists
+    //             setWorkerState('working')
+    //             // try to fetch stream url first from info
+    //             // if (!nextJob.streamUrl) {
+    //             console.log(
+    //                 `[Worker] Start download video: ${nextJob.id} - ${nextJob.title}`
+    //             )
+    //             // Create an abort controller for axios
+    //             const axiosController = new AbortController()
+    //             // Add the abort controller to react context
+    //             handleAddAbortController(nextJob.id, axiosController)
+    //             // Tell redux that the current job is downloading
+    //             dispatch(
+    //                 setItemDownloadStatus({
+    //                     id: nextJob.id,
+    //                     status: 'downloading',
+    //                 })
+    //             )
+    //             const matchingLocalBlob = localBlobs.find(
+    //                 (item) => item.id === nextJob.id
+    //             ) // Try to find currently existing local blob
+    //             if (matchingLocalBlob !== undefined) {
+    //                 // If localBlob can be found, try to invoke a request to main process through ipcRenderer
+    //                 ipcRenderer
+    //                 .invoke('get-blob', nextJob.id)
+    //                 .then(
+    //                     (res: {
+    //                         exist: boolean
+    //                         data: undefined | string
+    //                     }) => {
+    //                         // ipcMain will return exist: boolean, data: string(base64)
+    //                         if (res.exist && res.data !== undefined) {
+    //                             base64ToBlob(res.data)
+    //                             .then((blob) => {
+    //                                 dispatchAudioBlob({
+    //                                     type: 'ADD_BLOB',
+    //                                     payload: {
+    //                                         id: nextJob.id,
+    //                                         blob: blob,
+    //                                     },
+    //                                 })
+    //                                 dispatch(
+    //                                     setItemDownloadStatus({
+    //                                         id: nextJob.id,
+    //                                         status: 'downloaded',
+    //                                     })
+    //                                 )
+    //                                 setWorkerState('idle')
+    //                             })
+    //                             .catch((err) => {
+    //                                 // Fetch Stream if any error occurs
+    //                                 console.error(err)
+    //                                 fetchStream(
+    //                                     nextJob,
+    //                                     axiosController
+    //                                 )
+    //                             })
+    //                         } else {
+    //                             // Fetch Stream if the id do not exist in local storage
+    //                             fetchStream(nextJob, axiosController)
+    //                         }
+    //                     }
+    //                 )
+    //             } else {
+    //                 // Simply fetch from internet if local blob is not found
+    //                 fetchStream(nextJob, axiosController)
+    //             }
+    //         }
+    //     }
+    // }, [playlist])
 
     // Watch for playlist, automatically play music when new song is added
     useEffect(() => {
@@ -284,34 +376,6 @@ export default function Worker(): ReactElement {
         }
     }, [playlist])
 
-    // Automatically store playlist
-    useEffect(() => {
-        if (playlistLoaded) {
-            const playlistClone = playlist.map((item) => {
-                return {
-                    ...item,
-                    downloadStatus: 'pending',
-                    status: 'added',
-                }
-            })
-            playlistStore.current.setItem('current-playlist', playlistClone)
-        }
-    }, [playlist, playlistLoaded])
-
-    // Automatically load playlist after innertube is loaded
-    useEffect(() => {
-        setTimeout(() => {
-            playlistStore.current.getItem('current-playlist').then((res) => {
-                setPlaylistLoaded(true)
-                const loadedRes = res as Playitem[] | null
-                if (loadedRes !== null) {
-                    dispatch(loadPlaylist(loadedRes))
-                }
-            })
-        }, 200)
-    }, [])
-
-    // Handle ipcRenderer
     useEffect(() => {
         ipcRenderer.on('dir-size', (_: Event, size: number) => {
             // ipcMain will report the disk usage after each creation and deletion
@@ -338,9 +402,37 @@ export default function Worker(): ReactElement {
             }
         })
     }, [])
+
+    // Load playlist on startup or changing
+    useEffect(() => {
+        const currentPlaylist = localPlaylists.playlists.find(playlist => playlist.id === localPlaylists.currentPlaylistId) as LocalPlaylist
+        dispatch(loadPlaylist(currentPlaylist.data))
+    }, [localPlaylists.currentPlaylistId])
+
+    // Watch for current playlist, dispatch to save playlist if changed detected
+    useEffect(() => {
+        let changed = false
+        const newPlaylist: Playitem[] = playlist.map(item => {
+            return {
+                ...item,
+                downloadStatus: 'pending',
+                status: 'added'
+            }
+        })
+        const currentPlaylist = localPlaylists.playlists.find(item => item.id === localPlaylists.currentPlaylistId) as LocalPlaylist
+        newPlaylist.forEach((item, index) => {
+            const playlistItem = currentPlaylist.data[index];
+            if (playlistItem === undefined || item.id !== playlistItem.id){
+                changed = true
+            }
+        })
+        if (changed){
+            dispatch(savePlaylist(newPlaylist))
+        }
+    }, [playlist])
+
     useEffect(() => {
         localBlobsRef.current = localBlobs
-        playlistRef.current = playlist
     }, [localBlobs, playlist])
     return <></>
 }

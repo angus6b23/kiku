@@ -4,7 +4,16 @@
     "Retry": "",
     "Are-you-sure-to-clear-the-playlist": "",
     "Clear-playlist": "",
+    "Please-input-name-of-the-new-playlist": "",
+    "Playlist-Added": "",
+    "This-is-the-last-playlist": "",
+    "Are-you-sure-to-remove-the-playlist?": "",
+    "Please-input-the-new-name-for-playlist": "",
+    "Name-cannot-be-empty": "",
+    "New-Playlist": "",
     "Clear-Error-items": "",
     "Clear-played-items": "",
-    "Shuffle-unplayed-items": ""
+    "Shuffle-unplayed-items": "",
+    "Remove-playlist": "",
+    "Rename-playlist": ""
 }

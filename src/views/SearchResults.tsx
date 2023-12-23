@@ -9,47 +9,82 @@ import {
     Icon,
     Page,
     Toolbar,
+    Navbar,
+    NavLeft,
+    Link,
+    NavTitle,
 } from 'framework7-react'
 import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectSearch, nextPage } from '@/store/searchReducers'
-import NoResult from '@/components/NoResult'
-import { handleContinuation } from '@/js/search'
+import { selectSearch, nextPage, newSearch } from '@/store/searchReducers'
+import { handleContinuation, handleSearchVideo } from '@/js/search'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
-import { Store, useCustomContext } from '@/components/context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import { Continuation } from '@/typescript/interfaces'
 import ChannelResultCard from '@/components/ChannelResultCard'
 import { useTranslation } from 'react-i18next'
+import NoResult from '@/views/Search-modules/NoResult'
+import presentToast from '@/components/Toast'
 
-export default function SearchResults(): ReactElement {
+interface SearchResultsProps {
+    searchTerm: string
+}
+
+export default function SearchResults(props: SearchResultsProps): ReactElement {
     const search = useSelector(selectSearch)
     const config = useSelector(selectConfig)
     const { t } = useTranslation(['search-result', 'common'])
     const {
+        innertube,
         continuation,
         setContinuation,
     }: {
+        innertube: React.RefObject<null | Innertube>
         continuation: Continuation
         setContinuation: (arg0: Continuation) => void
     } = useCustomContext(Store)
-    const { innertube }: { innertube: React.RefObject<Innertube | null> } =
-        useCustomContext(Store)
+    useCustomContext(Store)
     const resultTop = useRef<HTMLElement>(null)
     const dispatch = useDispatch()
 
     const handleLoadMore = async () => {
+        try {
+            f7.preloader.showIn('#page-router')
+            const res = await handleContinuation(
+                search,
+                continuation,
+                config.instance.preferType,
+                innertube.current
+            )
+            dispatch(nextPage(res.data))
+            setContinuation(res.continuation)
+            f7.preloader.hideIn('#page-router')
+        } catch {
+            setContinuation(undefined)
+            f7.preloader.hideIn('#page-router')
+        }
+    }
+    useEffect(() => {
         f7.preloader.showIn('#page-router')
-        const res = await handleContinuation(
+        handleSearchVideo(
+            props.searchTerm,
             search,
-            continuation,
             config.instance.preferType,
             innertube.current
         )
-        dispatch(nextPage(res.data))
-        setContinuation(res.continuation)
-        f7.preloader.hideIn('#page-router')
-    }
+            .then((res) => {
+                dispatch(
+                    newSearch({ res: res.data, searchTerm: props.searchTerm })
+                )
+                setContinuation(res.continuation)
+                f7.preloader.hideIn('#page-router')
+            })
+            .catch((err) => {
+                presentToast('error', err)
+                f7.preloader.hideIn('#page-router')
+            })
+    }, [props.searchTerm])
     useEffect(() => {
         if (search.page === 1) {
             resultTop.current?.scrollIntoView({ block: 'end' })
@@ -57,6 +92,19 @@ export default function SearchResults(): ReactElement {
     }, [search])
     return (
         <Page name="search-result" className="h-page overflow-auto">
+            <Navbar>
+                <NavLeft>
+                    <Link href="/">
+                        <Icon f7="house_fill" />
+                    </Link>
+                    <Link back>
+                        <Icon f7="chevron_left" />
+                    </Link>
+                </NavLeft>
+                <NavTitle>
+                    {t('common:Search-Results')}: {props.searchTerm}
+                </NavTitle>
+            </Navbar>
             {search.results.length === 0 ? (
                 <NoResult />
             ) : (

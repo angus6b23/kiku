@@ -3,11 +3,12 @@ import DetailView from '@/views/DetailView'
 import PlaylistView from '@/views/PlaylistView'
 import SearchResults from '@/views/SearchResults'
 import TestPage from '@/views/TestPage'
+import NoResult from '@/views/Search-modules/NoResult'
 
 const routes = [
     {
         path: '/',
-        component: SearchResults,
+        component: NoResult,
     },
     {
         path: '/test',
@@ -24,6 +25,10 @@ const routes = [
     {
         path: '/details/:videoId',
         component: DetailView,
+    },
+    {
+        path: '/search/:searchTerm',
+        component: SearchResults,
     },
 ]
 

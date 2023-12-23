@@ -46,3 +46,7 @@
 div:focus {
     outline: none;
 }
+
+.playlist-select .item-after {
+    display: none;
+}

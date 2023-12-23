@@ -1,5 +1,5 @@
 import React, { useEffect, type ReactElement, useRef } from 'react'
-import { Store, useCustomContext } from './context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     pause,

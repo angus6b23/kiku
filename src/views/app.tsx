@@ -5,20 +5,18 @@ import {
     Continuation,
     Instance,
 } from '@/typescript/interfaces'
-import { Store } from '@/components/context'
-
 import { f7ready, App, Panel, View, Page } from 'framework7-react'
-
-import PlayList from '@/views/PlayList'
-import { blobStoreReducer } from '@/components/reducers'
+import { Store } from '@/store/reactContext'
+import { blobStoreReducer } from '@/store/reactReducers'
 import { Provider } from 'react-redux'
+import { store, persistor } from '@/store/store'
+import { PersistGate } from 'redux-persist/integration/react'
+import PlayList from '@/views/PlayList'
 import Worker from '@/components/Worker'
 import AudioWatcher from '@/components/AudioWatcher'
-import { store, persistor } from '@/store/store'
 import routes from '@/js/routes'
 import Innertube from 'youtubei.js/agnostic'
 import InnerTube from '@/components/InnerTube'
-import { PersistGate } from 'redux-persist/integration/react'
 import HomePage from '@/views/HomePage'
 import { getInvInstances, getPipedInstances } from '@/js/getInstances'
 import presentToast from '@/components/Toast'

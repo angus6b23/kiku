@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, memo } from 'react'
 // Import WaveSurfer
 import WaveSurfer from 'wavesurfer.js'
-import { WaveSurferOptions } from 'wavesurfer.js'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
 import HoverPlugin from 'wavesurfer.js/dist/plugins/hover'
 import { GenericPlugin } from 'wavesurfer.js/dist/base-plugin'

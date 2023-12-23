@@ -1,10 +1,22 @@
-import React, { useState, type ReactElement, useEffect, useRef } from 'react'
+import React, {
+    useState,
+    type ReactElement,
+    useEffect,
+    useRef,
+    BaseSyntheticEvent,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectConfig, updateInstance } from '@/store/globalConfig'
+import {
+    selectConfig,
+    updateInstance,
+    updateInstancei18n,
+} from '@/store/globalConfig'
 import { Instance } from '@/typescript/interfaces'
 import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
 import { useTranslation } from 'react-i18next'
-import { Store, useCustomContext } from './context'
+import { Store, useCustomContext } from '@/store/reactContext'
+import Innertube from 'youtubei.js/agnostic'
+import { ytLangs, ytRegions } from '@/js/youtubei18n'
 /* eslint @typescript-eslint/no-var-requires: 'off' */
 const shell = require('electron').shell // To open link in external browser
 
@@ -18,8 +30,13 @@ export default function InstanceSetting(): ReactElement {
     const [instances, setInstances] = useState<Instance[]>(
         config.instance.preferType
     )
-    const { instanceList }: { instanceList: Instance[] } =
-        useCustomContext(Store)
+    const {
+        instanceList,
+        innertube,
+    }: {
+        instanceList: Instance[]
+        innertube: React.RefObject<Innertube | null>
+    } = useCustomContext(Store)
 
     const dispatch = useDispatch()
 
@@ -46,6 +63,17 @@ export default function InstanceSetting(): ReactElement {
         const stateClone = [...instances]
         stateClone.splice(e.to, 0, ...stateClone.splice(e.from, 1))
         setInstances(stateClone)
+    }
+    const handlei18nChange = (e: BaseSyntheticEvent) => {
+        if (e.target.name === 'yt-lang') {
+            dispatch(
+                updateInstancei18n({ type: 'lang', value: e.target.value })
+            )
+        } else if (e.target.name === 'yt-region') {
+            dispatch(
+                updateInstancei18n({ type: 'location', value: e.target.value })
+            )
+        }
     }
     const resetInstances = () => {
         // Reset the default settings when reset button is pressed
@@ -156,7 +184,6 @@ export default function InstanceSetting(): ReactElement {
         // Watch for changes on instances, dispatch when changed
         dispatch(updateInstance(instances))
     }, [instances])
-
     return (
         <>
             <Block className="p-6">
@@ -206,6 +233,54 @@ export default function InstanceSetting(): ReactElement {
                             </ListItem>
                         )
                     })}
+                </List>
+                <List>
+                    <ListItem
+                        title={t('setting:Youtube-Language')}
+                        smartSelect
+                        smartSelectParams={{ openIn: 'popup' }}
+                    >
+                        <select
+                            name="yt-lang"
+                            defaultValue={config.instance.lang}
+                            onChange={handlei18nChange}
+                        >
+                            {ytLangs.map((lang) => {
+                                const intlLanguage = new Intl.DisplayNames(
+                                    [config.ui.lang],
+                                    { type: 'language' }
+                                )
+                                return (
+                                    <option value={lang} key={lang}>
+                                        {intlLanguage.of(lang)}
+                                    </option>
+                                )
+                            })}
+                        </select>
+                    </ListItem>
+                    <ListItem
+                        title={t('setting:Youtube-Region')}
+                        smartSelect
+                        smartSelectParams={{ openIn: 'popup' }}
+                    >
+                        <select
+                            name="yt-region"
+                            defaultValue={config.instance.location}
+                            onChange={handlei18nChange}
+                        >
+                            {ytRegions.map((region) => {
+                                const intlRegion = new Intl.DisplayNames(
+                                    [config.ui.lang],
+                                    { type: 'region' }
+                                )
+                                return (
+                                    <option value={region} key={region}>
+                                        {intlRegion.of(region)}
+                                    </option>
+                                )
+                            })}
+                        </select>
+                    </ListItem>
                 </List>
             </Block>
             {/* Buttons here */}

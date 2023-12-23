@@ -1,5 +1,5 @@
-import React, { useRef, type ReactElement } from 'react'
-import { AudioBlobObject, Playitem } from './interfaces'
+import React, { type ReactElement } from 'react'
+import { AudioBlobObject, Playitem } from '@/typescript/interfaces'
 import { Button, Icon, f7 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -8,12 +8,10 @@ import {
     setItemDownloadStatus,
     setItemPlaying,
 } from '@/store/playlistReducers'
-import { Store, useCustomContext } from './context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import { getNextSong } from '@/utils/songControl'
 import { setSong, stop } from '@/store/playerReducers'
-import { selectConfig } from '@/store/globalConfig'
 import presentToast from './Toast'
-import { nanoid } from 'nanoid'
 import { useTranslation } from 'react-i18next'
 
 export interface PlayItemInnerProps {
@@ -24,7 +22,6 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
     const { item } = props
     const dispatch = useDispatch()
     const playlist = useSelector(selectPlaylist)
-    const config = useSelector(selectConfig)
     const {
         dispatchAudioBlob,
         audioBlobStore,
@@ -38,12 +35,6 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
         abortController: { [key: string]: AbortController }
     } = useCustomContext(Store)
     const { t } = useTranslation(['playlist'])
-    const popoverClass = useRef('popover-' + nanoid(5))
-
-    const getInstanceUrl = (arg0: 'invidious' | 'piped') => {
-        return config.instance.preferType.find((item) => item.type === arg0)
-            ?.url
-    }
 
     const handleItemRemoval = (item: Playitem) => {
         if (item.status === 'playing') {
@@ -105,29 +96,6 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
         }
     }
 
-    const handleCopy = (type: string) => {
-        switch (type) {
-            case 'youtube':
-                navigator.clipboard.writeText(
-                    `https://youtu.be/${props.item.id}`
-                )
-                break
-            case 'invidious':
-                navigator.clipboard.writeText(
-                    `${getInstanceUrl('invidious')}/watch?v=${props.item.id}}`
-                )
-                break
-            case 'piped':
-                navigator.clipboard.writeText(
-                    `${getInstanceUrl('piped')}/watch?v=${props.item.id}}`
-                )
-                break
-            default:
-                throw new Error('unknown type to copy')
-        }
-        presentToast('success', `Copied ${type} link`)
-        // f7.popover.close(popoverClass.current)
-    }
     return (
         <>
             <div className="grid grid-cols-3">
@@ -190,18 +158,6 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                                 f7="xmark"
                             />
                         </Button>
-                        {/* <Button className="w-8 h-8 flex justify-center items-center" */}
-                        {/*     tooltip="Get links" */}
-                        {/*     onClick={(e)=>{ */}
-                        {/*         e.stopPropagation() */}
-                        {/*     }} */}
-                        {/*     popoverOpen={`.${popoverClass.current}`} */}
-                        {/* > */}
-                        {/*     <Icon */}
-                        {/*         className="text-lg -translate-y-1" */}
-                        {/*         f7="link" */}
-                        {/*     /> */}
-                        {/* </Button> */}
                         {item.downloadStatus === 'error' && (
                             <Button
                                 className="w-8 h-8 flex justify-center items-center"
@@ -225,19 +181,6 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                     </div>
                 </div>
             </div>
-            {/* <Popover backdrop={false} className={popoverClass.current}> */}
-            {/*     <List className="cursor-pointer"> */}
-            {/*         <ListItem className="text-md" onClick={() => handleCopy('youtube')} title="Copy Youtube link"> */}
-            {/*             <Icon slot="media" f7="doc_on_clipboard" /> */}
-            {/*         </ListItem> */}
-            {/*         <ListItem className="text-md" onClick={() => handleCopy('invidious')} title="Copy Invidious link"> */}
-            {/*             <Icon slot="media" f7="doc_on_clipboard" /> */}
-            {/*         </ListItem> */}
-            {/*         <ListItem className="text-md" onClick={() => handleCopy('piped')} title="Copy Piped link"> */}
-            {/*             <Icon slot="media" f7="doc_on_clipboard" /> */}
-            {/*         </ListItem> */}
-            {/*     </List> */}
-            {/* </Popover> */}
         </>
     )
 }

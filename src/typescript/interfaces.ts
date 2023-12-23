@@ -114,23 +114,7 @@ interface VideoDetails extends VideoResult {
     recommendedVideos: VideoResult[]
 }
 type SearchResult = VideoResult | PlaylistResult | ChannelResult
-// interface SearchResult {
-//     type: string
-//     title: string
-//     videoId: string
-//     author: string
-//     authorId: string
-//     videoThumbnails: Thumbnail[]
-//     description?: string
-//     descriptionHtml?: string
-//     viewCount: number
-//     published?: number
-//     publishedText?: string
-//     lengthSeconds: number
-//     liveNow?: boolean
-//     paid?: boolean
-//     premium?: boolean
-// }
+
 interface PlayerState {
     currentPlaying: Playitem | undefined
     status: 'stopped' | 'playing' | 'paused'
@@ -200,6 +184,11 @@ interface LocalBlobEntry {
     lastAccess: number
 }
 
+interface LocalPlaylist {
+    name: string
+    id: string
+    data: Playitem[]
+}
 type Continuation = Search | string | undefined
 
 export type {
@@ -227,4 +216,5 @@ export type {
     PlaylistData,
     Continuation,
     LocalBlobEntry,
+    LocalPlaylist,
 }

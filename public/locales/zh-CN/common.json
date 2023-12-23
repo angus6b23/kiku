@@ -1,5 +1,4 @@
 {
-    "URL": "",
     "Search-here": "",
     "Search": "Search",
     "Now-Playing": "Now Playing",
@@ -11,6 +10,7 @@
     "Playlists": "",
     "Load-More": "",
     "Playlist": "",
+    "URL": "",
     "Global-UI": "",
     "setting": ""
 }

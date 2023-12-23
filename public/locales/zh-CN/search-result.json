@@ -1,6 +1,4 @@
 {
-    "No-search-results": "",
-    "Search-something-on-the-search-bar": "",
     "Details": "",
     "Replace-Playlist-Prompt": "",
     "Replace-current-playlist": "",
@@ -9,5 +7,9 @@
     "Already-on-playlist": "",
     "Add-to-playlist": "",
     "Add-to-next-song": "",
+    "Copy-Link": "",
+    "Open-link": "",
+    "No-search-results": "",
+    "Search-something-on-the-search-bar": "",
     "Search-Results": ""
 }

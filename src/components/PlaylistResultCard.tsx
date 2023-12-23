@@ -1,6 +1,11 @@
 import { Icon, Link, f7 } from 'framework7-react'
 import React, { useState } from 'react'
-import { Playitem, PlaylistResult, Thumbnail, PlaylistData } from './interfaces'
+import {
+    Playitem,
+    PlaylistResult,
+    Thumbnail,
+    PlaylistData,
+} from '@/typescript/interfaces'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     addToPlaylist,
@@ -9,7 +14,7 @@ import {
 } from '@/store/playlistReducers'
 import { handleGetPlaylist } from '@/js/playlist'
 import { selectConfig } from '@/store/globalConfig'
-import { Store, useCustomContext } from './context'
+import { Store, useCustomContext } from '@/store/reactContext'
 import Innertube from 'youtubei.js/agnostic'
 import presentToast from './Toast'
 import { convertSecond } from '@/utils/format'

@@ -3,7 +3,7 @@ import {
     SearchAction,
     AudioBlobObject,
     AudioBlobAction,
-} from './interfaces'
+} from '@/typescript/interfaces'
 
 const searchReducer = (state: SearchState, action: SearchAction) => {
     const { type, payload } = action
