@@ -65,19 +65,19 @@ export default function DetailView(props: DetailViewProps): ReactElement {
             (item: Playitem) => item.id === props.videoId
         )
         if (sameId.length > 0) return
-            const newPlayitem: Playitem = {
-                id: props.videoId,
-                title: details?.title as string,
-                thumbnailURL: highResImage === undefined ? '' : highResImage.url,
-                duration: convertSecond(details?.lengthSeconds as number),
-                status: 'added',
-                downloadStatus: 'pending',
-            }
-            if (nextSong) {
-                dispatch(addToNextSong(newPlayitem))
-            } else {
-                dispatch(addToPlaylist(newPlayitem))
-            }
+        const newPlayitem: Playitem = {
+            id: props.videoId,
+            title: details?.title as string,
+            thumbnailURL: highResImage === undefined ? '' : highResImage.url,
+            duration: convertSecond(details?.lengthSeconds as number),
+            status: 'added',
+            downloadStatus: 'pending',
+        }
+        if (nextSong) {
+            dispatch(addToNextSong(newPlayitem))
+        } else {
+            dispatch(addToPlaylist(newPlayitem))
+        }
     }
     const copyLink = (type: string) => {
         const invidiousUrl = config.instance.preferType.find(
@@ -87,14 +87,14 @@ export default function DetailView(props: DetailViewProps): ReactElement {
             case 'youtube':
                 navigator.clipboard.writeText(
                     `https://youtu.be/${details?.videoId}`
-            )
-                    break
-                    case 'invidious':
-                        navigator.clipboard.writeText(
-                            invidiousUrl + `/${details?.videoId}`
-                    )
-                    break
-                    default:
+                )
+                break
+            case 'invidious':
+                navigator.clipboard.writeText(
+                    invidiousUrl + `/${details?.videoId}`
+                )
+                break
+            default:
         }
     }
     const openLink = (type: string) => {
@@ -108,8 +108,8 @@ export default function DetailView(props: DetailViewProps): ReactElement {
             case 'invidious':
                 shell.openExternal(
                     invidiousUrl + `/watch?v=${details?.videoId}`
-            )
-            break
+                )
+                break
             default:
         }
     }
@@ -121,19 +121,19 @@ export default function DetailView(props: DetailViewProps): ReactElement {
             config.instance.preferType,
             innertube.current
         )
-        .then((res) => {
-            if (res instanceof Error) {
-                presentToast('error', res.message)
-                setDetails(undefined)
-            } else {
+            .then((res) => {
+                if (res instanceof Error) {
+                    presentToast('error', res.message)
+                    setDetails(undefined)
+                } else {
+                    f7.preloader.hideIn('#page-router')
+                    setDetails(res)
+                }
+            })
+            .catch((err) => {
                 f7.preloader.hideIn('#page-router')
-                setDetails(res)
-            }
-        })
-        .catch((err) => {
-            f7.preloader.hideIn('#page-router')
-            presentToast('error', err)
-        })
+                presentToast('error', err)
+            })
     }, [props.videoId])
 
     return (
@@ -177,16 +177,16 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                 <div className="col-span-4">
                                     {convertSecond(details.lengthSeconds)}
                                 </div>
-                                { !isNaN(details.published) && 
-                                <>
-                                    <div className="col-span-2">
-                                        {t('video-detail:Published-at')}
-                                    </div>
-                                    <div className="col-span-4">
-                                        {getIntlDate(details.published)}
-                                    </div>
-                                </>
-                                }
+                                {!isNaN(details.published) && (
+                                    <>
+                                        <div className="col-span-2">
+                                            {t('video-detail:Published-at')}
+                                        </div>
+                                        <div className="col-span-4">
+                                            {getIntlDate(details.published)}
+                                        </div>
+                                    </>
+                                )}
                                 {details.viewCount && (
                                     <>
                                         <div className="col-span-2">

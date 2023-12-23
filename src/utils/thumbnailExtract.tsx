@@ -28,8 +28,8 @@ export const extractInvidiousChannelThumbnail = (
         index === 0
             ? { ...state, quality: 'maxres' }
             : index === 1
-            ? { ...state, quality: 'medium' }
-            : { ...state, quality: '' }
+              ? { ...state, quality: 'medium' }
+              : { ...state, quality: '' }
     )
 }
 export const generatePipedThumbnail = (url: string) => {

@@ -1,7 +1,5 @@
 import InstanceSetting from '@/views/Setting-modules/InstanceSetting'
-import {
-    selectConfig,
-} from '@/store/globalConfig'
+import { selectConfig } from '@/store/globalConfig'
 import {
     AccordionContent,
     Block,

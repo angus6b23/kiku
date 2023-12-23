@@ -1,5 +1,5 @@
 import MainNav from '@/components/MainNav'
-import React, { useState, type ReactElement, useEffect } from 'react'
+import React, { useState, type ReactElement, useEffect, BaseSyntheticEvent } from 'react'
 import { Block, Tabs, Tab, View, Toolbar, f7 } from 'framework7-react'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
@@ -12,6 +12,7 @@ export interface HomePageProps {}
 export default function HomePage(props: HomePageProps): ReactElement {
     const [tab, setTab] = useState('main')
     const playerState = useSelector(selectPlayer)
+    // Add event listener for back hotkey
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
             if (e.code === 'ArrowLeft' && e.altKey) {
@@ -21,6 +22,15 @@ export default function HomePage(props: HomePageProps): ReactElement {
         }
         document.addEventListener('keydown', handleKeyPress)
         return () => document.removeEventListener('keydown', handleKeyPress)
+    }, [])
+    // Automatically switch to main tab when route change
+    useEffect(() => {
+        const routerListener = () => {
+            setTab('main')
+        }
+        f7.views.get('#page-router').on('routeChange', routerListener)
+        return () => f7.views.get('#page-router').off('routeChange', routerListener)
+
     }, [])
     return (
         <>

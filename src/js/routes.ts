@@ -28,8 +28,8 @@ const routes = [
     },
     {
         path: '/search/:searchTerm',
-        component: SearchResults
-    }
+        component: SearchResults,
+    },
 ]
 
 export default routes

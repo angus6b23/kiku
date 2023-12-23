@@ -1,12 +1,14 @@
 import { Icon } from 'framework7-react'
 import React, { type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
+import {Page} from 'framework7-react'
 
 export interface NoResultProps {}
 
 export default function NoResult(): ReactElement {
     const { t } = useTranslation(['search-result'])
     return (
+        <Page className="h-page">
         <section className="w-full h-full flex justify-center items-center">
             <div className="w-full h-fit flex flex-wrap justify-center flex-row items-center gap-8 my-auto">
                 <div className="w-full">
@@ -27,5 +29,6 @@ export default function NoResult(): ReactElement {
                 </div>
             </div>
         </section>
+        </Page>
     )
 }

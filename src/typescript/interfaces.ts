@@ -216,5 +216,5 @@ export type {
     PlaylistData,
     Continuation,
     LocalBlobEntry,
-    LocalPlaylist
+    LocalPlaylist,
 }

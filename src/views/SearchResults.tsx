@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next'
 import NoResult from '@/views/Search-modules/NoResult'
 import presentToast from '@/components/Toast'
 
-interface SearchResultsProps{
+interface SearchResultsProps {
     searchTerm: string
 }
 
@@ -49,7 +49,7 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
     const dispatch = useDispatch()
 
     const handleLoadMore = async () => {
-        try{
+        try {
             f7.preloader.showIn('#page-router')
             const res = await handleContinuation(
                 search,
@@ -62,21 +62,28 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
             f7.preloader.hideIn('#page-router')
         } catch {
             setContinuation(undefined)
-            f7.preloader.hideIn('#page-router');
+            f7.preloader.hideIn('#page-router')
         }
     }
     useEffect(() => {
         f7.preloader.showIn('#page-router')
-        handleSearchVideo(props.searchTerm, search, config.instance.preferType, innertube.current)
-        .then((res) => {
-            dispatch(newSearch({ res: res.data, searchTerm: props.searchTerm }))
-            setContinuation(res.continuation)
-            f7.preloader.hideIn('#page-router')
-        })
-        .catch(err => {
-            presentToast('error', err)
-            f7.preloader.hideIn('#page-router')
-        })
+        handleSearchVideo(
+            props.searchTerm,
+            search,
+            config.instance.preferType,
+            innertube.current
+        )
+            .then((res) => {
+                dispatch(
+                    newSearch({ res: res.data, searchTerm: props.searchTerm })
+                )
+                setContinuation(res.continuation)
+                f7.preloader.hideIn('#page-router')
+            })
+            .catch((err) => {
+                presentToast('error', err)
+                f7.preloader.hideIn('#page-router')
+            })
     }, [props.searchTerm])
     useEffect(() => {
         if (search.page === 1) {
@@ -110,22 +117,22 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
                     </BlockTitle>
                     <Block className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {search.results.map((result) =>
-                                            result.type === 'video' ? (
-                                                <VideoResultCard key={nanoid()} data={result} />
-                        ) : result.type === 'playlist' ? (
-                            <PlaylistResultCard
-                                key={nanoid()}
-                                data={result}
-                            />
-                        ) : result.type === 'channel' ? (
-                            <ChannelResultCard
-                                data={result}
-                                key={nanoid()}
-                            />
-                        ) : (
-                            <></>
-                        )
-                                           )}
+                            result.type === 'video' ? (
+                                <VideoResultCard key={nanoid()} data={result} />
+                            ) : result.type === 'playlist' ? (
+                                <PlaylistResultCard
+                                    key={nanoid()}
+                                    data={result}
+                                />
+                            ) : result.type === 'channel' ? (
+                                <ChannelResultCard
+                                    data={result}
+                                    key={nanoid()}
+                                />
+                            ) : (
+                                <></>
+                            )
+                        )}
                     </Block>
                     {/* Show 'Load More' button after search */}
                     {search.results.length > 0 && (

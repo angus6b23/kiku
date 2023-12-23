@@ -8,13 +8,15 @@ const PUBLIC_DIR = path.resolve(__dirname, './public')
 const BUILD_DIR = path.resolve(__dirname, './dist')
 export default async () => {
     return {
-        plugins: [react(), tsconfigPaths(), 
+        plugins: [
+            react(),
+            tsconfigPaths(),
             electron({
-            entry: 'electron/main.ts',
-            onstart(args){
-                args.startup()
-            }
-        })
+                entry: 'electron/main.ts',
+                onstart(args) {
+                    args.startup()
+                },
+            }),
         ],
         root: SRC_DIR,
         base: '',

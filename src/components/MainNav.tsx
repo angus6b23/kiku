@@ -135,7 +135,6 @@ const MainNav = (props: MainNavProps) => {
             return
         }
         // Route to search results
-        props.setTab('main')
         f7.views.get('#page-router').router.navigate(`/search/${searchTerm}`)
     }
 

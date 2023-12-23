@@ -20,7 +20,7 @@ const rootReducer = combineReducers({
     search: searchReducer,
     config: configReducer,
     localBlobs: blobReducer,
-    localPlaylists: localPlaylistReducer
+    localPlaylists: localPlaylistReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
