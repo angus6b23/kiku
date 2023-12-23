@@ -2,7 +2,7 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-    appId: 'app.kiku',
+    appId: 'app.electron.kiku',
     asar: true,
     productName: 'Kiku',
     directories: {
@@ -18,21 +18,29 @@
                 target: 'nsis',
                 arch: ['x64'],
             },
+            {
+                target: 'portable',
+            }
         ],
-        artifactName: '${productName}-Windows-${version}-Setup.${ext}',
+        icon: 'public/icons/win/icon.ico',
+        // artifactName: '${productName}-Windows-${version}-Setup.${ext}',
     },
     nsis: {
         oneClick: false,
         perMachine: false,
         allowToChangeInstallationDirectory: true,
-        deleteAppDataOnUninstall: false,
+        deleteAppDataOnUninstall: true,
     },
     mac: {
-        target: ['dmg'],
-        artifactName: '${productName}-Mac-${version}-Installer.${ext}',
+          target: ['mas'],
+          artifactName: '${productName}-Mac-${version}-Installer.${ext}',
     },
     linux: {
-        target: ['AppImage'],
+        target: ['AppImage', 'flatpak', 'tar.gz'],
+        icon: 'public/icons/png/256x256.png',
+        synopsis: 'An alternative music client for playing music from youtube.',
+        description: 'An alternative music client for playing music from youtube.',
+        category: 'Audio',
         artifactName: '${productName}-Linux-${version}.${ext}',
     },
 }
