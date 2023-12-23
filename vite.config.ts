@@ -9,12 +9,12 @@ const BUILD_DIR = path.resolve(__dirname, './dist')
 export default async () => {
     return {
         plugins: [react(), tsconfigPaths(), 
-            // electron({
-            // entry: 'electron/main.ts',
-            // onstart(args){
-            //     args.startup()
-            // }
-        // })
+            electron({
+            entry: 'electron/main.ts',
+            onstart(args){
+                args.startup()
+            }
+        })
         ],
         root: SRC_DIR,
         base: '',

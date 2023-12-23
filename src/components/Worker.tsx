@@ -29,7 +29,6 @@ import { getNextSong } from '@/utils/songControl'
 import { base64ToBlob, blobToBase64 } from '@/utils/base64'
 import { deleteBlob, saveBlob, selectLocalBlobs } from '@/store/blobStorage'
 import {savePlaylist, selectLocalPlaylist} from '@/store/localPlaylistReducers'
-import {Playlist} from 'youtubei.js/dist/src/parser/nodes'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer } = require('electron')
 

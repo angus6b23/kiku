@@ -9,6 +9,10 @@ import {
     Icon,
     Page,
     Toolbar,
+    Navbar,
+    NavLeft,
+    Link,
+    NavTitle,
 } from 'framework7-react'
 import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
@@ -40,32 +44,39 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
         continuation: Continuation
         setContinuation: (arg0: Continuation) => void
     } = useCustomContext(Store)
-        useCustomContext(Store)
+    useCustomContext(Store)
     const resultTop = useRef<HTMLElement>(null)
     const dispatch = useDispatch()
 
     const handleLoadMore = async () => {
-        f7.preloader.showIn('#page-router')
-        const res = await handleContinuation(
-            search,
-            continuation,
-            config.instance.preferType,
-            innertube.current
-        )
-        dispatch(nextPage(res.data))
-        setContinuation(res.continuation)
-        f7.preloader.hideIn('#page-router')
+        try{
+            f7.preloader.showIn('#page-router')
+            const res = await handleContinuation(
+                search,
+                continuation,
+                config.instance.preferType,
+                innertube.current
+            )
+            dispatch(nextPage(res.data))
+            setContinuation(res.continuation)
+            f7.preloader.hideIn('#page-router')
+        } catch {
+            setContinuation(undefined)
+            f7.preloader.hideIn('#page-router');
+        }
     }
     useEffect(() => {
-        console.log('triggered')
+        f7.preloader.showIn('#page-router')
         handleSearchVideo(props.searchTerm, search, config.instance.preferType, innertube.current)
-            .then((res) => {
-                dispatch(newSearch({ res: res.data, searchTerm: props.searchTerm }))
-                setContinuation(res.continuation)
-            })
-            .catch(err => {
-                presentToast('error', err)
-            })
+        .then((res) => {
+            dispatch(newSearch({ res: res.data, searchTerm: props.searchTerm }))
+            setContinuation(res.continuation)
+            f7.preloader.hideIn('#page-router')
+        })
+        .catch(err => {
+            presentToast('error', err)
+            f7.preloader.hideIn('#page-router')
+        })
     }, [props.searchTerm])
     useEffect(() => {
         if (search.page === 1) {
@@ -74,6 +85,19 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
     }, [search])
     return (
         <Page name="search-result" className="h-page overflow-auto">
+            <Navbar>
+                <NavLeft>
+                    <Link href="/">
+                        <Icon f7="house_fill" />
+                    </Link>
+                    <Link back>
+                        <Icon f7="chevron_left" />
+                    </Link>
+                </NavLeft>
+                <NavTitle>
+                    {t('common:Search-Results')}: {props.searchTerm}
+                </NavTitle>
+            </Navbar>
             {search.results.length === 0 ? (
                 <NoResult />
             ) : (
@@ -86,22 +110,22 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
                     </BlockTitle>
                     <Block className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {search.results.map((result) =>
-                            result.type === 'video' ? (
-                                <VideoResultCard key={nanoid()} data={result} />
-                            ) : result.type === 'playlist' ? (
-                                <PlaylistResultCard
-                                    key={nanoid()}
-                                    data={result}
-                                />
-                            ) : result.type === 'channel' ? (
-                                <ChannelResultCard
-                                    data={result}
-                                    key={nanoid()}
-                                />
-                            ) : (
-                                <></>
-                            )
-                        )}
+                                            result.type === 'video' ? (
+                                                <VideoResultCard key={nanoid()} data={result} />
+                        ) : result.type === 'playlist' ? (
+                            <PlaylistResultCard
+                                key={nanoid()}
+                                data={result}
+                            />
+                        ) : result.type === 'channel' ? (
+                            <ChannelResultCard
+                                data={result}
+                                key={nanoid()}
+                            />
+                        ) : (
+                            <></>
+                        )
+                                           )}
                     </Block>
                     {/* Show 'Load More' button after search */}
                     {search.results.length > 0 && (

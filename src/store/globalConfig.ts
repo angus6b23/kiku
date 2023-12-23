@@ -32,8 +32,8 @@ const initConfigState: GlobalConfig = {
         showTimeline: false,
     },
     storage: {
-        enalbeBlobStorage: false,
-        blobStorageSize: 100, // IN MB
+        enalbeBlobStorage: true,
+        blobStorageSize: 200, // IN MB
     },
 }
 interface NowPlayingAction {
