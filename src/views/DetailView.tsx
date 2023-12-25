@@ -96,6 +96,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                 break
             default:
         }
+        presentToast('success', t('video-detail:Copied-Link'))
     }
     const openLink = (type: string) => {
         const invidiousUrl = config.instance.preferType.find(
@@ -268,14 +269,14 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                     >
                         <List>
                             <ListItem
-                                popoverClose
+                                className="popover-close"
                                 title="Youtube"
                                 onClick={() => copyLink('youtube')}
                                 link="#"
                                 noChevron={true}
                             ></ListItem>
                             <ListItem
-                                popoverClose
+                                className="popover-close"
                                 title="Invidious"
                                 onClick={() => copyLink('invidious')}
                                 link="#"
@@ -290,14 +291,14 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                     >
                         <List>
                             <ListItem
-                                popoverClose
+                                className="popover-close"
                                 title="Youtube"
                                 onClick={() => openLink('youtube')}
                                 link="#"
                                 noChevron={true}
                             ></ListItem>
                             <ListItem
-                                popoverClose
+                                className="popover-close"
                                 title="Invidious"
                                 onClick={() => openLink('invidious')}
                                 link="#"

@@ -5,14 +5,15 @@ const presentToast = (type: ToastType, message: string) => {
         type === 'info'
             ? '<i class="f7-icons">info_circle</i>'
             : type === 'error'
-              ? '<i class="f7-icons">exclamationmark_circle</i>'
+              ? '<i class="f7-icons">exclamationmark_circle_fill</i>'
               : type === 'success'
                 ? '<i class="f7-icons">checkmark_alt_circle</i>'
                 : ''
     const newToast = f7.toast.create({
         icon: icon,
         text: message,
-        position: 'center',
+        horizontalPosition: 'center',
+        position: 'bottom',
         closeTimeout: 2000,
     })
     newToast.open()
