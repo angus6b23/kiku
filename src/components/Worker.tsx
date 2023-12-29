@@ -24,10 +24,9 @@ import { Store } from '@/store/reactContext'
 import { selectPlayer } from '@/store/playerReducers'
 import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
-import presentToast from '@/components/Toast'
 import { getNextSong } from '@/utils/songControl'
 import { base64ToBlob, blobToBase64 } from '@/utils/base64'
-import { deleteBlob, saveBlob, selectLocalBlobs } from '@/store/blobStorage'
+import { deleteBlob, saveBlob, selectLocalBlobs, updateAccess } from '@/store/blobStorage'
 import {
     savePlaylist,
     selectLocalPlaylist,
@@ -48,6 +47,8 @@ export default function Worker(): ReactElement {
     const dispatch = useDispatch()
     // Spawn different instance of local forage for corresponding purpose
     const localBlobsRef = useRef(localBlobs)
+    // Will be updated when config is changed, used for ipcRenderer to keep the function updated with config
+    const configRef = useRef(config)
     // Get variables from react context
     const {
         dispatchAudioBlob,
@@ -96,7 +97,7 @@ export default function Worker(): ReactElement {
                         type: 'ADD_BLOB',
                         payload: { id: nextJob.id, blob: blob },
                     })
-                    if (config.storage.enalbeBlobStorage) {
+                    if (configRef.current.storage.enalbeBlobStorage) {
                         // Store to local disk if enabled
                         blobToBase64(blob).then((base64) => {
                             // Send data as base64 to ipcMain
@@ -179,7 +180,7 @@ export default function Worker(): ReactElement {
         return result
     }
 
-    const generateQueue = () => {
+    const generateQueue = () => { // Helper function for generating new queue for worker
         let newQueue: Playitem[] = []
         const currentPlayingIndex = playlist.findIndex(
             (item) => item.status === 'playing'
@@ -203,7 +204,7 @@ export default function Worker(): ReactElement {
         return newQueue
     }
 
-    const queueChanged = (newQueue: Playitem[]) => {
+    const queueChanged = (newQueue: Playitem[]) => { // Helper function for checking if the queue has changed, only checking the id of every item
         if (newQueue.length !== queue.length) {
             return true
         } else {
@@ -211,10 +212,10 @@ export default function Worker(): ReactElement {
         }
     }
 
-    useEffect(() => {
+    useEffect(() => { // Watch for playlist
         const newQueue = generateQueue()
         if (queueChanged(newQueue)) {
-            setQueue(newQueue)
+            setQueue(newQueue) // Only trigger the worker when there is a change in queue
         }
     }, [playlist])
 
@@ -270,6 +271,7 @@ export default function Worker(): ReactElement {
                             status: 'downloaded',
                         })
                     )
+                    dispatch(updateAccess(nextJob.id))
                     setWorkerState('idle')
                 })
                 .catch(() => {
@@ -403,6 +405,7 @@ export default function Worker(): ReactElement {
                     } as LocalBlobEntry
                 )
                 dispatch(deleteBlob(targetBlob.id)) // Remove item from local blob entry
+                console.log('delete-blob', targetBlob)
                 ipcRenderer.send('delete-blob', {
                     id: targetBlob.id,
                     extension: targetBlob.extension,
@@ -432,6 +435,9 @@ export default function Worker(): ReactElement {
         const currentPlaylist = localPlaylists.playlists.find(
             (item) => item.id === localPlaylists.currentPlaylistId
         ) as LocalPlaylist
+        if (currentPlaylist.data.length != newPlaylist.length) {
+            changed = true
+        }
         newPlaylist.forEach((item, index) => {
             const playlistItem = currentPlaylist.data[index]
             if (playlistItem === undefined || item.id !== playlistItem.id) {
@@ -439,12 +445,14 @@ export default function Worker(): ReactElement {
             }
         })
         if (changed) {
+            console.log('changed')
             dispatch(savePlaylist(newPlaylist))
         }
     }, [playlist])
 
     useEffect(() => {
         localBlobsRef.current = localBlobs
-    }, [localBlobs, playlist])
+        configRef.current = config
+    }, [localBlobs, config])
     return <></>
 }

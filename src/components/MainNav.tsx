@@ -10,9 +10,7 @@ import {
 } from 'framework7-react'
 
 import { handleSuggest } from '../js/suggestions'
-import { handleSearchVideo } from '../js/search'
 import { useDispatch, useSelector } from 'react-redux'
-import { newSearch, selectSearch } from '@/store/searchReducers'
 import { Store, useCustomContext } from '@/store/reactContext'
 import Innertube from 'youtubei.js/agnostic'
 import { selectConfig } from '@/store/globalConfig'
@@ -44,8 +42,6 @@ const MainNav = (props: MainNavProps) => {
     const onPageBeforeRemove = () => {
         autocompleteSearch.current.destroy()
     }
-    const search = useSelector(selectSearch)
-    const { setContinuation } = useCustomContext(Store)
     const dispatch = useDispatch()
     const { t } = useTranslation(['common'])
 
@@ -91,18 +87,25 @@ const MainNav = (props: MainNavProps) => {
         // Try to scan for url on input
         try {
             const url = new URL(searchTerm) // Will jump to catch if fail
+            f7.preloader.showIn('#page-router')
             let id: string | null
             let playlistId: string | null
+            let channelId: string | null
             // Extract parameters and path from url to get video id
             if (url.hostname === 'youtu.be') {
                 id = url.pathname.replaceAll('/', '')
                 playlistId = null
+                channelId = null
             } else {
                 id = url.searchParams.get('v')
                 playlistId = url.searchParams.get('list')
+                channelId = url.pathname.includes('channel/')
+                    ? url.pathname.replace(/^\/channel\//, '')
+                    : null
             }
+            console.log(id)
             // Skip if fail to get video id
-            if (id === null && playlistId === null) {
+            if (id === null && playlistId === null && channelId === null) {
                 throw new Error('')
             }
             // Browse playlist if playlist is found
@@ -111,7 +114,17 @@ const MainNav = (props: MainNavProps) => {
                 f7.views
                     .get('#page-router')
                     .router.navigate(`playlist/${playlistId}`)
+                return
             }
+            // Browse channel if channel id is found
+            if (channelId !== null) {
+                fullfilled = true
+                f7.views
+                    .get('#page-router')
+                    .router.navigate(`channel/${channelId}`)
+                return
+            }
+
             // Fetch basic information on given video id
             const res = await getPlayitem(
                 id as string,
