@@ -8,6 +8,8 @@
     "Storage-size-must-be-a-positive-number": "Storage size must be a positive number",
     "Store-audio-files-on-disk": "Store audio files on disk",
     "Maximum-audio-files-storage": "Maximum audio files storage",
+    "Show-stored-files": "Show stored files",
+    "Manage-stored-files": "Manage stored files",
     "Language": "Language",
     "Theme": "Theme",
     "Light": "Light",

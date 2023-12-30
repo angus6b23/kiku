@@ -26,7 +26,12 @@ import { selectConfig } from '@/store/globalConfig'
 import Innertube from 'youtubei.js/agnostic'
 import { getNextSong } from '@/utils/songControl'
 import { base64ToBlob, blobToBase64 } from '@/utils/base64'
-import { deleteBlob, saveBlob, selectLocalBlobs, updateAccess } from '@/store/blobStorage'
+import {
+    deleteBlob,
+    saveBlob,
+    selectLocalBlobs,
+    updateAccess,
+} from '@/store/blobStorage'
 import {
     savePlaylist,
     selectLocalPlaylist,
@@ -108,15 +113,21 @@ export default function Worker(): ReactElement {
                             })
                             const timeNow = new Date().getTime()
                             // Make a record of the blob for deletion later
-                            dispatch(
-                                saveBlob({
-                                    id: nextJob.id,
-                                    title: nextJob.title,
-                                    extension: blob.type,
-                                    created: timeNow,
-                                    lastAccess: timeNow,
-                                })
-                            )
+                            if (
+                                localBlobs.find(
+                                    (blob) => blob.id === nextJob.id
+                                ) === undefined
+                            ) {
+                                dispatch(
+                                    saveBlob({
+                                        id: nextJob.id,
+                                        title: nextJob.title,
+                                        extension: blob.type,
+                                        created: timeNow,
+                                        lastAccess: timeNow,
+                                    })
+                                )
+                            }
                         })
                     }
                     setWorkerState('idle')
@@ -180,7 +191,8 @@ export default function Worker(): ReactElement {
         return result
     }
 
-    const generateQueue = () => { // Helper function for generating new queue for worker
+    const generateQueue = () => {
+        // Helper function for generating new queue for worker
         let newQueue: Playitem[] = []
         const currentPlayingIndex = playlist.findIndex(
             (item) => item.status === 'playing'
@@ -204,7 +216,8 @@ export default function Worker(): ReactElement {
         return newQueue
     }
 
-    const queueChanged = (newQueue: Playitem[]) => { // Helper function for checking if the queue has changed, only checking the id of every item
+    const queueChanged = (newQueue: Playitem[]) => {
+        // Helper function for checking if the queue has changed, only checking the id of every item
         if (newQueue.length !== queue.length) {
             return true
         } else {
@@ -212,7 +225,8 @@ export default function Worker(): ReactElement {
         }
     }
 
-    useEffect(() => { // Watch for playlist
+    useEffect(() => {
+        // Watch for playlist
         const newQueue = generateQueue()
         if (queueChanged(newQueue)) {
             setQueue(newQueue) // Only trigger the worker when there is a change in queue

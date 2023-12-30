@@ -214,6 +214,10 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                             handleAddToPlaylist(false)
                                         }
                                     >
+                                        <Icon
+                                            f7="plus_rectangle_fill"
+                                            className="mr-2 text-[1.2rem]"
+                                        />
                                         {t('search-result:Add-to-playlist')}
                                     </Button>
                                     <Button
@@ -222,17 +226,29 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                             handleAddToPlaylist(true)
                                         }
                                     >
+                                        <Icon
+                                            f7="arrow_right_to_line"
+                                            className="mr-2 text-[1.2rem]"
+                                        />
                                         {t('search-result:Add-to-next-song')}
                                     </Button>
                                 </div>
                                 <div className="flex gap-8 w-full">
                                     <Button fill popoverOpen=".copy-popover">
+                                        <Icon
+                                            f7="doc_on_clipboard_fill"
+                                            className="mr-2 text-[1.2rem]"
+                                        />
                                         {t('search-result:Copy-Link')}
                                     </Button>
                                     <Button
                                         fill
                                         popoverOpen=".open-link-popover"
                                     >
+                                        <Icon
+                                            f7="link"
+                                            className="mr-2 text-[1.2rem]"
+                                        />
                                         {t('search-result:Open-link')}
                                     </Button>
                                 </div>
@@ -269,19 +285,33 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                     >
                         <List>
                             <ListItem
-                                className="popover-close"
-                                title="Youtube"
+                                className="popover-close flex justify-start"
                                 onClick={() => copyLink('youtube')}
                                 link="#"
                                 noChevron={true}
-                            ></ListItem>
+                            >
+                                <div className="flex justify-start">
+                                    <Icon
+                                        f7="square_arrow_up_fill"
+                                        className="mr-2 text-[1.2rem]"
+                                    />
+                                    <p>Youtube</p>
+                                </div>
+                            </ListItem>
                             <ListItem
                                 className="popover-close"
-                                title="Invidious"
                                 onClick={() => copyLink('invidious')}
                                 link="#"
                                 noChevron={true}
-                            ></ListItem>
+                            >
+                                <div className="flex justify-start">
+                                    <Icon
+                                        f7="smiley_fill"
+                                        className="mr-2 text-[1.2rem]"
+                                    />
+                                    <p>Invidious</p>
+                                </div>
+                            </ListItem>
                         </List>
                     </Popover>
                     <Popover
@@ -292,18 +322,32 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                         <List>
                             <ListItem
                                 className="popover-close"
-                                title="Youtube"
                                 onClick={() => openLink('youtube')}
                                 link="#"
                                 noChevron={true}
-                            ></ListItem>
+                            >
+                                <div className="flex justify-start">
+                                    <Icon
+                                        f7="square_arrow_up_fill"
+                                        className="mr-2 text-[1.2rem]"
+                                    />
+                                    <p>Youtube</p>
+                                </div>
+                            </ListItem>
                             <ListItem
                                 className="popover-close"
-                                title="Invidious"
                                 onClick={() => openLink('invidious')}
                                 link="#"
                                 noChevron={true}
-                            ></ListItem>
+                            >
+                                <div className="flex justify-start">
+                                    <Icon
+                                        f7="smiley_fill"
+                                        className="mr-2 text-[1.2rem]"
+                                    />
+                                    <p>Invidious</p>
+                                </div>
+                            </ListItem>
                         </List>
                     </Popover>
                 </>

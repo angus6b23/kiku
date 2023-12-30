@@ -1,5 +1,5 @@
 import React, { BaseSyntheticEvent, type ReactElement } from 'react'
-import { Block, Button, List, ListItem, Popup } from 'framework7-react'
+import { Block, Button, Icon, List, ListItem, Popup } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     changeStorage,
@@ -57,9 +57,14 @@ export default function StorageSetting(): ReactElement {
             </List>
             <Block className="flex justify-center items-center gap-8">
                 <Button fill onClick={handleOpenFolder}>
+                    <Icon f7="folder_fill" className="mr-2 text-[1.2rem]" />
                     {t('setting:Show-stored-files')}
                 </Button>
                 <Button fill popupOpen=".storage-management-popup">
+                    <Icon
+                        f7="square_stack_3d_down_right_fill"
+                        className="mr-2 text-[1.2rem]"
+                    />
                     {t('setting:Manage-stored-files')}
                 </Button>
             </Block>

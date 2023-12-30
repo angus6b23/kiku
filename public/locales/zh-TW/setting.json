@@ -8,6 +8,8 @@
     "Storage-size-must-be-a-positive-number": "儲存空間必須是正數",
     "Store-audio-files-on-disk": "在裝置上儲存音訊檔",
     "Maximum-audio-files-storage": "最大音訊檔佔用空間",
+    "Show-stored-files": "顯示已儲存的檔案",
+    "Manage-stored-files": "管理已儲存的檔案",
     "Language": "語言",
     "Theme": "主題",
     "Light": "亮色",

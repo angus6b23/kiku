@@ -1,0 +1,21 @@
+{
+    "This-will-remove-all-files-in-the-download-folder-Are-you-sure-to-proceed?": "你確定要移除所有在下載資料夾中的檔案嗎？",
+    "Removed-files-without-entries": "已移除所有未在記錄中的檔案",
+    "Removed-entries-without-files": "已移除所有沒有檔案的記錄",
+    "Removed-selected-files": "已移除選取的項目",
+    "Added-{{count}}-items-to-playlist_other": "已新增{{count}}個項目到播放列表",
+    "Unknown": "未知",
+    "Storage-management": "管理已儲存的資料",
+    "items-selected": "個已選擇的項目",
+    "Add-entries-to-current-playlist": "新增已選取的項目到播放清單",
+    "Remove-selected-entries": "移除已選取的項目",
+    "Audio-files": "音訊檔案",
+    "Remove-non-existent-entries": "移除所有沒有檔案的記錄",
+    "Remove-unhandled-entries": "移除所有未在記錄中的檔案",
+    "Remove-all-files": "移除所有項目",
+    "Title": "標題",
+    "Video-Id": "影片編號",
+    "Created-on": "建立時間",
+    "Last-access": "最後存取時間",
+    "File-exist": "檔案是否存在"
+}
