@@ -1,7 +1,7 @@
 import { Icon, Link } from 'framework7-react'
 import React, { useState } from 'react'
 import { VideoResult, Playitem } from '@/typescript/interfaces'
-import { formatViewNumber, convertSecond } from '../utils/format'
+import { convertSecond, compactNumber } from '../utils/format'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     addToNextSong,
@@ -157,7 +157,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                     </Link>
                     {props.data.viewCount !== undefined && (
                         <p>
-                            {formatViewNumber(props.data.viewCount)}{' '}
+                            {compactNumber(props.data.viewCount)}{' '}
                             {t('common:views')}
                         </p>
                     )}

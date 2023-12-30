@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectPlaylist, setItemPlaying, sort } from '@/store/playlistReducers'
 import { play, selectPlayer } from '@/store/playerReducers'
 import PlayItemInner from '@/components/PlayItemInner'
-import PlaylistControlBar from '@/components/PlaylistControlBar'
+import PlaylistControlBar from '@/views/Playlist-modules/PlaylistControlBar'
 import { useTranslation } from 'react-i18next'
 
 export interface PlayListProps {}

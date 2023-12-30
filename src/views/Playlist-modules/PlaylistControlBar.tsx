@@ -1,12 +1,7 @@
 import React, { BaseSyntheticEvent, type ReactElement } from 'react'
 import { Button, Icon, List, ListItem, Popover, f7 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    clearErrorItems,
-    clearPlayedItems,
-    clearAllItems,
-    shuffleUnplayed,
-} from '@/store/playlistReducers'
+import { clearAllItems, shuffleUnplayed } from '@/store/playlistReducers'
 import { setSong, stop } from '@/store/playerReducers'
 import { useTranslation } from 'react-i18next'
 import {
@@ -17,7 +12,9 @@ import {
 } from '@/store/localPlaylistReducers'
 import { LocalPlaylist } from '@/typescript/interfaces'
 import { changeCurrentPlaylist } from '@/store/localPlaylistReducers'
-import presentToast from './Toast'
+import presentToast from '@/components/Toast'
+import RemoveButton from './RemoveButton'
+import RandomButton from './RandomButton'
 
 export interface PlaylistControlBarProps {}
 
@@ -26,17 +23,6 @@ export default function PlaylistControlBar(): ReactElement {
     const localPlaylist = useSelector(selectLocalPlaylist)
     const { t } = useTranslation(['playlist'])
 
-    const handleClearPlaylist = () => {
-        f7.dialog.confirm(
-            t('playlist:Are-you-sure-to-clear-the-playlist'),
-            t('playlist:Clear-playlist'),
-            () => {
-                dispatch(clearAllItems())
-                dispatch(setSong(undefined))
-                dispatch(stop())
-            }
-        )
-    }
     const getCurrentPlaylistName = () => {
         const currentPlaylist = localPlaylist.playlists.find(
             (item) => item.id === localPlaylist.currentPlaylistId
@@ -134,34 +120,8 @@ export default function PlaylistControlBar(): ReactElement {
                 </div>
             </div>
             <div className="flex h-full justify-around items-center py-2 m-0 flex-wrap gap-2">
-                <Button
-                    className="m-0"
-                    tooltip={t('playlist:Clear-Error-items')}
-                    onClick={() => dispatch(clearErrorItems())}
-                >
-                    <Icon className="text-[1.5rem]" f7="flag_slash_fill"></Icon>
-                </Button>
-                <Button
-                    className="m-0"
-                    tooltip={t('playlist:Clear-played-items')}
-                    onClick={() => dispatch(clearPlayedItems())}
-                >
-                    <Icon className="text-[1.5rem]" f7="flowchart_fill"></Icon>
-                </Button>
-                <Button
-                    className="m-0"
-                    tooltip={t('playlist:Shuffle-unplayed-items')}
-                    onClick={() => dispatch(shuffleUnplayed())}
-                >
-                    <Icon className="text-[1.5rem]" f7="shuffle"></Icon>
-                </Button>
-                <Button
-                    className="m-0"
-                    tooltip={t('playlist:Clear-playlist')}
-                    onClick={handleClearPlaylist}
-                >
-                    <Icon className="text-[1.5rem]" f7="trash"></Icon>
-                </Button>
+                <RandomButton />
+                <RemoveButton />
             </div>
             <Popover
                 className="playlist-popover"
@@ -169,13 +129,23 @@ export default function PlaylistControlBar(): ReactElement {
                 arrow={false}
             >
                 <List className="cursor-pointer">
-                    <ListItem onClick={handleRemovePlaylist} popoverClose>
-                        <Icon f7="minus" />
-                        <p>{t('playlist:Remove-playlist')}</p>
+                    <ListItem
+                        onClick={handleRemovePlaylist}
+                        className="popover-close"
+                    >
+                        <div className="flex justify-start">
+                            <Icon f7="minus" className="mr-4 text-[1.2rem]" />
+                            <p>{t('playlist:Remove-playlist')}</p>
+                        </div>
                     </ListItem>
-                    <ListItem onClick={handleRenamePlaylist} popoverClose>
-                        <Icon f7="pencil" />
-                        <p>{t('playlist:Rename-playlist')}</p>
+                    <ListItem
+                        onClick={handleRenamePlaylist}
+                        className="popover-close"
+                    >
+                        <div className="flex justify-start">
+                            <Icon f7="pencil" className="mr-4 text-[1.2rem]" />
+                            <p>{t('playlist:Rename-playlist')}</p>
+                        </div>
                     </ListItem>
                 </List>
             </Popover>

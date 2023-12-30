@@ -1,5 +1,10 @@
 import MainNav from '@/components/MainNav'
-import React, { useState, type ReactElement, useEffect, BaseSyntheticEvent } from 'react'
+import React, {
+    useState,
+    type ReactElement,
+    useEffect,
+    BaseSyntheticEvent,
+} from 'react'
 import { Block, Tabs, Tab, View, Toolbar, f7 } from 'framework7-react'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
@@ -29,8 +34,8 @@ export default function HomePage(props: HomePageProps): ReactElement {
             setTab('main')
         }
         f7.views.get('#page-router').on('routeChange', routerListener)
-        return () => f7.views.get('#page-router').off('routeChange', routerListener)
-
+        return () =>
+            f7.views.get('#page-router').off('routeChange', routerListener)
     }, [])
     return (
         <>

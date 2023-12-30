@@ -70,6 +70,8 @@ export default function AudioWatcher(): ReactElement {
             playingItem != undefined &&
             playingItem?.id != playerState.currentPlaying?.id
         ) {
+            audio.current.pause()
+            audio.current.currentTime = 0
             dispatch(setSong(playingItem))
             const newAudio = new Audio()
             newAudio.src = URL.createObjectURL(getBlobByID(playingItem.id))

@@ -15,6 +15,7 @@ import Wavesurfer from '@/views/NowPlaying-modules/Wavesurfer'
 import NoPlaying from '@/views/NowPlaying-modules/NoPlaying'
 import { selectConfig } from '@/store/globalConfig'
 import { convertSecond } from '@/utils/format'
+import PlayingSlider from './NowPlaying-modules/PlayingSlider'
 
 export default function NowPlaying(): ReactElement {
     const playerState = useSelector(selectPlayer)
@@ -165,10 +166,14 @@ export default function NowPlaying(): ReactElement {
                                 {playerState.currentPlaying?.title}
                             </h5>
                         </div>
-                        <Wavesurfer
-                            media={audio.current}
-                            showTimeline={config.nowPlaying.showTimeline}
-                        />
+                        {audio.current.duration < 90 * 40 ? (
+                            <Wavesurfer
+                                media={audio.current}
+                                showTimeline={config.nowPlaying.showTimeline}
+                            />
+                        ) : (
+                            <PlayingSlider audio={audio.current} />
+                        )}
                         <a
                             className="text-lg flex mt-4 items-center justify-center cursor-pointer"
                             onClick={handleChangeTimestampStyle}

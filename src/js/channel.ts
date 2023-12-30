@@ -61,6 +61,10 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
         const videoArr: (VideoResult | undefined)[] = videoRes.videos.map(
             (video) => {
                 const innerVideo = video as Video
+                const viewMatch = innerVideo.view_count.text
+                    ?.replaceAll(',', '')
+                    .match(/\d+/) as string[]
+                const viewNumber = viewMatch[0] as string
                 if (video.type === 'Video') {
                     return {
                         type: 'video',
@@ -71,11 +75,7 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
                         videoThumbnails: extractInnertubeThumbnail(
                             innerVideo.thumbnails
                         ),
-                        viewCount: Number(
-                            innerVideo.view_count.text
-                                ?.replace(/ views$/, '')
-                                .replace(/,/g, '')
-                        ),
+                        viewCount: Number(viewNumber),
                         lengthSeconds: toSecond(
                             innerVideo.duration?.text as string
                         ),

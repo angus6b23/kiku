@@ -1,5 +1,5 @@
 import React, { BaseSyntheticEvent, type ReactElement } from 'react'
-import { List, ListItem } from 'framework7-react'
+import { Block, Button, Icon, List, ListItem, Popup } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     changeStorage,
@@ -8,6 +8,9 @@ import {
 } from '@/store/globalConfig'
 import { useTranslation } from 'react-i18next'
 import presentToast from '@/components/Toast'
+import StorageManagement from './StorageManagement'
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+const { shell, ipcRenderer } = require('electron')
 
 export default function StorageSetting(): ReactElement {
     const config = useSelector(selectConfig)
@@ -24,6 +27,11 @@ export default function StorageSetting(): ReactElement {
         } else {
             dispatch(changeStorage(e.target.value))
         }
+    }
+    const handleOpenFolder = () => {
+        ipcRenderer.invoke('get-folder-path').then((path: string) => {
+            shell.openExternal(`file://${path}`)
+        })
     }
     return (
         <>
@@ -47,6 +55,23 @@ export default function StorageSetting(): ReactElement {
                     </div>
                 </ListItem>
             </List>
+            <Block className="flex justify-center items-center gap-8">
+                <Button fill onClick={handleOpenFolder}>
+                    <Icon f7="folder_fill" className="mr-2 text-[1.2rem]" />
+                    {t('setting:Show-stored-files')}
+                </Button>
+                <Button fill popupOpen=".storage-management-popup">
+                    <Icon
+                        f7="square_stack_3d_down_right_fill"
+                        className="mr-2 text-[1.2rem]"
+                    />
+                    {t('setting:Manage-stored-files')}
+                </Button>
+            </Block>
+            <Block className="h-20"></Block>
+            <Popup className="storage-management-popup" tabletFullscreen={true}>
+                <StorageManagement />
+            </Popup>
         </>
     )
 }

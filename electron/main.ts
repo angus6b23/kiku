@@ -175,9 +175,7 @@ ipcMain.on('delete-blob', (_, data) => {
     const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
     fs.promises
         .rm(path.join(downloadPath, `${data.id}.${extension}`))
-        .catch((err) => {
-            console.log(err)
-        })
+        .catch()
         .finally(sendDirSize)
 })
 ipcMain.handle('get-blob', async (_, id) => {
@@ -200,4 +198,10 @@ ipcMain.handle('get-blob', async (_, id) => {
             data: undefined,
         }
     }
+})
+ipcMain.handle('get-folder-path', () => {
+    return downloadPath
+})
+ipcMain.handle('get-folder-content', async () => {
+    return await fs.promises.readdir(downloadPath)
 })

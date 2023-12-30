@@ -20,7 +20,7 @@
             },
             {
                 target: 'portable',
-            }
+            },
         ],
         icon: 'public/icons/win/icon.ico',
         // artifactName: '${productName}-Windows-${version}-Setup.${ext}',
@@ -32,8 +32,8 @@
         deleteAppDataOnUninstall: true,
     },
     mac: {
-          target: ['mas'],
-          artifactName: '${productName}-Mac-${version}-Installer.${ext}',
+        target: ['mas'],
+        artifactName: '${productName}-Mac-${version}-Installer.${ext}',
     },
     linux: {
         target: ['AppImage', 'flatpak', 'tar.gz'],
