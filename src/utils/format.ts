@@ -1,3 +1,5 @@
+import { store } from '@/store/store'
+
 const formatViewNumber: (arg0: number) => string = (views) => {
     if (views > 1000000000) {
         return `${(views / 1000000000).toFixed(1)}B`
@@ -60,4 +62,23 @@ const stringToNumber: (arg0: string) => number = (string) => {
             return 0
     }
 }
-export { formatViewNumber, convertSecond, toSecond, stringToNumber }
+const compactNumber: (arg0: number) => string = (number) => {
+    const storeState = store.getState()
+    const lang = storeState.config.ui.lang
+    const formatNumber = new Intl.NumberFormat(lang, {
+        notation: 'compact',
+    })
+    return formatNumber.format(number)
+}
+const extractNumber: (arg0: string) => number = (string) => {
+    const match = string.replaceAll(',', '').match(/\d+/) as string[]
+    return Number(match[0])
+}
+export {
+    formatViewNumber,
+    convertSecond,
+    toSecond,
+    stringToNumber,
+    compactNumber,
+    extractNumber,
+}

@@ -40,22 +40,34 @@ export default function RemoveButton(): ReactElement {
                         onClick={() => dispatch(clearErrorItems())}
                         className="popover-close"
                     >
-                        <Icon f7="flag_slash" />
-                        <p>{t('playlist:Clear-Error-items')}</p>
+                        <div className="flex justify-start">
+                            <Icon
+                                f7="flag_slash"
+                                className="mr-4 text-[1.2rem]"
+                            />
+                            <p>{t('playlist:Clear-Error-items')}</p>
+                        </div>
                     </ListItem>
                     <ListItem
                         onClick={() => dispatch(clearPlayedItems())}
                         className="popover-close"
                     >
-                        <Icon f7="flowchart_fill" />
-                        <p>{t('playlist:Clear-played-items')}</p>
+                        <div className="flex justify-start">
+                            <Icon
+                                f7="flowchart_fill"
+                                className="mr-4 text-[1.2rem]"
+                            />
+                            <p>{t('playlist:Clear-played-items')}</p>
+                        </div>
                     </ListItem>
                     <ListItem
                         onClick={handleClearPlaylist}
                         className="popover-close"
                     >
-                        <Icon f7="xmark" />
-                        <p>{t('playlist:Clear-playlist')}</p>
+                        <div className="flex justify-start">
+                            <Icon f7="xmark" className="mr-4 text-[1.2rem]" />
+                            <p>{t('playlist:Clear-playlist')}</p>
+                        </div>
                     </ListItem>
                 </List>
             </Popover>

@@ -12,7 +12,15 @@ import {
     updateInstancei18n,
 } from '@/store/globalConfig'
 import { Instance } from '@/typescript/interfaces'
-import { Block, List, ListItem, BlockTitle, f7, Button } from 'framework7-react'
+import {
+    Block,
+    List,
+    ListItem,
+    BlockTitle,
+    f7,
+    Button,
+    Icon,
+} from 'framework7-react'
 import { useTranslation } from 'react-i18next'
 import { Store, useCustomContext } from '@/store/reactContext'
 import Innertube from 'youtubei.js/agnostic'
@@ -32,7 +40,6 @@ export default function InstanceSetting(): ReactElement {
     )
     const {
         instanceList,
-        innertube,
     }: {
         instanceList: Instance[]
         innertube: React.RefObject<Innertube | null>
@@ -291,6 +298,10 @@ export default function InstanceSetting(): ReactElement {
                         shell.openExternal('https://api.invidious.io/')
                     }
                 >
+                    <Icon
+                        f7="arrow_up_right_square"
+                        className="mr-2 text-[1.2rem]"
+                    />
                     {t('setting:View-Invidious-Instances')}
                 </Button>
                 <Button
@@ -301,9 +312,17 @@ export default function InstanceSetting(): ReactElement {
                         )
                     }
                 >
+                    <Icon
+                        f7="arrow_up_right_square"
+                        className="mr-2 text-[1.2rem]"
+                    />
                     {t('setting:View-Piped-Instances')}
                 </Button>
                 <Button fill onClick={resetInstances}>
+                    <Icon
+                        f7="arrow_counterclockwise"
+                        className="mr-2 text-[1.2rem]"
+                    />
                     {t('setting:Reset-to-default')}
                 </Button>
             </Block>

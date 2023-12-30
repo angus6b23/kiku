@@ -28,6 +28,7 @@ import {
     extractPipedPlaylist,
     extractPipedVideos,
 } from '@/utils/extractResults'
+import { extractNumber } from '@/utils/format'
 
 type InvidiousRes = InvidiousVideo | InvidiousPlaylist | InvidiousChannel
 type PipedRes = PipedVideo | PipedPlaylist | PipedChannel
@@ -111,10 +112,6 @@ async function searchInner(
             (item) => {
                 if (item.type === 'Video') {
                     const i = item as Video
-                    let views = Number(
-                        i.view_count.text?.replaceAll(',', '').match(/\d+/)[0]
-                    )
-                    views = isNaN(views) ? 0 : views
                     const newVideo: VideoResult = {
                         type: 'video',
                         title: i.title.text as string,
@@ -124,7 +121,7 @@ async function searchInner(
                         videoThumbnails: extractInnertubeThumbnail(
                             i.thumbnails
                         ),
-                        viewCount: views,
+                        viewCount: extractNumber(i.view_count.text as string),
                         lengthSeconds: i.duration.seconds,
                     }
                     // console.log(newVideo)
@@ -133,10 +130,6 @@ async function searchInner(
                     // console.log(item)
                     const i = item as Playlist
                     const author = i.author as Author
-                    let videoCount = Number(
-                        i.video_count.text?.replace(/ videos$/, '')
-                    )
-                    videoCount = isNaN(videoCount) ? 0 : videoCount
                     const newPlaylist: PlaylistResult = {
                         type: 'playlist',
                         title: i.title.text as string,
@@ -146,16 +139,11 @@ async function searchInner(
                         playlistThumbnails: extractInnertubeThumbnail(
                             i.thumbnails
                         ),
-                        vidCount: videoCount,
+                        vidCount: extractNumber(i.video_count.text as string),
                     }
                     return newPlaylist
                 } else if (item.type === 'Channel') {
                     const i = item as Channel
-                    let subCount = i.video_count.text?.replace(
-                        / subscribers$/,
-                        ''
-                    )
-                    subCount = subCount === undefined ? '0' : subCount
                     const newChannel: ChannelResult = {
                         type: 'channel',
                         author: i.author.name,
@@ -163,7 +151,9 @@ async function searchInner(
                         channelThumbnails: extractInnertubeThumbnail(
                             i.author.thumbnails
                         ),
-                        subCount: subCount,
+                        subCount: extractNumber(
+                            i.video_count.text as string
+                        ).toString(),
                     }
                     return newChannel
                 } else {

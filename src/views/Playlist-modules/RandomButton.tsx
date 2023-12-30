@@ -16,7 +16,7 @@ export default function RandomButton(): ReactElement {
                 tooltip={t('playlist:Randomize-items')}
                 className="m-0"
             >
-                <Icon f7="shuffle" className="text-[1.5rem]"></Icon>
+                <Icon f7="shuffle" className="text-[1.2rem]"></Icon>
             </Button>
             <Popover className="random-popover" backdrop={false} arrow={false}>
                 <List className="cursor-pointer">
@@ -24,15 +24,25 @@ export default function RandomButton(): ReactElement {
                         onClick={() => dispatch(shuffleUnplayed())}
                         className="popover-close"
                     >
-                        <Icon f7="music_note_list" />
-                        <p>{t('playlist:Shuffle-unplayed-items')}</p>
+                        <div className="flex justify-start">
+                            <Icon
+                                f7="music_note_list"
+                                className="mr-4 text-[1.2rem]"
+                            />
+                            <p>{t('playlist:Shuffle-unplayed-items')}</p>
+                        </div>
                     </ListItem>
                     <ListItem
                         onClick={() => dispatch(shuffleAll())}
                         className="popover-close"
                     >
-                        <Icon f7="question_diamond" />
-                        <p>{t('playlist:Shuffle-all-items')}</p>
+                        <div className="flex justify-start">
+                            <Icon
+                                f7="question_diamond"
+                                className="mr-4 text-[1.2rem]"
+                            />
+                            <p>{t('playlist:Shuffle-all-items')}</p>
+                        </div>
                     </ListItem>
                 </List>
             </Popover>

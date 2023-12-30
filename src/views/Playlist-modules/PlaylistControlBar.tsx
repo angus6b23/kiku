@@ -133,15 +133,19 @@ export default function PlaylistControlBar(): ReactElement {
                         onClick={handleRemovePlaylist}
                         className="popover-close"
                     >
-                        <Icon f7="minus" />
-                        <p>{t('playlist:Remove-playlist')}</p>
+                        <div className="flex justify-start">
+                            <Icon f7="minus" className="mr-4 text-[1.2rem]" />
+                            <p>{t('playlist:Remove-playlist')}</p>
+                        </div>
                     </ListItem>
                     <ListItem
                         onClick={handleRenamePlaylist}
                         className="popover-close"
                     >
-                        <Icon f7="pencil" />
-                        <p>{t('playlist:Rename-playlist')}</p>
+                        <div className="flex justify-start">
+                            <Icon f7="pencil" className="mr-4 text-[1.2rem]" />
+                            <p>{t('playlist:Rename-playlist')}</p>
+                        </div>
                     </ListItem>
                 </List>
             </Popover>

@@ -45,7 +45,6 @@ interface InvidiousDetails {
     hlsUrl?: string
     adaptiveFormats: {
         index: string
-        bitrate: string
         init: string
         url: string
         itag: string
@@ -55,6 +54,7 @@ interface InvidiousDetails {
         projectionType: number
         container: string
         encoding: string
+        bitrate: string
         qualityLabel?: string
         resolution?: string
     }[]

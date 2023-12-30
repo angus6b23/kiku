@@ -459,7 +459,7 @@ export default function Worker(): ReactElement {
             }
         })
         if (changed) {
-            console.log('changed')
+            // console.log('changed')
             dispatch(savePlaylist(newPlaylist))
         }
     }, [playlist])
