@@ -8,7 +8,7 @@ import {
     Video,
 } from 'youtubei.js/dist/src/parser/nodes'
 import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
-import { formatViewNumber, toSecond } from '@/utils/format'
+import { extractNumber, formatViewNumber, toSecond } from '@/utils/format'
 import axios from 'axios'
 import {
     Channel,
@@ -61,10 +61,6 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
         const videoArr: (VideoResult | undefined)[] = videoRes.videos.map(
             (video) => {
                 const innerVideo = video as Video
-                const viewMatch = innerVideo.view_count.text
-                    ?.replaceAll(',', '')
-                    .match(/\d+/) as string[]
-                const viewNumber = viewMatch[0] as string
                 if (video.type === 'Video') {
                     return {
                         type: 'video',
@@ -75,7 +71,7 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
                         videoThumbnails: extractInnertubeThumbnail(
                             innerVideo.thumbnails
                         ),
-                        viewCount: Number(viewNumber),
+                        viewCount: extractNumber(innerVideo.view_count.text as string),
                         lengthSeconds: toSecond(
                             innerVideo.duration?.text as string
                         ),
@@ -270,11 +266,7 @@ const channelVideoContinuationInner = async (
                 author: 'N/A',
                 authorId: 'N/A',
                 videoThumbnails: extractInnertubeThumbnail(video.thumbnails),
-                viewCount: Number(
-                    video.view_count.text
-                        ?.replace(/ views$/, '')
-                        .replace(/,/g, '')
-                ),
+                viewCount: extractNumber(video.view_count.text as string),
                 lengthSeconds: video.duration.seconds,
             }
         })

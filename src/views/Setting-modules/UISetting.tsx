@@ -1,8 +1,9 @@
 import React, { BaseSyntheticEvent, type ReactElement } from 'react'
-import { Block, BlockTitle, List, ListItem } from 'framework7-react'
+import { Block, BlockTitle, List, ListItem, Popup, f7 } from 'framework7-react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    changeAccentColor,
     changeLocale,
     changeNowPlaying,
     changeTheme,
@@ -10,6 +11,7 @@ import {
     toggleTimeline,
 } from '@/store/globalConfig'
 import { supportedLngs } from '@/js/i18n'
+import AccentColorModal from './AccentColorModal'
 
 export default function UISetting(): ReactElement {
     const { t } = useTranslation(['setting'])
@@ -40,6 +42,7 @@ export default function UISetting(): ReactElement {
             changeNowPlaying({ key: e.target.name, value: e.target.value })
         )
     }
+    
     return (
         <>
             <Block className="p-6">
@@ -74,6 +77,8 @@ export default function UISetting(): ReactElement {
                             <option value="light">{t('setting:Light')}</option>
                             <option value="dark">{t('setting:Dark')}</option>
                         </select>
+                    </ListItem>
+                    <ListItem link popupOpen=".accent-modal" title={t('setting:Primary-color')}>
                     </ListItem>
                 </List>
             </Block>
@@ -118,6 +123,9 @@ export default function UISetting(): ReactElement {
                     </ListItem>
                 </List>
             </Block>
+            <Popup className="accent-modal">
+                <AccentColorModal />
+            </Popup>
         </>
     )
 }

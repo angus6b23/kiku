@@ -23,7 +23,7 @@ const initConfigState: GlobalConfig = {
     },
     ui: {
         lang: 'en',
-        accentColor: '#000000',
+        accentColor: '#89a0c2',
         theme: 'dark',
         autoScroll: true,
     },
@@ -116,6 +116,15 @@ export const globalConfig = createSlice({
                 },
             }
         },
+        changeAccentColor: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                ui: {
+                    ...state.ui,
+                    accentColor: action.payload,
+                }
+            }
+        },
         changeStorage: (state, action: PayloadAction<number>) => {
             return {
                 ...state,
@@ -135,6 +144,7 @@ export const {
     updateInstancei18n,
     changeLocale,
     changeTheme,
+    changeAccentColor,
     changeStorage,
     changeNowPlaying,
 } = globalConfig.actions

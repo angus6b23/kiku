@@ -105,10 +105,9 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                 <div className="col-span-2 flex flex-wrap justify-start items-stretch p-2 gap-2">
                     <div className="w-full flex justify-between items-start gap-2">
                         <p
-                            className={
-                                item.status === 'playing'
-                                    ? `lg:text-md text-sm font-semibold overflow-hidden line-clamp-2 text-ellipsis whitespace-pre-line text-color-primary`
-                                    : `lg:text-md text-sm font-semibold overflow-hidden line-clamp-2 text-ellipsis whitespace-pre-line`
+                            className="lg:text-md text-sm font-semibold overflow-hidden line-clamp-2 text-ellipsis whitespace-pre-line"
+                            style={
+                                item.status === 'playing' ? {color: "var(--f7-theme-color)"} : {}
                             }
                         >
                             {item.title}

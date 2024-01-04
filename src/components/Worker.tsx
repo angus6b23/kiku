@@ -404,7 +404,7 @@ export default function Worker(): ReactElement {
         ipcRenderer.on('dir-size', (_: Event, size: number) => {
             // ipcMain will report the disk usage after each creation and deletion
             const sizeInMb = Math.round(size / 1024 / 1024)
-            console.log(sizeInMb)
+            // console.log(sizeInMb)
             if (sizeInMb > config.storage.blobStorageSize) {
                 // Send delete signal to ipcMain if the current disk usage is larger than configed
                 const targetBlob = localBlobsRef.current.reduce(
@@ -419,7 +419,7 @@ export default function Worker(): ReactElement {
                     } as LocalBlobEntry
                 )
                 dispatch(deleteBlob(targetBlob.id)) // Remove item from local blob entry
-                console.log('delete-blob', targetBlob)
+                // console.log('delete-blob', targetBlob)
                 ipcRenderer.send('delete-blob', {
                     id: targetBlob.id,
                     extension: targetBlob.extension,

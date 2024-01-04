@@ -3,7 +3,6 @@ import React, {
     useState,
     type ReactElement,
     useEffect,
-    BaseSyntheticEvent,
 } from 'react'
 import { Block, Tabs, Tab, View, Toolbar, f7 } from 'framework7-react'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
@@ -11,12 +10,14 @@ import NowPlaying from './NowPlaying'
 import Setting from './Setting'
 import { useSelector } from 'react-redux'
 import { selectPlayer } from '@/store/playerReducers'
+import {selectConfig} from '@/store/globalConfig'
 
 export interface HomePageProps {}
 
-export default function HomePage(props: HomePageProps): ReactElement {
+export default function HomePage(): ReactElement {
     const [tab, setTab] = useState('main')
     const playerState = useSelector(selectPlayer)
+    const config = useSelector(selectConfig)
     // Add event listener for back hotkey
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
@@ -37,6 +38,11 @@ export default function HomePage(props: HomePageProps): ReactElement {
         return () =>
             f7.views.get('#page-router').off('routeChange', routerListener)
     }, [])
+    // Automatically set app color theme and accent color;
+    useEffect(() => {
+        f7.setDarkMode(config.ui.theme === 'dark')
+        f7.setColorTheme(config.ui.accentColor)
+    }, [config.ui.theme, config.ui.accentColor])
     return (
         <>
             <MainNav tab={tab} setTab={setTab} />
