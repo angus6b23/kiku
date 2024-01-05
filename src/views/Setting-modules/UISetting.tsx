@@ -79,6 +79,10 @@ export default function UISetting(): ReactElement {
                         </select>
                     </ListItem>
                     <ListItem link popupOpen=".accent-modal" title={t('setting:Primary-color')}>
+                        <div className="flex gap-2 items-center">
+                            <div className="w-8 h-8 rounded-md" style={{backgroundColor: config.ui.accentColor}}></div>
+                            <p>{config.ui.accentColor}</p>
+                        </div>
                     </ListItem>
                 </List>
             </Block>
