@@ -12,6 +12,8 @@ import {
 import { selectPlaylist, setItemPlaying } from '@/store/playlistReducers'
 import { AudioBlobObject } from '@/typescript/interfaces'
 import { getNextSong, getPrevSong } from '@/utils/songControl'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { ipcRenderer } = require('electron')
 
 export interface AudioWatcherProps {}
 
@@ -175,6 +177,15 @@ export default function AudioWatcher(): ReactElement {
                 default:
             }
         }
+        ipcRenderer.on('tray-play-pause', () => {
+            dispatch(togglePlay())
+        })
+        ipcRenderer.on('tray-next', () => {
+            dispatchPlayNext()
+        })
+        ipcRenderer.on('tray-prev', () => {
+            dispatchPlayPrev()
+        })
     }, [])
     return <></>
 }

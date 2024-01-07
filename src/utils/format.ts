@@ -70,6 +70,12 @@ const compactNumber: (arg0: number) => string = (number) => {
     })
     return formatNumber.format(number)
 }
+const longNumber: (arg0: number) => string = (number) => {
+    const storeState = store.getState()
+    const lang = storeState.config.ui.lang
+    const formatNumber = new Intl.NumberFormat(lang)
+    return formatNumber.format(number)
+}
 const extractNumber: (arg0: string) => number = (string) => {
     const match = string.replaceAll(',', '').match(/\d+/) as string[]
     return Number(match[0])
@@ -80,5 +86,6 @@ export {
     toSecond,
     stringToNumber,
     compactNumber,
+    longNumber,
     extractNumber,
 }

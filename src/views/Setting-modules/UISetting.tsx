@@ -42,7 +42,7 @@ export default function UISetting(): ReactElement {
             changeNowPlaying({ key: e.target.name, value: e.target.value })
         )
     }
-    
+
     return (
         <>
             <Block className="p-6">
@@ -78,9 +78,18 @@ export default function UISetting(): ReactElement {
                             <option value="dark">{t('setting:Dark')}</option>
                         </select>
                     </ListItem>
-                    <ListItem link popupOpen=".accent-modal" title={t('setting:Primary-color')}>
+                    <ListItem
+                        link
+                        popupOpen=".accent-modal"
+                        title={t('setting:Primary-color')}
+                    >
                         <div className="flex gap-2 items-center">
-                            <div className="w-8 h-8 rounded-md" style={{backgroundColor: config.ui.accentColor}}></div>
+                            <div
+                                className="w-8 h-8 rounded-md"
+                                style={{
+                                    backgroundColor: config.ui.accentColor,
+                                }}
+                            ></div>
                             <p>{config.ui.accentColor}</p>
                         </div>
                     </ListItem>

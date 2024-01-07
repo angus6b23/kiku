@@ -107,7 +107,9 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                         <p
                             className="lg:text-md text-sm font-semibold overflow-hidden line-clamp-2 text-ellipsis whitespace-pre-line"
                             style={
-                                item.status === 'playing' ? {color: "var(--f7-theme-color)"} : {}
+                                item.status === 'playing'
+                                    ? { color: 'var(--f7-theme-color)' }
+                                    : {}
                             }
                         >
                             {item.title}

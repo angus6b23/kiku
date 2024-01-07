@@ -71,7 +71,9 @@ const channelInner = async (id: string, innertube: Innertube | null) => {
                         videoThumbnails: extractInnertubeThumbnail(
                             innerVideo.thumbnails
                         ),
-                        viewCount: extractNumber(innerVideo.view_count.text as string),
+                        viewCount: extractNumber(
+                            innerVideo.view_count.text as string
+                        ),
                         lengthSeconds: toSecond(
                             innerVideo.duration?.text as string
                         ),

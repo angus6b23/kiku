@@ -1,6 +1,9 @@
 import presentToast from '@/components/Toast'
 import { Instance, Thumbnail, VideoDetails } from '@/typescript/interfaces'
-import { extractInnertubeThumbnail, generatePipedThumbnail } from '@/utils/thumbnailExtract'
+import {
+    extractInnertubeThumbnail,
+    generatePipedThumbnail,
+} from '@/utils/thumbnailExtract'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { CompactVideo } from 'youtubei.js/dist/src/parser/nodes'
@@ -133,8 +136,7 @@ interface PipedDetails {
     uploader: string
     uploaderUrl: string
     uploaderVerified: boolean
-    videoStreams: 
-        {
+    videoStreams: {
         bitrate: number
         codec: string
         format: string
@@ -163,16 +165,16 @@ const videoDetailInv = async (id: string, baseUrl: string) => {
         const { data }: { data: InvidiousDetails } = res
         const recommendedVideos: VideoDetails['recommendedVideos'] =
             data.recommendedVideos.map((item) => {
-            return {
-                type: 'video',
-                title: item.title,
-                videoId: item.videoId,
-                author: item.author,
-                authorId: item.authorId,
-                videoThumbnails: item.videoThumbnails,
-                lengthSeconds: item.lengthSeconds,
-            }
-        })
+                return {
+                    type: 'video',
+                    title: item.title,
+                    videoId: item.videoId,
+                    author: item.author,
+                    authorId: item.authorId,
+                    videoThumbnails: item.videoThumbnails,
+                    lengthSeconds: item.lengthSeconds,
+                }
+            })
         return {
             type: 'video',
             title: data.title,
@@ -222,46 +224,51 @@ const videoDetailInner = async (id: string, innertube: Innertube | null) => {
                     lengthSeconds: video.duration.seconds,
                 }
             })
-            return {
-                type: 'video',
-                title: res.basic_info.title as string,
-                videoId: res.basic_info.id as string,
-                author: res.basic_info.author as string,
-                authorId: res.basic_info.channel_id as string,
-                videoThumbnails: extractInnertubeThumbnail(thumbnails),
-                viewCount: res.basic_info.view_count as number,
-                lengthSeconds: res.basic_info.duration as number,
-                description: res.basic_info.short_description as string,
-                published: publishTime,
-                keywords: [],
-                likeCount: res.basic_info.like_count,
-                genre: '',
-                recommendedVideos: recommendedVideos,
-            } as VideoDetails
+        return {
+            type: 'video',
+            title: res.basic_info.title as string,
+            videoId: res.basic_info.id as string,
+            author: res.basic_info.author as string,
+            authorId: res.basic_info.channel_id as string,
+            videoThumbnails: extractInnertubeThumbnail(thumbnails),
+            viewCount: res.basic_info.view_count as number,
+            lengthSeconds: res.basic_info.duration as number,
+            description: res.basic_info.short_description as string,
+            published: publishTime,
+            keywords: [],
+            likeCount: res.basic_info.like_count,
+            genre: '',
+            recommendedVideos: recommendedVideos,
+        } as VideoDetails
     } catch (err) {
         return new Error('innertube > ' + err)
     }
 }
 const videoDetailPiped = async (id: string, baseUrl: string) => {
-    try{
+    try {
         const res = await axios({
             method: 'get',
             baseURL: baseUrl,
-            url: `/streams/${id}`
+            url: `/streams/${id}`,
         })
-        const { data }: {data: PipedDetails} = res
-        const authorId = data.uploaderUrl.replace(/^\/channel\//, '');
-        const recommendedVideos = data.relatedStreams.filter(item => item.type === 'streams').map((item) => {
-            return {
-                type: 'video',
-                title: item.title,
-                videoId: item.url.replace(/^\/watch\?v=/, ''),
-                author: item.uploaderName,
-                authorId: item.uploaderUrl !== null ? item.uploaderUrl.replace(/^\/channel\//, '') : '',
-                videoThumbnails: generatePipedThumbnail(item.thumbnail),
-                lengthSeconds: item.duration,
-            }
-        })
+        const { data }: { data: PipedDetails } = res
+        const authorId = data.uploaderUrl.replace(/^\/channel\//, '')
+        const recommendedVideos = data.relatedStreams
+            .filter((item) => item.type === 'streams')
+            .map((item) => {
+                return {
+                    type: 'video',
+                    title: item.title,
+                    videoId: item.url.replace(/^\/watch\?v=/, ''),
+                    author: item.uploaderName,
+                    authorId:
+                        item.uploaderUrl !== null
+                            ? item.uploaderUrl.replace(/^\/channel\//, '')
+                            : '',
+                    videoThumbnails: generatePipedThumbnail(item.thumbnail),
+                    lengthSeconds: item.duration,
+                }
+            })
         return {
             type: 'video',
             title: data.title,
@@ -278,7 +285,7 @@ const videoDetailPiped = async (id: string, baseUrl: string) => {
             genre: '',
             recommendedVideos: recommendedVideos,
         } as VideoDetails
-    } catch(err){
+    } catch (err) {
         console.error(err)
         return new Error('piped > ' + err)
     }
@@ -301,13 +308,13 @@ export async function getVideoDetail(
     switch (instances[0].type) {
         case 'local':
             res = await videoDetailInner(id, innertube)
-        break
+            break
         case 'invidious':
             res = await videoDetailInv(id, instances[0].url)
-        break
+            break
         case 'piped':
             res = await videoDetailPiped(id, instances[0].url)
-        break
+            break
         default:
             throw new Error('Unknown instance in handle Search')
     }

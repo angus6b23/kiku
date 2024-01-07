@@ -29,6 +29,7 @@ import { addToNextSong, selectPlaylist } from '@/store/playlistReducers'
 import { Playitem } from '@/typescript/interfaces'
 import { addToPlaylist } from '@/store/playlistReducers'
 import Innertube from 'youtubei.js/agnostic'
+import { longNumber } from '@/utils/format'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { shell } = require('electron')
@@ -194,7 +195,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                             {t('video-detail:Views')}
                                         </div>
                                         <div className="col-span-4">
-                                            {details.viewCount}
+                                            {longNumber(details.viewCount)}
                                         </div>
                                     </>
                                 )}
@@ -202,7 +203,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                     {t('video-detail:Likes')}
                                 </div>
                                 <div className="col-span-4">
-                                    {details.likeCount}
+                                    {longNumber(details.likeCount)}
                                 </div>
                             </div>
                             {/* Buttons */}

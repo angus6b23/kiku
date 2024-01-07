@@ -1,16 +1,12 @@
 import MainNav from '@/components/MainNav'
-import React, {
-    useState,
-    type ReactElement,
-    useEffect,
-} from 'react'
+import React, { useState, type ReactElement, useEffect } from 'react'
 import { Block, Tabs, Tab, View, Toolbar, f7 } from 'framework7-react'
 import ToolbarPlayer from '@/components/ToolbarPlayer'
 import NowPlaying from './NowPlaying'
 import Setting from './Setting'
 import { useSelector } from 'react-redux'
 import { selectPlayer } from '@/store/playerReducers'
-import {selectConfig} from '@/store/globalConfig'
+import { selectConfig } from '@/store/globalConfig'
 
 export interface HomePageProps {}
 

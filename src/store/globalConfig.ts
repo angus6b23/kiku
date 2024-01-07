@@ -122,7 +122,7 @@ export const globalConfig = createSlice({
                 ui: {
                     ...state.ui,
                     accentColor: action.payload,
-                }
+                },
             }
         },
         changeStorage: (state, action: PayloadAction<number>) => {
