@@ -12,16 +12,19 @@ const {
     Tray,
     Menu,
     MenuItem,
+    shell,
 } = require('electron')
 const serve = require('electron-serve')
 const loadURL = serve({ directory: 'dist' })
 
-async function base64ToBlob(data) {
-    const base64Response = await fetch(data)
-    return await base64Response.blob()
-}
 let win, tray
 let appQuiting = false
+
+const quitApp = () => {
+    appQuiting = true
+    app.quit()
+}
+app.on('before-quit', quitApp)
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
@@ -98,10 +101,12 @@ function createWindow() {
     win.on('close', function (event) {
         if (!appQuiting) {
             event.preventDefault()
+            win.webContents.send('win-close') // Send signal to renderer to check if minimie to tray is active
             win.hide()
         }
     })
 
+    ipcMain.on('quit-app', quitApp) // Renderer will send back quit-app signal if minimize to tray is not active
     // Create tray icon
     const toggleWinDisplay = () => {
         win.isVisible() ? win.hide() : win.show()
@@ -133,10 +138,7 @@ function createWindow() {
         { type: 'separator' },
         {
             label: 'Quit',
-            click: function () {
-                appQuiting = true
-                app.quit()
-            },
+            click: quitApp,
         },
     ]
     const trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
@@ -165,6 +167,7 @@ app.on('activate', () => {
         createWindow()
     }
 })
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -237,4 +240,76 @@ ipcMain.handle('get-folder-content', async () => {
 // IPC channel for controlling tray tooltip and menu
 ipcMain.on('update-tray-tooltip', (_, newInfo) => {
     tray.setToolTip(newInfo)
+})
+
+// IPC channel for controlling custom menu
+ipcMain.on('update-menu', (_, json) => {
+    const translation = JSON.parse(json)
+    const menuTemplate = [
+        {
+            label: translation['Window'],
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { type: 'separator' },
+                { role: 'toggleDevTools' },
+                { role: 'togglefullscreen' },
+                { type: 'separator' },
+                {
+                    label: translation['Close'],
+                    role: 'close',
+                },
+                {
+                    label: translation['Quit'],
+                    role: 'quit'
+                },
+            ],
+        },
+        {
+            label: translation['Player'],
+            submenu: [
+                {
+                    label: translation['PlayPause'],
+                    click: () => {
+                        win.webContents.send('tray-play-pause')
+                    },
+                },
+                {
+                    label: translation['NextSong'],
+                    click: () => {
+                        win.webContents.send('tray-next')
+                    },
+                },
+                {
+                    label: translation['PrevSong'],
+                    click: () => {
+                        win.webContents.send('tray-prev')
+                    },
+                },
+            ],
+        },
+        {
+            role: 'help',
+            label: translation['Help'],
+            submenu: [
+                {
+                    label: translation['About'],
+                },
+                {
+                    label: translation['SourceCode'],
+                    click: () => {
+                        shell.openExternal('https://github.com/angus6b23/kiku')
+                    },
+                },
+                {
+                    label: translation['Sponsor'],
+                    click: () => {
+                        shell.openExternal('https://liberapay.com/12a.app/')
+                    },
+                },
+            ],
+        },
+    ]
+    const menu = Menu.buildFromTemplate(menuTemplate)
+    Menu.setApplicationMenu(menu)
 })

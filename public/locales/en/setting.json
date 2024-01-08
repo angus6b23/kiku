@@ -17,6 +17,7 @@
   "Theme": "Theme",
   "Light": "Light",
   "Dark": "Dark",
+  "Minimize-to-tray-when-closed": "Minimize to tray when closed",
   "Seek-Time": "Seek Time",
   "Choose-Layout": "Choose Layout",
   "Show-Timeline-in-wavesurfer": "Show Timeline in wavesurfer",

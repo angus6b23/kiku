@@ -8,6 +8,7 @@ import {
     changeNowPlaying,
     changeTheme,
     selectConfig,
+    toggleHideOnClose,
     toggleTimeline,
 } from '@/store/globalConfig'
 import { supportedLngs } from '@/js/i18n'
@@ -42,7 +43,9 @@ export default function UISetting(): ReactElement {
             changeNowPlaying({ key: e.target.name, value: e.target.value })
         )
     }
-
+    const handleToggleHideOnClose = () => {
+        dispatch(toggleHideOnClose())
+    }
     return (
         <>
             <Block className="p-6">
@@ -93,6 +96,12 @@ export default function UISetting(): ReactElement {
                             <p>{config.ui.accentColor}</p>
                         </div>
                     </ListItem>
+                    <ListItem
+                        checkbox
+                        checked={config.ui.hideOnClose}
+                        title={t('setting:Minimize-to-tray-when-closed')}
+                        onChange={handleToggleHideOnClose}
+                    />
                 </List>
             </Block>
             {/* Now Playing Title */}

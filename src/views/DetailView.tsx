@@ -92,7 +92,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                 break
             case 'invidious':
                 navigator.clipboard.writeText(
-                    invidiousUrl + `/${details?.videoId}`
+                    invidiousUrl + `/watch?v=${details?.videoId}`
                 )
                 break
             default:

@@ -26,6 +26,7 @@ const initConfigState: GlobalConfig = {
         accentColor: '#89a0c2',
         theme: 'dark',
         autoScroll: true,
+        hideOnClose: true,
     },
     nowPlaying: {
         seekDuration: 15,
@@ -59,6 +60,15 @@ export const globalConfig = createSlice({
                 storage: {
                     ...state.storage,
                     enalbeBlobStorage: !state.storage.enalbeBlobStorage,
+                },
+            }
+        },
+        toggleHideOnClose: (state) => {
+            return {
+                ...state,
+                ui: {
+                    ...state.ui,
+                    hideOnClose: !state.ui.hideOnClose,
                 },
             }
         },
@@ -140,6 +150,7 @@ export const globalConfig = createSlice({
 export const {
     toggleTimeline,
     toggleBlobStorage,
+    toggleHideOnClose,
     updateInstance,
     updateInstancei18n,
     changeLocale,

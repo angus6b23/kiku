@@ -17,6 +17,7 @@
   "Theme": "主題",
   "Light": "亮色",
   "Dark": "暗色",
+  "Minimize-to-tray-when-closed": "關閉視窗時縮小到系統列",
   "Seek-Time": "轉跳時間",
   "Choose-Layout": "選擇版面",
   "Show-Timeline-in-wavesurfer": "在wavesurfer 中顯示時間列",
