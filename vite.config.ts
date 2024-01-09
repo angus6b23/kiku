@@ -12,7 +12,7 @@ export default async () => {
             react(),
             tsconfigPaths(),
             electron({
-                entry: 'electron/main.ts',
+                entry: 'electron/main.js',
                 onstart(args) {
                     args.startup()
                 },

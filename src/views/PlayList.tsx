@@ -1,4 +1,4 @@
-import React, { useRef, type ReactElement } from 'react'
+import React, { useRef, type ReactElement, useState } from 'react'
 import { Block, List, ListItem, Navbar } from 'framework7-react'
 import { Playitem } from '@/typescript/interfaces'
 import { useSelector, useDispatch } from 'react-redux'
@@ -20,6 +20,7 @@ export default function PlayList(): ReactElement {
     const dispatch = useDispatch()
     const playingRef = useRef<HTMLElement>(null)
     const { t } = useTranslation(['common', 'playlist'])
+    const [sortEnabled, setSortEnabled] = useState(false)
 
     const generateItemClass = (item: Playitem) => {
         if (item.downloadStatus === 'pending') {
@@ -43,6 +44,19 @@ export default function PlayList(): ReactElement {
     const handleSortMove = (e: sortEvent) => {
         dispatch(sort({ from: e.from, to: e.to }))
     }
+
+    const toggleSort = () => {
+        setSortEnabled((prevState) => !prevState)
+    }
+
+    const scrollToPlaying = () => {
+        if (playingRef.current !== null) {
+            playingRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            })
+        }
+    }
     // Disabled due to strange behaviour
     // useEffect(() => {
     //     if (playingRef.current != null && config.ui.autoScroll){
@@ -54,12 +68,16 @@ export default function PlayList(): ReactElement {
             <Navbar title={t('common:Playlist')} />
             {/* Control bar */}
             <Block className="sticky top-0 z-10 m-0 bg-[--f7-md-surface-1]">
-                <PlaylistControlBar />
+                <PlaylistControlBar
+                    sortEnabled={sortEnabled}
+                    toggleSort={toggleSort}
+                    scrollToPlaying={scrollToPlaying}
+                />
             </Block>
             {/* Playlist Starts here */}
             <List
                 sortable
-                sortableEnabled
+                sortableEnabled={sortEnabled}
                 outline
                 dividers
                 strong

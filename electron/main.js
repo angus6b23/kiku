@@ -4,15 +4,27 @@ const fs = require('fs')
 const os = require('node:os')
 const du = require('du')
 const Readable = require('stream').Readable
-const { app, BrowserWindow, session, ipcMain } = require('electron')
+const {
+    app,
+    BrowserWindow,
+    session,
+    ipcMain,
+    Tray,
+    Menu,
+    MenuItem,
+    shell,
+} = require('electron')
 const serve = require('electron-serve')
 const loadURL = serve({ directory: 'dist' })
 
-async function base64ToBlob(data) {
-    const base64Response = await fetch(data)
-    return await base64Response.blob()
+let win, tray
+let appQuiting = false
+
+const quitApp = () => {
+    appQuiting = true
+    app.quit()
 }
-let win
+app.on('before-quit', quitApp)
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
@@ -26,6 +38,7 @@ function createWindow() {
             contextIsolation: false,
         },
     })
+
     // Set CONSENT cookie on reasonable domains
     const consentCookieDomains = [
         'https://www.youtube.com',
@@ -68,57 +81,68 @@ function createWindow() {
                 // YouTube doesn't send the Content-Type header for the media requests, so we shouldn't either
                 delete requestHeaders['Content-Type']
             }
-
-            // YouTube throttles the adaptive formats if you request a chunk larger than 10MiB.
-            // For the DASH formats we are fine as video.js doesn't seem to ever request chunks that big.
-            // The legacy formats don't have any chunk size limits.
-            // For the audio formats we need to handle it ourselves, as the browser requests the entire audio file,
-            // which means that for most videos that are longer than 10 mins, we get throttled, as the audio track file sizes surpass that 10MiB limit.
-
-            // This code checks if the file is larger than the limit, by checking the `clen` query param,
-            // which YouTube helpfully populates with the content length for us.
-            // If it does surpass that limit, it then checks if the requested range is larger than the limit
-            // (seeking right at the end of the video, would result in a small enough range to be under the chunk limit)
-            // if that surpasses the limit too, it then limits the requested range to 10MiB, by setting the range to `start-${start + 10MiB}`.
-            if (url.includes('&mime=audio') && requestHeaders.Range) {
-                const TEN_MIB = 10 * 1024 * 1024
-                const contentLength = parseInt(
-                    new URL(url).searchParams.get('clen')
-                )
-
-                if (contentLength > TEN_MIB) {
-                    const [startStr, endStr] =
-                        requestHeaders.Range.split('=')[1].split('-')
-
-                    const start = parseInt(startStr)
-
-                    // handle open ended ranges like `0-` and `1234-`
-                    const end =
-                        endStr.length === 0 ? contentLength : parseInt(endStr)
-
-                    if (end - start > TEN_MIB) {
-                        const newEnd = start + TEN_MIB
-
-                        requestHeaders.Range = `bytes=${start}-${newEnd}`
-                    }
-                }
-            }
-
             callback({ requestHeaders })
         }
     )
 
+    // Load the page
     if (process.env.NODE_ENV === 'development') {
         win.loadURL('http://localhost:5201')
     } else {
         win.loadURL('app://-')
-        // win.loadFile(`${__dirname}/../dist/index.html`)
     }
 
     // Open the DevTools.
     if (process.env.NODE_ENV === 'development') {
         win.webContents.openDevTools()
     }
+
+    // Control for minimize and exist
+    win.on('close', function (event) {
+        if (!appQuiting) {
+            event.preventDefault()
+            win.webContents.send('win-close') // Send signal to renderer to check if minimie to tray is active
+            win.hide()
+        }
+    })
+
+    ipcMain.on('quit-app', quitApp) // Renderer will send back quit-app signal if minimize to tray is not active
+    // Create tray icon
+    const toggleWinDisplay = () => {
+        win.isVisible() ? win.hide() : win.show()
+    }
+    tray = new Tray('public/icons/png/256x256.png')
+    tray.setToolTip('Kiku - a electron based youtube music player')
+    tray.on('click', toggleWinDisplay)
+    const trayMenuTemplate = [
+        { label: 'Show / Hide App', click: toggleWinDisplay },
+        { type: 'separator' },
+        {
+            label: 'Play / Pause',
+            click: () => {
+                win.webContents.send('tray-play-pause')
+            },
+        },
+        {
+            label: 'Next song',
+            click: () => {
+                win.webContents.send('tray-next')
+            },
+        },
+        {
+            label: 'Previous song',
+            click: () => {
+                win.webContents.send('tray-prev')
+            },
+        },
+        { type: 'separator' },
+        {
+            label: 'Quit',
+            click: quitApp,
+        },
+    ]
+    const trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
+    tray.setContextMenu(trayMenu)
 }
 
 // This method will be called when Electron has finished
@@ -162,7 +186,10 @@ const sendDirSize = async () => {
     const dirSize = await du(downloadPath)
     win.webContents.send('dir-size', dirSize)
 }
-ipcMain.on('create-blob', async (e, data) => {
+
+// IPC channels used for creating and removing audio files
+ipcMain.on('create-blob', async (_, data) => {
+    // Create audio files in the download folder with the data passed
     const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
     const base64Audio = data.blob.split(';base64,').pop()
     fs.promises
@@ -172,6 +199,7 @@ ipcMain.on('create-blob', async (e, data) => {
         .then(sendDirSize)
 })
 ipcMain.on('delete-blob', (_, data) => {
+    // Remove the audio file with given audio file name
     const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
     fs.promises
         .rm(path.join(downloadPath, `${data.id}.${extension}`))
@@ -179,6 +207,7 @@ ipcMain.on('delete-blob', (_, data) => {
         .finally(sendDirSize)
 })
 ipcMain.handle('get-blob', async (_, id) => {
+    // Read the audio file with given name then send back the data via ipc channel
     const folder = await fs.promises.readdir(downloadPath)
     const fileMatch = folder.find((file) => file.includes(id))
     if (fileMatch !== undefined) {
@@ -200,8 +229,87 @@ ipcMain.handle('get-blob', async (_, id) => {
     }
 })
 ipcMain.handle('get-folder-path', () => {
+    // Return the download path
     return downloadPath
 })
 ipcMain.handle('get-folder-content', async () => {
+    // Get all file names in the download folder
     return await fs.promises.readdir(downloadPath)
+})
+
+// IPC channel for controlling tray tooltip and menu
+ipcMain.on('update-tray-tooltip', (_, newInfo) => {
+    tray.setToolTip(newInfo)
+})
+
+// IPC channel for controlling custom menu
+ipcMain.on('update-menu', (_, json) => {
+    const translation = JSON.parse(json)
+    const menuTemplate = [
+        {
+            label: translation['Window'],
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { type: 'separator' },
+                { role: 'toggleDevTools' },
+                { role: 'togglefullscreen' },
+                { type: 'separator' },
+                {
+                    label: translation['Close'],
+                    role: 'close',
+                },
+                {
+                    label: translation['Quit'],
+                    role: 'quit'
+                },
+            ],
+        },
+        {
+            label: translation['Player'],
+            submenu: [
+                {
+                    label: translation['PlayPause'],
+                    click: () => {
+                        win.webContents.send('tray-play-pause')
+                    },
+                },
+                {
+                    label: translation['NextSong'],
+                    click: () => {
+                        win.webContents.send('tray-next')
+                    },
+                },
+                {
+                    label: translation['PrevSong'],
+                    click: () => {
+                        win.webContents.send('tray-prev')
+                    },
+                },
+            ],
+        },
+        {
+            role: 'help',
+            label: translation['Help'],
+            submenu: [
+                {
+                    label: translation['About'],
+                },
+                {
+                    label: translation['SourceCode'],
+                    click: () => {
+                        shell.openExternal('https://github.com/angus6b23/kiku')
+                    },
+                },
+                {
+                    label: translation['Sponsor'],
+                    click: () => {
+                        shell.openExternal('https://liberapay.com/12a.app/')
+                    },
+                },
+            ],
+        },
+    ]
+    const menu = Menu.buildFromTemplate(menuTemplate)
+    Menu.setApplicationMenu(menu)
 })

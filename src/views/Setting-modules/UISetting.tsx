@@ -1,15 +1,18 @@
 import React, { BaseSyntheticEvent, type ReactElement } from 'react'
-import { Block, BlockTitle, List, ListItem } from 'framework7-react'
+import { Block, BlockTitle, List, ListItem, Popup, f7 } from 'framework7-react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    changeAccentColor,
     changeLocale,
     changeNowPlaying,
     changeTheme,
     selectConfig,
+    toggleHideOnClose,
     toggleTimeline,
 } from '@/store/globalConfig'
 import { supportedLngs } from '@/js/i18n'
+import AccentColorModal from './AccentColorModal'
 
 export default function UISetting(): ReactElement {
     const { t } = useTranslation(['setting'])
@@ -39,6 +42,9 @@ export default function UISetting(): ReactElement {
         dispatch(
             changeNowPlaying({ key: e.target.name, value: e.target.value })
         )
+    }
+    const handleToggleHideOnClose = () => {
+        dispatch(toggleHideOnClose())
     }
     return (
         <>
@@ -75,6 +81,27 @@ export default function UISetting(): ReactElement {
                             <option value="dark">{t('setting:Dark')}</option>
                         </select>
                     </ListItem>
+                    <ListItem
+                        link
+                        popupOpen=".accent-modal"
+                        title={t('setting:Primary-color')}
+                    >
+                        <div className="flex gap-2 items-center">
+                            <div
+                                className="w-8 h-8 rounded-md"
+                                style={{
+                                    backgroundColor: config.ui.accentColor,
+                                }}
+                            ></div>
+                            <p>{config.ui.accentColor}</p>
+                        </div>
+                    </ListItem>
+                    <ListItem
+                        checkbox
+                        checked={config.ui.hideOnClose}
+                        title={t('setting:Minimize-to-tray-when-closed')}
+                        onChange={handleToggleHideOnClose}
+                    />
                 </List>
             </Block>
             {/* Now Playing Title */}
@@ -118,6 +145,9 @@ export default function UISetting(): ReactElement {
                     </ListItem>
                 </List>
             </Block>
+            <Popup className="accent-modal">
+                <AccentColorModal />
+            </Popup>
         </>
     )
 }

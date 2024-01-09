@@ -41,7 +41,7 @@
     opacity: 0.5;
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--f7-color-primary);
+    background: var(--f7-theme-color);
 }
 div:focus {
     outline: none;

@@ -23,9 +23,10 @@ const initConfigState: GlobalConfig = {
     },
     ui: {
         lang: 'en',
-        accentColor: '#000000',
+        accentColor: '#89a0c2',
         theme: 'dark',
         autoScroll: true,
+        hideOnClose: true,
     },
     nowPlaying: {
         seekDuration: 15,
@@ -59,6 +60,15 @@ export const globalConfig = createSlice({
                 storage: {
                     ...state.storage,
                     enalbeBlobStorage: !state.storage.enalbeBlobStorage,
+                },
+            }
+        },
+        toggleHideOnClose: (state) => {
+            return {
+                ...state,
+                ui: {
+                    ...state.ui,
+                    hideOnClose: !state.ui.hideOnClose,
                 },
             }
         },
@@ -116,6 +126,15 @@ export const globalConfig = createSlice({
                 },
             }
         },
+        changeAccentColor: (state, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                ui: {
+                    ...state.ui,
+                    accentColor: action.payload,
+                },
+            }
+        },
         changeStorage: (state, action: PayloadAction<number>) => {
             return {
                 ...state,
@@ -131,10 +150,12 @@ export const globalConfig = createSlice({
 export const {
     toggleTimeline,
     toggleBlobStorage,
+    toggleHideOnClose,
     updateInstance,
     updateInstancei18n,
     changeLocale,
     changeTheme,
+    changeAccentColor,
     changeStorage,
     changeNowPlaying,
 } = globalConfig.actions

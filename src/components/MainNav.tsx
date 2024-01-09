@@ -67,7 +67,7 @@ const MainNav = (props: MainNavProps) => {
             on: {
                 change: (e: string[]) => {
                     setSearchTerm(e[0])
-                    autocompleteSearch.current.$inputEl.focus()
+                    autocompleteSearch.current.$inputEl[0].focus()
                 },
             },
         })

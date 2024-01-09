@@ -142,6 +142,7 @@ interface GlobalConfig {
         accentColor: string
         theme: 'dark' | 'light'
         autoScroll: boolean
+        hideOnClose: boolean
     }
     nowPlaying: {
         seekDuration: number

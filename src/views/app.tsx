@@ -11,6 +11,7 @@ import { blobStoreReducer } from '@/store/reactReducers'
 import { Provider } from 'react-redux'
 import { store, persistor } from '@/store/store'
 import { PersistGate } from 'redux-persist/integration/react'
+import { getInvInstances, getPipedInstances } from '@/js/getInstances'
 import PlayList from '@/views/PlayList'
 import Worker from '@/components/Worker'
 import AudioWatcher from '@/components/AudioWatcher'
@@ -18,9 +19,10 @@ import routes from '@/js/routes'
 import Innertube from 'youtubei.js/agnostic'
 import InnerTube from '@/components/InnerTube'
 import HomePage from '@/views/HomePage'
-import { getInvInstances, getPipedInstances } from '@/js/getInstances'
 import presentToast from '@/components/Toast'
+import TrayController from '@/components/TrayController'
 const initBlobStore: AudioBlobObject[] = []
+
 const MyApp = () => {
     const audio = useRef<HTMLAudioElement>(new Audio())
     const [audioBlobStore, dispatchAudioBlob] = useReducer(
@@ -103,9 +105,10 @@ const MyApp = () => {
                             instanceList: instances,
                         }}
                     >
-                        <Worker />
                         <InnerTube />
+                        <Worker />
                         <AudioWatcher />
+                        <TrayController />
                         <Panel
                             className="min-w-60 w-1/3 lg:w-1/4"
                             right
