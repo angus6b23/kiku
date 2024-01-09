@@ -17,14 +17,12 @@ An electron application for playing music from youtube on desktop. The applicati
 
 ## Screenshots
 <div style="display: flex; flex-wrap: wrap; gap: 1rem">
-<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot1.png" width="480" height="270" alt="kiku-screenshot">
-<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot2.png" width="480" height="270" alt="kiku-screenshot">
-<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot3.png" width="480" height="270" alt="kiku-screenshot">
-<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot4.png" width="480" height="270" alt="kiku-screenshot">
-</div>
-<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot5.png" width="480" height="270" alt="kiku-screenshot">
-</div>
-<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot6.png" width="480" height="270" alt="kiku-screenshot">
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot1.png" width="240" height="135" alt="kiku-screenshot" />
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot2.png" width="240" height="135" alt="kiku-screenshot" />
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot3.png" width="240" height="135" alt="kiku-screenshot" />
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot4.png" width="240" height="135" alt="kiku-screenshot" />
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot5.png" width="240" height="135" alt="kiku-screenshot" />
+<img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot6.png" width="240" height="135" alt="kiku-screenshot" />
 </div>
 
 
