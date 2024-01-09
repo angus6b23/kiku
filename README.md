@@ -36,7 +36,9 @@ An electron application for playing music from youtube on desktop. The applicati
 
 ## Installing
 
-Binaries are available in release.
+Binaries are available in [release](https://github.com/angus6b23/kiku/releases/latest).
+- Linux: AppImage, Binary, Flatpak
+- Windows: Portable, Install
 
 ## Building the application by yourself
 
