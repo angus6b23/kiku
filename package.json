@@ -11,7 +11,7 @@
     "scripts": {
         "start": "electron-forge start",
         "dev": "cross-env NODE_ENV=development vite --port=5201",
-        "build": "yarn lint && cross-env NODE_ENV=production vite build && electron-builder",
+        "build": "yarn lint && cross-env NODE_ENV=production vite build",
         "build-all": "yarn lint && cross-env NODE_ENV=production vite build && electron-builder -wml",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
         "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/",
@@ -30,6 +30,7 @@
         "@types/react": "^18.2.29",
         "@types/react-dom": "^18.2.14",
         "axios": "^1.5.1",
+        "clsx": "^2.1.0",
         "dom7": "^4.0.6",
         "du": "^1.0.0",
         "electron-serve": "^1.2.0",

@@ -3,6 +3,7 @@
 </div>
 
 # Kiku
+
 <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; margin-left: -0.5rem">
 <img alt="GitHub License" src="https://img.shields.io/github/license/angus6b23/kiku">
 <img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/angus6b23/kiku">
@@ -16,6 +17,7 @@ An electron application for playing music from youtube on desktop. The applicati
 **Warning: The application is currently under development and can be unstable in terms of behaviour and performance **
 
 ## Screenshots
+
 <div style="display: flex; flex-wrap: wrap; gap: 1rem">
 <img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot1.png" width="240" height="135" alt="kiku-screenshot" />
 <img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot2.png" width="240" height="135" alt="kiku-screenshot" />
@@ -25,20 +27,19 @@ An electron application for playing music from youtube on desktop. The applicati
 <img src="https://raw.githubusercontent.com/angus6b23/kiku/master/assets-src/screenshot6.png" width="240" height="135" alt="kiku-screenshot" />
 </div>
 
+## Features
 
-
-## Features 
-
-- Select from source you like (Youtube, invidious, piped)
-- Automatical fallback to another source when one source failed
-- Available on Windows, Mac and Linux thanks to electron
-- Translation available
+-   Select from source you like (Youtube, invidious, piped)
+-   Automatical fallback to another source when one source failed
+-   Available on Windows, Mac and Linux thanks to electron
+-   Translation available
 
 ## Installing
 
 Binaries are available in [release](https://github.com/angus6b23/kiku/releases/latest).
-- Linux: AppImage, Binary, Flatpak
-- Windows: Portable, Install
+
+-   Linux: AppImage, Binary, Flatpak
+-   Windows: Portable, Install
 
 ## Building the application by yourself
 
@@ -48,21 +49,21 @@ Binaries are available in [release](https://github.com/angus6b23/kiku/releases/l
 
 2.  Run yarn / npm to install dependencies
 
-	Using yarn
-	`yarn`
+    Using yarn
+    `yarn`
 
-	Using npm
-	`npm install`
+    Using npm
+    `npm install`
 
 3.  Build and package the files
 
-	Using yarn
-	`yarn build && yarn package`
-	
-	Using npm
-	`npn run build && npm run package`
+    Using yarn
+    `yarn build && yarn package`
 
-4. If the building process is successful, the binaries will be "out" folder
+    Using npm
+    `npn run build && npm run package`
+
+4.  If the building process is successful, the binaries will be "out" folder
 
 ## License
 
