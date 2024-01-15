@@ -167,7 +167,12 @@ export default function NowPlaying(): ReactElement {
                     onKeyDown={handleKeyPress}
                 >
                     <NowPlayingContext.Provider value={nowPlayingFunctions}>
-                        <LargeBgLayout />
+                        { config.nowPlaying.layout === 'classic'  ?
+                            <ClassicLayout /> :
+                        config.nowPlaying.layout === 'large-background' ?
+                            <LargeBgLayout /> :
+                            <></>
+                        }
                     </NowPlayingContext.Provider>
                 </div>
             )}

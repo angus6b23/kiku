@@ -1,9 +1,10 @@
 import React, { BaseSyntheticEvent, type ReactElement } from 'react'
-import { Block, BlockTitle, List, ListItem, Popup, f7 } from 'framework7-react'
+import { Block, BlockTitle, List, ListItem, Popup } from 'framework7-react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import clsx from 'clsx'
 import {
-    changeAccentColor,
+    changeLayout,
     changeLocale,
     changeNowPlaying,
     changeTheme,
@@ -45,6 +46,9 @@ export default function UISetting(): ReactElement {
     }
     const handleToggleHideOnClose = () => {
         dispatch(toggleHideOnClose())
+    }
+    const handleChangeLayout = (name: 'classic' | 'large-background') => {
+        dispatch(changeLayout(name))
     }
     return (
         <>
@@ -130,9 +134,41 @@ export default function UISetting(): ReactElement {
                         </select>
                     </ListItem>
                     <ListItem>
-                        <h1 className="text-lg my-4">
-                            {t('setting:Choose-Layout')}
-                        </h1>
+                        <div>
+                            <h1 className="text-lg my-4">
+                                {t('setting:Choose-Layout')}
+                            </h1>
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className={clsx(
+                                    "py-4 px-6 flex flex-wrap cursor-pointer", {
+                                        "bg-[var(--f7-theme-color)]": config.nowPlaying.layout === 'classic'
+                                    }
+                                )}
+                                    onClick={() => handleChangeLayout('classic')}
+                                >
+                                    <img className="w-full" src="/images/layout-classic.png"  />
+                                    <p className={
+                                        clsx({
+                                        "text-[var(--f7-md-surface)]": config.nowPlaying.layout === 'classic'
+                                        })
+                                    }>{t('setting:Classic')}</p>
+                                </div>
+                                <div className={clsx(
+                                    "py-4 px-6 flex flex-wrap cursor-pointer", {
+                                        "bg-[var(--f7-theme-color)]": config.nowPlaying.layout === 'large-background'
+                                    }
+                                )}
+                                    onClick={() => handleChangeLayout('large-background')}
+                                >
+                                    <img className="w-full object-contain" src="/images/layout-bg.png"  />
+                                    <p className={
+                                        clsx({
+                                        "text-[var(--f7-md-surface)]": config.nowPlaying.layout === 'large-background'
+                                        })
+                                    }>{t('setting:Large-Background')}</p>
+                                </div>
+                            </div>
+                        </div>
                     </ListItem>
                     <ListItem
                         checkbox

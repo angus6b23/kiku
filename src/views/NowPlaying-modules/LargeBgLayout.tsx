@@ -1,7 +1,4 @@
-import React, {
-    useContext,
-    type ReactElement,
-} from 'react'
+import React, { useContext, type ReactElement } from 'react'
 import { Block, Button, Icon } from 'framework7-react'
 import { useSelector } from 'react-redux'
 import { selectPlayer } from '@/store/playerReducers'
