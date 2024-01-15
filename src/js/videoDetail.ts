@@ -279,7 +279,7 @@ const videoDetailPiped = async (id: string, baseUrl: string) => {
             viewCount: data.views,
             lengthSeconds: data.duration,
             description: data.description.replaceAll('<br>', '\n'),
-            published: Math.round(new Date(data.uploadDate).getTime()/1000),
+            published: Math.round(new Date(data.uploadDate).getTime() / 1000),
             keywords: [],
             likeCount: data.likes,
             genre: '',

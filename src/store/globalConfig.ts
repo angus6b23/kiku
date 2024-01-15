@@ -31,6 +31,7 @@ const initConfigState: GlobalConfig = {
     nowPlaying: {
         seekDuration: 15,
         showTimeline: false,
+        layout: 'classic'
     },
     storage: {
         enalbeBlobStorage: true,

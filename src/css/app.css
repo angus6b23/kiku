@@ -50,3 +50,7 @@ div:focus {
 .playlist-select .item-after {
     display: none;
 }
+::selection {
+    background-color: var(--f7-theme-color);
+    color: var(--f7-md-on-surface);
+}

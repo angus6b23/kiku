@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 const Store = createContext<any>(undefined)
+const NowPlayingContext = createContext<any>(undefined)
 
 function useCustomContext<T>(context: React.Context<T | undefined>): T {
     if (!context) {
@@ -14,4 +15,4 @@ function useCustomContext<T>(context: React.Context<T | undefined>): T {
     }
 }
 
-export { useCustomContext, Store }
+export { useCustomContext, Store, NowPlayingContext }
