@@ -22,14 +22,14 @@ function LargeBgLayout(): ReactElement {
     return (
         <>
             <Block
-                className="h-page w-full my-0 bg-cover bg-center p-0"
+                className="min-h-page h-full w-full my-0 bg-cover bg-center p-0"
                 style={{
                     backgroundImage: `url("${playerState.currentPlaying?.thumbnailURL}")`,
                 }}
             >
                 <section
                     className={clsx(
-                        'w-full h-full backdrop-blur-md bg-gradient-to-t mx-0 my-0 pt-16 px-6',
+                        'w-full min-h-page h-full backdrop-blur-md bg-gradient-to-t mx-0 my-0 pt-16 px-6',
                         {
                             'from-black/80 to-black/20':
                                 config.ui.theme === 'dark',

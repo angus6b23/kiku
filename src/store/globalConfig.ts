@@ -145,15 +145,18 @@ export const globalConfig = createSlice({
                 },
             }
         },
-        changeLayout: (state, action: PayloadAction<'classic' | 'large-background'>) => {
+        changeLayout: (
+            state,
+            action: PayloadAction<'classic' | 'large-background'>
+        ) => {
             return {
                 ...state,
                 nowPlaying: {
                     ...state.nowPlaying,
-                    layout: action.payload
-                }
+                    layout: action.payload,
+                },
             }
-        }
+        },
     },
 })
 
@@ -168,7 +171,7 @@ export const {
     changeAccentColor,
     changeStorage,
     changeNowPlaying,
-    changeLayout
+    changeLayout,
 } = globalConfig.actions
 
 export default globalConfig.reducer
