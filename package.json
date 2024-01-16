@@ -16,7 +16,8 @@
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
         "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/",
         "i18n": "npx i18next-parser",
-        "electron-builder": "npx electron-builder -lw"
+        "electron-builder": "npx electron-builder -lw",
+        "prettier-write": "yarn prettier --write ."
     },
     "browserslist": [
         "IOS >= 15",

@@ -4,6 +4,7 @@ const fs = require('fs')
 const os = require('node:os')
 const du = require('du')
 const Readable = require('stream').Readable
+const root = path.join(__dirname, '../dist')
 const {
     app,
     BrowserWindow,
@@ -29,7 +30,7 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         autoHideMenuBar: true,
-        icon: `${__dirname}/../public/icons/png/512x512.png`,
+        icon: `${root}/icons/png/256x256.png`,
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: false,
@@ -111,7 +112,11 @@ function createWindow() {
     const toggleWinDisplay = () => {
         win.isVisible() ? win.hide() : win.show()
     }
-    tray = new Tray('public/icons/png/256x256.png')
+    if (process.env.NODE_ENV === 'developement') {
+        tray = new Tray('public/icons/png/256x256.png')
+    } else {
+        tray = new Tray(`${root}/icons/png/256x256.png`)
+    }
     tray.setToolTip('Kiku - a electron based youtube music player')
     tray.on('click', toggleWinDisplay)
     const trayMenuTemplate = [
@@ -261,7 +266,7 @@ ipcMain.on('update-menu', (_, json) => {
                 },
                 {
                     label: translation['Quit'],
-                    role: 'quit'
+                    role: 'quit',
                 },
             ],
         },

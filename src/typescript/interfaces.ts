@@ -147,6 +147,7 @@ interface GlobalConfig {
     nowPlaying: {
         seekDuration: number
         showTimeline: boolean
+        layout: 'classic' | 'large-background'
     }
     storage: {
         enalbeBlobStorage: boolean

@@ -1,13 +1,14 @@
 {
-  "File": "檔案",
-  "Close": "關閉視窗",
-  "Quit": "退出應用程式",
-  "Player": "播放器",
-  "Play-/-pause": "播放 / 暫停",
-  "Next-song": "下一首曲目",
-  "Previous-song": "上一首曲目",
-  "Help": "說明",
-  "About": "關於 Kiku",
-  "Browse-source-code": "顯示原始碼",
-  "Sponsor": "贊助"
+    "Window": "視窗",
+    "File": "檔案",
+    "Close": "關閉視窗",
+    "Quit": "退出應用程式",
+    "Player": "播放器",
+    "Play-/-pause": "播放 / 暫停",
+    "Next-song": "下一首曲目",
+    "Previous-song": "上一首曲目",
+    "Help": "說明",
+    "About": "關於 Kiku",
+    "Browse-source-code": "顯示原始碼",
+    "Sponsor": "贊助"
 }

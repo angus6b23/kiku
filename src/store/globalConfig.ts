@@ -31,6 +31,7 @@ const initConfigState: GlobalConfig = {
     nowPlaying: {
         seekDuration: 15,
         showTimeline: false,
+        layout: 'classic',
     },
     storage: {
         enalbeBlobStorage: true,
@@ -144,6 +145,18 @@ export const globalConfig = createSlice({
                 },
             }
         },
+        changeLayout: (
+            state,
+            action: PayloadAction<'classic' | 'large-background'>
+        ) => {
+            return {
+                ...state,
+                nowPlaying: {
+                    ...state.nowPlaying,
+                    layout: action.payload,
+                },
+            }
+        },
     },
 })
 
@@ -158,6 +171,7 @@ export const {
     changeAccentColor,
     changeStorage,
     changeNowPlaying,
+    changeLayout,
 } = globalConfig.actions
 
 export default globalConfig.reducer

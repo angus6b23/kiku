@@ -5,17 +5,18 @@ import React, {
     useEffect,
     useRef,
 } from 'react'
-import { Block, Button, Icon, Page } from 'framework7-react'
+import { Page } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectPlayer, stop, togglePlay } from '@/store/playerReducers'
 import { selectPlaylist, setItemPlaying } from '@/store/playlistReducers'
 import { getNextSong, getPrevSong } from '@/utils/songControl'
 import { Store, useCustomContext } from '@/store/reactContext'
-import Wavesurfer from '@/views/NowPlaying-modules/Wavesurfer'
 import NoPlaying from '@/views/NowPlaying-modules/NoPlaying'
 import { selectConfig } from '@/store/globalConfig'
 import { convertSecond } from '@/utils/format'
-import PlayingSlider from './NowPlaying-modules/PlayingSlider'
+import ClassicLayout from '@/views/NowPlaying-modules/ClassicLayout'
+import { NowPlayingContext } from '@/store/reactContext'
+import LargeBgLayout from '@/views/NowPlaying-modules/LargeBgLayout'
 
 export default function NowPlaying(): ReactElement {
     const playerState = useSelector(selectPlayer)
@@ -144,6 +145,17 @@ export default function NowPlaying(): ReactElement {
             default:
         }
     }
+    const nowPlayingFunctions = {
+        isLastSong: isLastSong,
+        isFirstSong: isFirstSong,
+        handleChangeTimestampStyle: handleChangeTimestampStyle,
+        handleNextSong: handleNextSong,
+        handlePrevSong: handlePrevSong,
+        handleSeek: handleSeek,
+        togglePlayFunction: togglePlayFunction,
+        getAudioTime: getAudioTime,
+        audioTimestamp: audioTimestamp,
+    }
     return (
         <Page name="now-playing" className="h-page overflow-auto">
             {playerState.currentPlaying === undefined ? (
@@ -154,90 +166,15 @@ export default function NowPlaying(): ReactElement {
                     tabIndex={-1}
                     onKeyDown={handleKeyPress}
                 >
-                    <Block>
-                        <div className="w-full 2xl:h-80 lg:h-64 md:h-48 h-36">
-                            <img
-                                className="object-contain h-full w-full"
-                                src={playerState.currentPlaying.thumbnailURL}
-                            />
-                        </div>
-                        <div className="w-full flex justify-center py-4">
-                            <h5 className="text-2xl text-center">
-                                {playerState.currentPlaying?.title}
-                            </h5>
-                        </div>
-                        {audio.current.duration < 90 * 40 ? (
-                            <Wavesurfer
-                                media={audio.current}
-                                showTimeline={config.nowPlaying.showTimeline}
-                            />
+                    <NowPlayingContext.Provider value={nowPlayingFunctions}>
+                        {config.nowPlaying.layout === 'classic' ? (
+                            <ClassicLayout />
+                        ) : config.nowPlaying.layout === 'large-background' ? (
+                            <LargeBgLayout />
                         ) : (
-                            <PlayingSlider audio={audio.current} />
+                            <></>
                         )}
-                        <a
-                            className="text-lg flex mt-4 items-center justify-center cursor-pointer"
-                            onClick={handleChangeTimestampStyle}
-                        >
-                            <p>{audioTimestamp}</p>
-                        </a>
-                        <div className="w-full flex justify-center gap-6">
-                            <Button
-                                className="h-32 w-32"
-                                onClick={() =>
-                                    handleSeek('backward', seekDuration)
-                                }
-                            >
-                                <Icon
-                                    className="text-6xl"
-                                    f7={`gobackward_${seekDuration}`}
-                                />
-                            </Button>
-                            <Button
-                                className="h-32 w-32"
-                                onClick={() => handlePrevSong()}
-                                disabled={isFirstSong()}
-                            >
-                                <Icon
-                                    className="text-6xl"
-                                    f7="backward_end_fill"
-                                />
-                            </Button>
-                            <Button
-                                className="h-32 w-32"
-                                onClick={() => togglePlayFunction()}
-                            >
-                                {playerState.status === 'playing' ? (
-                                    <Icon
-                                        className="text-6xl"
-                                        f7="pause_fill"
-                                    />
-                                ) : (
-                                    <Icon className="text-6xl" f7="play_fill" />
-                                )}
-                            </Button>
-                            <Button
-                                className="h-32 w-32"
-                                onClick={() => handleNextSong()}
-                                disabled={isLastSong()}
-                            >
-                                <Icon
-                                    className="text-6xl"
-                                    f7="forward_end_fill"
-                                />
-                            </Button>
-                            <Button
-                                className="h-32 w-32"
-                                onClick={() =>
-                                    handleSeek('forward', seekDuration)
-                                }
-                            >
-                                <Icon
-                                    className="text-6xl"
-                                    f7={`goforward_${seekDuration}`}
-                                />
-                            </Button>
-                        </div>
-                    </Block>
+                    </NowPlayingContext.Provider>
                 </div>
             )}
         </Page>
