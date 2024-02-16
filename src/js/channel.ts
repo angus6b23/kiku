@@ -17,6 +17,8 @@ import {
 import { Author } from 'youtubei.js/dist/src/parser/misc'
 import { ChannelData } from '@/typescript/interfaces'
 import {
+    PipedPlaylist,
+    PipedVideo,
     extractInvidiousPlaylists,
     extractInvidiousVideos,
     extractPipedPlaylist,
@@ -325,7 +327,7 @@ const channelContinuationInv = async (
         const res = await axios({
             method: 'get',
             baseURL: baseUrl,
-            url: `/api/v1/channel/${channelId}/videos`,
+            url: `/api/v1/channels/${channelId}/videos`,
             params: {
                 sort_by: sortBy,
                 continuation: continuation,
@@ -348,6 +350,35 @@ const channelContinuationInv = async (
         return new Error('invidious > ' + err)
     }
 }
+const channelContinuationPiped = async (
+    channelId: string,
+    continuation: string,
+    baseUrl: string
+) => {
+    try {
+        const res = await axios({
+            method: 'get',
+            baseURL: baseUrl,
+            url: `/nextpage/channel/${channelId}`,
+            params: {
+                nextpage: continuation,
+            },
+        })
+        const pipedVideos = res.data.relatedStreams.filter(
+            (item: PipedVideo) => item.type === 'stream'
+        )
+        const pipedPlaylist = res.data.relatedStreams.filter(
+            (item: PipedPlaylist) => item.type === 'playlist'
+        )
+        return {
+            videos: extractPipedVideos(pipedVideos),
+            playlists: extractPipedPlaylist(pipedPlaylist),
+            continuation: res.data.nextpage as string,
+        }
+    } catch (err) {
+        return new Error('piped >' + err)
+    }
+}
 
 export const handleChannelContinuation = async (
     channelId: string,
@@ -359,6 +390,7 @@ export const handleChannelContinuation = async (
     const instances: Instance[] = getInstanceLists()
     const invidiousUrl = instances.find((item) => item.type === 'invidious')
         ?.url
+    const pipedUrl = instances.find((item) => item.type === 'piped')?.url
     if (type === 'video') {
         let res: Error | VideoContinuationRes
         if (typeof continuation !== 'string') {
@@ -368,13 +400,31 @@ export const handleChannelContinuation = async (
                 innertube
             )
         } else {
-            res = (await channelContinuationInv(
-                channelId,
-                continuation as string,
-                invidiousUrl as string,
-                undefined,
-                'video'
-            )) as VideoContinuationRes | Error
+            if (continuation.indexOf('{"url":"') === 0) {
+                // piped nextpage starts with a json with an entry of url
+                const pipedRes = await channelContinuationPiped(
+                    channelId,
+                    continuation,
+                    pipedUrl as string
+                )
+                if (pipedRes instanceof Error) {
+                    res = pipedRes as Error
+                } else {
+                    res = {
+                        videos: pipedRes.videos,
+                        videoContinuation: pipedRes.continuation as string,
+                    } as VideoContinuationRes
+                }
+            } else {
+                // invidious continuation
+                res = (await channelContinuationInv(
+                    channelId,
+                    continuation as string,
+                    invidiousUrl as string,
+                    undefined,
+                    'video'
+                )) as VideoContinuationRes | Error
+            }
         }
         // Check if result is error
         // Will not attempt to load with another instance since continuation varies between instance
@@ -390,13 +440,31 @@ export const handleChannelContinuation = async (
                 innertube
             )
         } else {
-            res = (await channelContinuationInv(
-                channelId,
-                continuation as string,
-                invidiousUrl as string,
-                undefined,
-                'playlist'
-            )) as PlaylistContinuationRes | Error
+            if (continuation.indexOf('{"url":"') === 0) {
+                // piped nextpage starts with a json with an entry of url
+                const pipedRes = await channelContinuationPiped(
+                    channelId,
+                    continuation,
+                    pipedUrl as string
+                )
+                if (pipedRes instanceof Error) {
+                    res = pipedRes as Error
+                } else {
+                    res = {
+                        playlists: pipedRes.playlists,
+                        playlistContinuation: pipedRes.continuation as string,
+                    } as PlaylistContinuationRes
+                }
+            } else {
+                // invidious continuation
+                res = (await channelContinuationInv(
+                    channelId,
+                    continuation as string,
+                    invidiousUrl as string,
+                    undefined,
+                    'playlist'
+                )) as PlaylistContinuationRes | Error
+            }
         }
         if (res instanceof Error) {
             return new Error('channel playlist continuation > ' + res)

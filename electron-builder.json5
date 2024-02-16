@@ -22,8 +22,8 @@
                 target: 'portable',
             },
             {
-                target: 'zip'
-            }
+                target: 'zip',
+            },
         ],
         icon: 'public/icons/win/icon.ico',
         // artifactName: '${productName}-Windows-${version}-Setup.${ext}',

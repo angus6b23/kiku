@@ -16,7 +16,7 @@
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
         "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/",
         "i18n": "npx i18next-parser",
-        "electron-build": "npx electron-builder -lw",
+        "electron-build": "cross-env NODE_ENV=production npx electron-builder -lw",
         "prettier-write": "yarn prettier --write ."
     },
     "browserslist": [
@@ -56,6 +56,7 @@
         "redux-persist": "^6.0.0",
         "redux-persist-indexeddb-storage": "^1.0.4",
         "skeleton-elements": "^4.0.1",
+        "striptags": "^3.2.0",
         "swiper": "^10.3.1",
         "typescript": "^5.2.2",
         "vite-tsconfig-paths": "^4.2.1",

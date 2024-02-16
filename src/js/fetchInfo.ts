@@ -123,16 +123,21 @@ const fetchStream = async (url: string, controller: AbortController) => {
         const contentLength = Number(new URL(url).searchParams.get('clen')) //clen = content length
         if (contentLength < TEN_MIB) {
             // Directly download if content length is less than 10MB
+            console.log('less than 10MB')
             const res = await axios({
                 responseType: 'blob',
                 method: 'get',
                 url: url,
                 signal: controller.signal,
+                // params: {
+                //     range: `0-${contentLength}`,
+                // },
                 headers: { Range: `bytes=0-${contentLength}` },
             })
             return res.data
         } else {
             // Split the clen into chunks of 10Mb then downloadm
+            console.log('larger than 10MB')
             let start = 0
             const blobs = []
             while (
@@ -148,6 +153,9 @@ const fetchStream = async (url: string, controller: AbortController) => {
                     responseType: 'blob',
                     method: 'get',
                     url: url,
+                    // params: {
+                    //     range: `${start}-${end}`,
+                    // },
                     signal: controller.signal,
                     headers: { Range: `bytes=${start}-${end}` },
                 })

@@ -7,6 +7,7 @@ import {
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { CompactVideo } from 'youtubei.js/dist/src/parser/nodes'
+import striptags from 'striptags'
 
 interface InvidiousDetails {
     title: string
@@ -254,7 +255,7 @@ const videoDetailPiped = async (id: string, baseUrl: string) => {
         const { data }: { data: PipedDetails } = res
         const authorId = data.uploaderUrl.replace(/^\/channel\//, '')
         const recommendedVideos = data.relatedStreams
-            .filter((item) => item.type === 'streams')
+            .filter((item) => item.type === 'stream')
             .map((item) => {
                 return {
                     type: 'video',
@@ -278,7 +279,7 @@ const videoDetailPiped = async (id: string, baseUrl: string) => {
             videoThumbnails: generatePipedThumbnail(data.thumbnailUrl),
             viewCount: data.views,
             lengthSeconds: data.duration,
-            description: data.description.replaceAll('<br>', '\n'),
+            description: striptags(data.description.replaceAll('<br>', '\n')),
             published: Math.round(new Date(data.uploadDate).getTime() / 1000),
             keywords: [],
             likeCount: data.likes,
