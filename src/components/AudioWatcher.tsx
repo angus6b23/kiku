@@ -12,6 +12,7 @@ import {
 import { selectPlaylist, setItemPlaying } from '@/store/playlistReducers'
 import { AudioBlobObject } from '@/typescript/interfaces'
 import { getNextSong, getPrevSong } from '@/utils/songControl'
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer } = require('electron')
 
@@ -114,7 +115,10 @@ export default function AudioWatcher(): ReactElement {
         } else {
             navigator.mediaSession.playbackState = 'none'
         }
-    }, [playerState.status])
+        if (playerState.currentPlaying === undefined) {
+            dispatch(stop());
+        }
+    }, [playerState.status, playerState.currentPlaying])
 
     // Automatically play next song when current song ends
     useEffect(() => {
@@ -126,7 +130,7 @@ export default function AudioWatcher(): ReactElement {
             audio.current?.removeEventListener('ended', dispatchPlayNext)
     }, [audio.current.src])
 
-    // Add ActionHandler for media session
+    // Add ActionHandler for media session and keyboard events
     useEffect(() => {
         navigator.mediaSession.setActionHandler('play', () => {
             dispatch(play())

@@ -10,6 +10,10 @@ import {
     removePlaylist,
     renamePlaylist,
 } from '@/store/localPlaylistReducers'
+import {FreetubePlaylist} from '@/typescript/freetube'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const {ipcRenderer} = require('electron')
 
 export interface ModifyPlaylistButtonProps {}
 
@@ -53,6 +57,15 @@ export default function ModifyPlaylistButton(): ReactElement {
             }
         )
     }
+
+    const handleImportFreetubePlaylist = async () => {
+        const res: FreetubePlaylist | Error | undefined = await ipcRenderer.invoke('pickFreetubePlaylist') as FreetubePlaylist
+        if (res instanceof Error) {
+            presentToast('error', res.message)
+        } else if (res){
+            console.log(res)
+        }
+    }
     return (
         <>
             <Button
@@ -84,6 +97,15 @@ export default function ModifyPlaylistButton(): ReactElement {
                         <div className="flex justify-start">
                             <Icon f7="pencil" className="mr-4 text-[1.2rem]" />
                             <p>{t('playlist:Rename-playlist')}</p>
+                        </div>
+                    </ListItem>
+                    <ListItem
+                        onClick={handleImportFreetubePlaylist}
+                        className="popover-close"
+                    >
+                        <div className="flex justify-start">
+                            <Icon f7="arrow_turn_right_down" className="mr-4 text-[1.2rem]" />
+                            <p>{t('playlist:Import-Freetube-playlist')}</p>
                         </div>
                     </ListItem>
                 </List>

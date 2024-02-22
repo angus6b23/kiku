@@ -1,9 +1,10 @@
 /* eslint-disable */
 const path = require('path')
 const fs = require('fs')
-const os = require('node:os')
 const du = require('du')
-const Readable = require('stream').Readable
+const filePicker = require('./filePicker')
+const blobStorage = require('./blobStorage')
+
 const root = path.join(__dirname, '../dist')
 const {
     app,
@@ -12,11 +13,10 @@ const {
     ipcMain,
     Tray,
     Menu,
-    MenuItem,
     shell,
 } = require('electron')
-const serve = require('electron-serve')
-const loadURL = serve({ directory: 'dist' })
+// const serve = require('electron-serve')
+// const loadURL = serve({ directory: 'dist' })
 
 let win, tray
 let appQuiting = false
@@ -176,71 +176,8 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-// Blob storage
-const downloadPath = path.join(app.getPath('userData'), '/download')
+blobStorage.init()
 
-// Create folder if not present
-fs.promises
-    .readdir(downloadPath)
-    .then()
-    .catch(() => {
-        fs.promises.mkdir(downloadPath)
-    })
-
-const sendDirSize = async () => {
-    const dirSize = await du(downloadPath)
-    win.webContents.send('dir-size', dirSize)
-}
-
-// IPC channels used for creating and removing audio files
-ipcMain.on('create-blob', async (_, data) => {
-    // Create audio files in the download folder with the data passed
-    const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
-    const base64Audio = data.blob.split(';base64,').pop()
-    fs.promises
-        .writeFile(`${downloadPath}/${data.id}.${extension}`, base64Audio, {
-            encoding: 'base64',
-        })
-        .then(sendDirSize)
-})
-ipcMain.on('delete-blob', (_, data) => {
-    // Remove the audio file with given audio file name
-    const extension = data.extension.includes('mp4') ? 'm4a' : 'opus'
-    fs.promises
-        .rm(path.join(downloadPath, `${data.id}.${extension}`))
-        .catch()
-        .finally(sendDirSize)
-})
-ipcMain.handle('get-blob', async (_, id) => {
-    // Read the audio file with given name then send back the data via ipc channel
-    const folder = await fs.promises.readdir(downloadPath)
-    const fileMatch = folder.find((file) => file.includes(id))
-    if (fileMatch !== undefined) {
-        const targetFile = await fs.promises.readFile(
-            path.join(downloadPath, fileMatch)
-        )
-        return {
-            exist: true,
-            data:
-                `data:audio/${fileMatch.replace(/^.*\./, '')}` +
-                ';base64,' +
-                targetFile.toString('base64'),
-        }
-    } else {
-        return {
-            exist: false,
-            data: undefined,
-        }
-    }
-})
-ipcMain.handle('get-folder-path', () => {
-    // Return the download path
-    return downloadPath
-})
-ipcMain.handle('get-folder-content', async () => {
-    // Get all file names in the download folder
-    return await fs.promises.readdir(downloadPath)
-})
 
 // IPC channel for controlling tray tooltip and menu
 ipcMain.on('update-tray-tooltip', (_, newInfo) => {
@@ -318,3 +255,5 @@ ipcMain.on('update-menu', (_, json) => {
     const menu = Menu.buildFromTemplate(menuTemplate)
     Menu.setApplicationMenu(menu)
 })
+
+filePicker.init()
