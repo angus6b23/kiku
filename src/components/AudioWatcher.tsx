@@ -116,7 +116,7 @@ export default function AudioWatcher(): ReactElement {
             navigator.mediaSession.playbackState = 'none'
         }
         if (playerState.currentPlaying === undefined) {
-            dispatch(stop());
+            dispatch(stop())
         }
     }, [playerState.status, playerState.currentPlaying])
 

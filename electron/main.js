@@ -1,8 +1,7 @@
 /* eslint-disable */
 const path = require('path')
-const fs = require('fs')
-const du = require('du')
 const filePicker = require('./filePicker')
+const tray = require('./tray')
 const blobStorage = require('./blobStorage')
 
 const root = path.join(__dirname, '../dist')
@@ -11,14 +10,13 @@ const {
     BrowserWindow,
     session,
     ipcMain,
-    Tray,
     Menu,
     shell,
 } = require('electron')
-// const serve = require('electron-serve')
-// const loadURL = serve({ directory: 'dist' })
+const serve = require('electron-serve')
+const loadURL = serve({ directory: 'dist' })
 
-let win, tray
+let win
 let appQuiting = false
 
 const quitApp = () => {
@@ -107,47 +105,15 @@ function createWindow() {
         }
     })
 
+    tray.init({
+        win: win,
+        root: root,
+        quitApp: quitApp,
+    })
+    blobStorage.init(win)
+
     ipcMain.on('quit-app', quitApp) // Renderer will send back quit-app signal if minimize to tray is not active
     // Create tray icon
-    const toggleWinDisplay = () => {
-        win.isVisible() ? win.hide() : win.show()
-    }
-    if (process.env.NODE_ENV === 'developement') {
-        tray = new Tray('public/icons/png/256x256.png')
-    } else {
-        tray = new Tray(`${root}/icons/png/256x256.png`)
-    }
-    tray.setToolTip('Kiku - a electron based youtube music player')
-    tray.on('click', toggleWinDisplay)
-    const trayMenuTemplate = [
-        { label: 'Show / Hide App', click: toggleWinDisplay },
-        { type: 'separator' },
-        {
-            label: 'Play / Pause',
-            click: () => {
-                win.webContents.send('tray-play-pause')
-            },
-        },
-        {
-            label: 'Next song',
-            click: () => {
-                win.webContents.send('tray-next')
-            },
-        },
-        {
-            label: 'Previous song',
-            click: () => {
-                win.webContents.send('tray-prev')
-            },
-        },
-        { type: 'separator' },
-        {
-            label: 'Quit',
-            click: quitApp,
-        },
-    ]
-    const trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
-    tray.setContextMenu(trayMenu)
 }
 
 // This method will be called when Electron has finished
@@ -175,14 +141,6 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
-blobStorage.init()
-
-
-// IPC channel for controlling tray tooltip and menu
-ipcMain.on('update-tray-tooltip', (_, newInfo) => {
-    tray.setToolTip(newInfo)
-})
 
 // IPC channel for controlling custom menu
 ipcMain.on('update-menu', (_, json) => {

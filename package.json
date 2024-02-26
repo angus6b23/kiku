@@ -2,7 +2,7 @@
     "name": "kiku",
     "private": true,
     "main": "electron/main.js",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "author": "Angus Wan",
     "description": "Kiku",
     "repository": "",

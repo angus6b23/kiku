@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { ipcMain, app } = require('electron')
-const path = require('path');
-const fs = require('fs');
-const du = require('du');
-
+const path = require('path')
+const fs = require('fs')
+const du = require('du')
 
 const init = (win) => {
     // Blob storage
@@ -17,7 +16,7 @@ const init = (win) => {
             fs.promises.mkdir(downloadPath)
         })
 
-    const sendDirSize = async () => {
+    const sendDirSize = async (win) => {
         const dirSize = await du(downloadPath)
         win.webContents.send('dir-size', dirSize)
     }
@@ -31,7 +30,8 @@ const init = (win) => {
             .writeFile(`${downloadPath}/${data.id}.${extension}`, base64Audio, {
                 encoding: 'base64',
             })
-            .then(sendDirSize)
+            .catch((err) => console.error(err))
+            .finally(() => sendDirSize(win))
     })
     ipcMain.on('delete-blob', (_, data) => {
         // Remove the audio file with given audio file name
@@ -39,7 +39,7 @@ const init = (win) => {
         fs.promises
             .rm(path.join(downloadPath, `${data.id}.${extension}`))
             .catch()
-            .finally(sendDirSize)
+            .finally(() => sendDirSize(win))
     })
     ipcMain.handle('get-blob', async (_, id) => {
         // Read the audio file with given name then send back the data via ipc channel
@@ -52,9 +52,9 @@ const init = (win) => {
             return {
                 exist: true,
                 data:
-                `data:audio/${fileMatch.replace(/^.*\./, '')}` +
-                ';base64,' +
-                targetFile.toString('base64'),
+                    `data:audio/${fileMatch.replace(/^.*\./, '')}` +
+                    ';base64,' +
+                    targetFile.toString('base64'),
             }
         } else {
             return {
@@ -74,5 +74,5 @@ const init = (win) => {
 }
 
 module.exports = {
-    init
+    init,
 }
