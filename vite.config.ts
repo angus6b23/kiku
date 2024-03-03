@@ -7,16 +7,16 @@ import fs from 'fs'
 const SRC_DIR = path.resolve(__dirname, './src')
 const PUBLIC_DIR = path.resolve(__dirname, './public')
 const BUILD_DIR = path.resolve(__dirname, './dist')
-const ELECTRON_DIR = path.resolve(__dirname, './electron');
+const ELECTRON_DIR = path.resolve(__dirname, './electron')
 
 export default async () => {
     let electronModules = await fs.promises.readdir(ELECTRON_DIR)
-    electronModules = electronModules.filter(file => file !== 'main.js');
+    electronModules = electronModules.filter((file) => file !== 'main.js')
     const generateInput = (files) => {
         const res = {}
         for (const file of files) {
-            const [name, _] = file.split('.');
-            res[name] =  path.join(ELECTRON_DIR, file);
+            const [name, _] = file.split('.')
+            res[name] = path.join(ELECTRON_DIR, file)
         }
         return res
     }
@@ -30,15 +30,16 @@ export default async () => {
                 vite: {
                     build: {
                         lib: {
-                            entry: electronModules.map(file => path.join(ELECTRON_DIR, file)),
-                        }
-                    }
-                }
+                            entry: electronModules.map((file) =>
+                                path.join(ELECTRON_DIR, file)
+                            ),
+                        },
+                    },
+                },
                 // onstart: (args) => {
                 //     args.startup()
                 // },
-            },
-                    ),
+            }),
         ],
         root: SRC_DIR,
         base: '',

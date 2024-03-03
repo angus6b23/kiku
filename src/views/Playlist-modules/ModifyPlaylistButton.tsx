@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react'
+import React, { useState, type ReactElement } from 'react'
 import { f7, Button, Popover, List, ListItem, Icon } from 'framework7-react'
 import { useTranslation } from 'react-i18next'
 import { selectLocalPlaylist } from '@/store/localPlaylistReducers'
@@ -11,6 +11,7 @@ import {
     renamePlaylist,
 } from '@/store/localPlaylistReducers'
 import { FreetubePlaylist } from '@/typescript/freetube'
+import ImportPopup from './ImportPopup'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer } = require('electron')
@@ -59,15 +60,24 @@ export default function ModifyPlaylistButton(): ReactElement {
     }
 
     const handleImportFreetubePlaylist = async () => {
-        const res: FreetubePlaylist | Error | undefined =
+        const res: FreetubePlaylist[] | Error | undefined =
             (await ipcRenderer.invoke(
                 'pickFreetubePlaylist'
-            )) as FreetubePlaylist
+            )) as FreetubePlaylist[]
         if (res instanceof Error) {
             presentToast('error', res.message)
         } else if (res) {
+            setImportPopupOpen(true)
+            setImportData(res)
             console.log(res)
         }
+    }
+    const [importPopupOpen, setImportPopupOpen] = useState(false)
+    const [importData, setImportData] = useState<FreetubePlaylist[] | null>(
+        null
+    )
+    const closeImportPopup = () => {
+        setImportPopupOpen(false)
     }
     return (
         <>
@@ -116,6 +126,7 @@ export default function ModifyPlaylistButton(): ReactElement {
                     </ListItem>
                 </List>
             </Popover>
+            <ImportPopup opened={importPopupOpen} data={importData} closeModal={closeImportPopup} />
         </>
     )
 }

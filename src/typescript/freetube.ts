@@ -13,7 +13,7 @@ interface FreetubePlaylist {
         type: string
         videoId: string
         viewCount: number
-    }
+    }[]
 }
 
 export type { FreetubePlaylist }
