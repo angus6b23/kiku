@@ -67,7 +67,6 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
                                                                             key={
                                                                                 video.videoId
                                                                             }
-
                                                                         >
                                                                             {
                                                                                 video.title
@@ -86,8 +85,10 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
                         </List>
                     </Block>
                     <section className="absolute bottom-4 w-full flex gap-4 justify-end py-2 px-4">
-                        <Button onClick={props.closeModal}>{t('common:Cancel')}</Button> 
-                        <Button fill>{t('playlist:Import-Selected')}</Button> 
+                        <Button onClick={props.closeModal}>
+                            {t('common:Cancel')}
+                        </Button>
+                        <Button fill>{t('playlist:Import-Selected')}</Button>
                     </section>
                 </Page>
             </Popup>

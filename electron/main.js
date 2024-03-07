@@ -3,6 +3,7 @@ const path = require('path')
 const filePicker = require('./filePicker')
 const tray = require('./tray')
 const blobStorage = require('./blobStorage')
+const menu = require('./menu')
 
 const root = path.join(__dirname, '../dist')
 const {
@@ -143,75 +144,5 @@ app.on('activate', () => {
 // code. You can also put them in separate files and require them here.
 
 // IPC channel for controlling custom menu
-ipcMain.on('update-menu', (_, json) => {
-    const translation = JSON.parse(json)
-    const menuTemplate = [
-        {
-            label: translation['Window'],
-            submenu: [
-                { role: 'reload' },
-                { role: 'forceReload' },
-                { type: 'separator' },
-                { role: 'toggleDevTools' },
-                { role: 'togglefullscreen' },
-                { type: 'separator' },
-                {
-                    label: translation['Close'],
-                    role: 'close',
-                },
-                {
-                    label: translation['Quit'],
-                    role: 'quit',
-                },
-            ],
-        },
-        {
-            label: translation['Player'],
-            submenu: [
-                {
-                    label: translation['PlayPause'],
-                    click: () => {
-                        win.webContents.send('tray-play-pause')
-                    },
-                },
-                {
-                    label: translation['NextSong'],
-                    click: () => {
-                        win.webContents.send('tray-next')
-                    },
-                },
-                {
-                    label: translation['PrevSong'],
-                    click: () => {
-                        win.webContents.send('tray-prev')
-                    },
-                },
-            ],
-        },
-        {
-            role: 'help',
-            label: translation['Help'],
-            submenu: [
-                {
-                    label: translation['About'],
-                },
-                {
-                    label: translation['SourceCode'],
-                    click: () => {
-                        shell.openExternal('https://github.com/angus6b23/kiku')
-                    },
-                },
-                {
-                    label: translation['Sponsor'],
-                    click: () => {
-                        shell.openExternal('https://liberapay.com/12a.app/')
-                    },
-                },
-            ],
-        },
-    ]
-    const menu = Menu.buildFromTemplate(menuTemplate)
-    Menu.setApplicationMenu(menu)
-})
-
+menu.init()
 filePicker.init()

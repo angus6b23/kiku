@@ -126,7 +126,11 @@ export default function ModifyPlaylistButton(): ReactElement {
                     </ListItem>
                 </List>
             </Popover>
-            <ImportPopup opened={importPopupOpen} data={importData} closeModal={closeImportPopup} />
+            <ImportPopup
+                opened={importPopupOpen}
+                data={importData}
+                closeModal={closeImportPopup}
+            />
         </>
     )
 }

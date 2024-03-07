@@ -1,0 +1,15 @@
+{
+  "Window": "視窗",
+  "Reload": "重新載入",
+  "Force-reload": "強制重新載入",
+  "Close": "關閉",
+  "Quit": "離開",
+  "Player": "播放器",
+  "Play-Pause": "播放 / 暫停",
+  "Next-Song": "下一首曲目",
+  "Prev-Song": "上一首曲目",
+  "Help": "說明",
+  "About": "關於",
+  "Browse-Source-Code": "瀏覽原始碼",
+  "Support-this-project": "贊助此專案"
+}
