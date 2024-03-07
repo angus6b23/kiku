@@ -18,11 +18,16 @@ const initLocalPlaylist: {
     ],
 }
 
-export const newLocalPlaylist = createAsyncThunk('localPlaylist/newLocalPlaylist', (name: string, {dispatch, getState}) => {
-    dispatch(localPlaylists.actions.newPlaylist(name))
-    const newPlaylist = getState()['localPlaylists']['playlists'].findLast((playlist: LocalPlaylist) => playlist.name === name)
-    return newPlaylist.id
-})
+export const newLocalPlaylist = createAsyncThunk(
+    'localPlaylist/newLocalPlaylist',
+    (name: string, { dispatch, getState }) => {
+        dispatch(localPlaylists.actions.newPlaylist(name))
+        const newPlaylist = getState()['localPlaylists']['playlists'].findLast(
+            (playlist: LocalPlaylist) => playlist.name === name
+        )
+        return newPlaylist.id
+    }
+)
 
 export const localPlaylists = createSlice({
     name: 'local-playlists',

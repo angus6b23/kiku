@@ -12,21 +12,22 @@ import {
     Page,
     Popup,
 } from 'framework7-react'
-import React, {
-    useState,
-    type ReactElement,
-    useEffect,
-} from 'react'
+import React, { useState, type ReactElement, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
-import { newLocalPlaylist, newPlaylist, selectLocalPlaylist, setPlaylistItem } from '@/store/localPlaylistReducers'
+import {
+    newLocalPlaylist,
+    newPlaylist,
+    selectLocalPlaylist,
+    setPlaylistItem,
+} from '@/store/localPlaylistReducers'
 import { getPlayitem } from '@/js/fetchInfo'
 import { selectConfig } from '@/store/globalConfig'
 import { Store, useCustomContext } from '@/store/reactContext'
-import {selectPlaylist} from '@/store/playlistReducers'
-import {Playitem} from '@/typescript/interfaces'
-import {AnyAction} from '@reduxjs/toolkit'
+import { selectPlaylist } from '@/store/playlistReducers'
+import { Playitem } from '@/typescript/interfaces'
+import { AnyAction } from '@reduxjs/toolkit'
 
 export interface ImportPopupProps {
     // type: 'freetube' | 'youtube'
@@ -77,7 +78,11 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
             (ftPlaylist) => ftPlaylist.checked
         ) as FreetubePlaylist[]
         for (const ftPlaylist of selectedPlaylist) {
-            const newPlaylistId = await dispatch(newLocalPlaylist(ftPlaylist.playlistName) as unknown as AnyAction)
+            const newPlaylistId = await dispatch(
+                newLocalPlaylist(
+                    ftPlaylist.playlistName
+                ) as unknown as AnyAction
+            )
             const playItemsPromise = ftPlaylist.videos.map((video) =>
                 getPlayitem(
                     video.videoId,
@@ -86,8 +91,13 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
                 )
             )
             let playItems = await Promise.all(playItemsPromise)
-            playItems = playItems.filter(item => !(item instanceof Error))
-            dispatch(setPlaylistItem({id: newPlaylistId.payload, items: playItems as Playitem[]}))
+            playItems = playItems.filter((item) => !(item instanceof Error))
+            dispatch(
+                setPlaylistItem({
+                    id: newPlaylistId.payload,
+                    items: playItems as Playitem[],
+                })
+            )
         }
         props.closeModal()
     }
