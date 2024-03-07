@@ -9,7 +9,6 @@ export default function TrayController(): ReactElement {
     const playerState = useSelector(selectPlayer)
     const config = useSelector(selectConfig)
 
-
     useEffect(() => {
         if (
             playerState.currentPlaying !== undefined &&
@@ -17,11 +16,11 @@ export default function TrayController(): ReactElement {
         ) {
             ipcRenderer.send('update-tray-status', {
                 newStatus: 'Now-Playing',
-                currSong: playerState.currentPlaying.title
+                currSong: playerState.currentPlaying.title,
             })
         } else {
             ipcRenderer.send('update-tray-status', {
-                newStatus: 'Default-tooltip'
+                newStatus: 'Default-tooltip',
             })
         }
     }, [playerState.status, playerState.currentPlaying?.title])

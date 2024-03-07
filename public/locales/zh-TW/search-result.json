@@ -1,15 +1,15 @@
 {
-  "Details": "影片詳情",
-  "Replace-Playlist-Prompt": "這會清空現時的播放清單。你確定要取代現時播放清單嗎？",
-  "Replace-current-playlist": "取代現時播放清單",
-  "Browse-playlist": "瀏覽清單",
-  "Add-all-to-playlist": "添加所有項目至播放清單",
-  "Already-on-playlist": "已經在播放清單",
-  "Add-to-playlist": "加到播放清單",
-  "Add-to-next-song": "加至下一首",
-  "Copy-Link": "複製鏈結",
-  "Open-link": "開啟鏈結",
-  "No-search-results": "尚未有搜尋結果",
-  "Search-something-on-the-search-bar": "請使用上方的搜尋欄",
-  "Search-Results": "搜尋結果："
+    "Details": "影片詳情",
+    "Replace-Playlist-Prompt": "這會清空現時的播放清單。你確定要取代現時播放清單嗎？",
+    "Replace-current-playlist": "取代現時播放清單",
+    "Browse-playlist": "瀏覽清單",
+    "Add-all-to-playlist": "添加所有項目至播放清單",
+    "Already-on-playlist": "已經在播放清單",
+    "Add-to-playlist": "加到播放清單",
+    "Add-to-next-song": "加至下一首",
+    "Copy-Link": "複製鏈結",
+    "Open-link": "開啟鏈結",
+    "No-search-results": "尚未有搜尋結果",
+    "Search-something-on-the-search-bar": "請使用上方的搜尋欄",
+    "Search-Results": "搜尋結果："
 }

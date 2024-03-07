@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { Tray, Menu, ipcMain } = require('electron')
-const { get: t } = require('./translation');
+const { get: t } = require('./translation')
 
 const init = ({ win, root, quitApp }) => {
     let tray
@@ -50,14 +50,14 @@ const init = ({ win, root, quitApp }) => {
 
     // IPC channel for controlling tray tooltip and menu
     ipcMain.on('update-locale', async (_, newLang) => {
-        lang = newLang 
-        const newTooltip = await t(`tray:${status}`, lang);
+        lang = newLang
+        const newTooltip = await t(`tray:${status}`, lang)
         tray.setToolTip(newTooltip)
     })
 
-    ipcMain.on('update-tray-status', async (_, {newStatus, currSong}) => {
-        status = newStatus;
-        const newTooltip = await t(`tray:${status}`, lang);
+    ipcMain.on('update-tray-status', async (_, { newStatus, currSong }) => {
+        status = newStatus
+        const newTooltip = await t(`tray:${status}`, lang)
         if (currSong) {
             tray.setToolTip(`${newTooltip}\n${currSong}`)
         } else {

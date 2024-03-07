@@ -2,6 +2,7 @@ interface FreetubePlaylist {
     playlistName: string
     protected: boolean
     removeOnWatch?: boolean
+    checked?: boolean
     videos: {
         author: string
         authorId: string

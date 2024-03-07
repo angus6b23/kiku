@@ -1,15 +1,15 @@
 {
-  "Window": "Window",
-  "Reload": "Reload",
-  "Force-reload": "Force reload",
-  "Close": "Close",
-  "Quit": "Quit",
-  "Player": "Player",
-  "Play-Pause": "Play Pause",
-  "Next-Song": "Next Song",
-  "Prev-Song": "Prev Song",
-  "Help": "Help",
-  "About": "About",
-  "Browse-Source-Code": "Browse Source Code",
-  "Support-this-project": "Support this project"
+    "Window": "Window",
+    "Reload": "Reload",
+    "Force-reload": "Force reload",
+    "Close": "Close",
+    "Quit": "Quit",
+    "Player": "Player",
+    "Play-Pause": "Play Pause",
+    "Next-Song": "Next Song",
+    "Prev-Song": "Prev Song",
+    "Help": "Help",
+    "About": "About",
+    "Browse-Source-Code": "Browse Source Code",
+    "Support-this-project": "Support this project"
 }

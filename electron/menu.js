@@ -6,10 +6,12 @@ const init = async (win) => {
     // Create menu with 'en' on startup
     const menu = Menu.buildFromTemplate(await createMenuTemplate(win))
     Menu.setApplicationMenu(menu)
-    
+
     // Create a listener for listening on update-locale channel, replace the current menu with new locale upon triggered
     ipcMain.on('update-locale', async (_, newLocale) => {
-        const newMenu = Menu.buildFromTemplate(await createMenuTemplate(win, newLocale));
+        const newMenu = Menu.buildFromTemplate(
+            await createMenuTemplate(win, newLocale)
+        )
         Menu.setApplicationMenu(newMenu)
     })
 }
@@ -20,7 +22,10 @@ const createMenuTemplate = async (win, lang = 'en') => {
             label: await t('electron:Window', lang),
             submenu: [
                 { role: 'reload', label: await t('electron:Reload') },
-                { role: 'forceReload', label: await t('electron:Force-reload') },
+                {
+                    role: 'forceReload',
+                    label: await t('electron:Force-reload'),
+                },
                 { type: 'separator' },
                 { role: 'toggleDevTools' },
                 { role: 'togglefullscreen' },

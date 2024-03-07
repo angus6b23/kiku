@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store'
 import { LocalPlaylist, Playitem } from '@/typescript/interfaces'
@@ -17,6 +17,12 @@ const initLocalPlaylist: {
         },
     ],
 }
+
+export const newLocalPlaylist = createAsyncThunk('localPlaylist/newLocalPlaylist', (name: string, {dispatch, getState}) => {
+    dispatch(localPlaylists.actions.newPlaylist(name))
+    const newPlaylist = getState()['localPlaylists']['playlists'].findLast((playlist: LocalPlaylist) => playlist.name === name)
+    return newPlaylist.id
+})
 
 export const localPlaylists = createSlice({
     name: 'local-playlists',
@@ -62,6 +68,22 @@ export const localPlaylists = createSlice({
                 ),
             }
         },
+        setPlaylistItem: (
+            state,
+            action: PayloadAction<{ id: string; items: Playitem[] }>
+        ) => {
+            return {
+                ...state,
+                playlists: state.playlists.map((playlist) =>
+                    playlist.id === action.payload.id
+                        ? {
+                              ...playlist,
+                              data: action.payload.items,
+                          }
+                        : playlist
+                ),
+            }
+        },
         changeCurrentPlaylist: (state, action: PayloadAction<string>) => {
             return {
                 ...state,
@@ -77,6 +99,7 @@ export const {
     renamePlaylist,
     savePlaylist,
     changeCurrentPlaylist,
+    setPlaylistItem,
 } = localPlaylists.actions
 
 export default localPlaylists.reducer
