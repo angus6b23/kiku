@@ -44,15 +44,16 @@ export default function PlaylistView(props: PlaylistViewProps): ReactElement {
         )
             .then((res) => {
                 if (!(res instanceof Error)) {
-                    f7.preloader.hideIn('#page-router')
                     setPlaylist(res)
                 } else {
                     throw res
                 }
             })
             .catch((err) => {
-                f7.preloader.hideIn('#page-router')
                 presentToast('error', err)
+            })
+            .finally(() => {
+                f7.preloader.hideIn('#page-router')
             })
     }, [props.playlistId])
 

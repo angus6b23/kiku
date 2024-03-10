@@ -128,13 +128,14 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                     presentToast('error', res.message)
                     setDetails(undefined)
                 } else {
-                    f7.preloader.hideIn('#page-router')
                     setDetails(res)
                 }
             })
             .catch((err) => {
-                f7.preloader.hideIn('#page-router')
                 presentToast('error', err)
+            })
+            .finally(() => {
+                f7.preloader.hideIn('#page-router')
             })
     }, [props.videoId])
 
