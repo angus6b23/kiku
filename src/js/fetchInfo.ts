@@ -296,6 +296,9 @@ const getPlayitem: (
     innertube: Innertube | null
 ) => Promise<Playitem | Error> = async (id, instances, innertube) => {
     let res: Playitem | Error
+    if (instances.length === 0){
+        return new Error(`unable to fetch info from ${id}`)
+    }
     if (instances[0].enabled === false) {
         return await getPlayitem(id, instances.slice(1), innertube)
     }

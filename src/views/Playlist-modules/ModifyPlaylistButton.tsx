@@ -11,7 +11,8 @@ import {
     renamePlaylist,
 } from '@/store/localPlaylistReducers'
 import { FreetubePlaylist } from '@/typescript/freetube'
-import ImportPopup from './ImportPopup'
+import ImportFreetubePopup from '@/views/Playlist-modules/ImportFreetubePopup'
+import ImportYoutubePopup from '@/views/Playlist-modules/ImportYoutubePopup'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ipcRenderer } = require('electron')
@@ -28,7 +29,7 @@ export default function ModifyPlaylistButton(): ReactElement {
             presentToast('error', t('This-is-the-last-playlist'))
         } else {
             f7.dialog.confirm(
-                t('playlist:Are-you-sure-to-remove-the-playlist?'),
+                t('playlist:Are-you-sure-to-remove-the-playlist'),
                 () => {
                     const targetId = localPlaylist.currentPlaylistId
                     const altPlaylist = localPlaylist.playlists.find(
@@ -65,19 +66,33 @@ export default function ModifyPlaylistButton(): ReactElement {
                 'pickFreetubePlaylist'
             )) as FreetubePlaylist[]
         if (res instanceof Error) {
-            presentToast('error', res.message)
+            presentToast('error', 'Import playlist > ' + res.message)
         } else if (res) {
-            setImportPopupOpen(true)
-            setImportData(res)
-            console.log(res)
+            setImportFreetubePopupOpen(true)
+            setImportFreetubeData(res)
         }
     }
-    const [importPopupOpen, setImportPopupOpen] = useState(false)
-    const [importData, setImportData] = useState<FreetubePlaylist[] | null>(
+    const handleImportYoutubePlaylist = async () => {
+        const res =  await ipcRenderer.invoke('pickYoutubePlaylist')
+        if (res instanceof Error) {
+            presentToast('error', 'Import Google Playlist > ' + res.message)
+        } else if (res) {
+            setImportYoutubeData(res);
+            setImportYoutubePopupOpen(true);
+        }
+    }
+    const [importFreetubePopupOpen, setImportFreetubePopupOpen] = useState(false)
+    const [importYoutubePopupOpen, setImportYoutubePopupOpen] = useState(false)
+    const [importFreetubeData, setImportFreetubeData] = useState<FreetubePlaylist[] | null>(
         null
     )
-    const closeImportPopup = () => {
-        setImportPopupOpen(false)
+    const [importYoutubeData, setImportYoutubeData] = useState<string>('')
+
+    const closeImportFreetubePopup = () => {
+        setImportFreetubePopupOpen(false)
+    }
+    const closeImportYoutubePopup = () => {
+        setImportYoutubePopupOpen(false)
     }
     return (
         <>
@@ -124,13 +139,30 @@ export default function ModifyPlaylistButton(): ReactElement {
                             <p>{t('playlist:Import-Freetube-playlist')}</p>
                         </div>
                     </ListItem>
+                    <ListItem
+                        onClick={handleImportYoutubePlaylist}
+                        className="popover-close"
+                    >
+                        <div className="flex justify-start">
+                            <Icon
+                                f7="arrow_turn_right_down"
+                                className="mr-4 text-[1.2rem]"
+                            />
+                            <p>{t('playlist:Import-Google-playlist')}</p>
+                        </div>
+                    </ListItem>
                 </List>
             </Popover>
-            <ImportPopup
-                opened={importPopupOpen}
-                data={importData}
-                closeModal={closeImportPopup}
+            <ImportFreetubePopup
+                opened={importFreetubePopupOpen}
+                data={importFreetubeData}
+                closeModal={closeImportFreetubePopup}
             />
+            <ImportYoutubePopup  
+                opened={importYoutubePopupOpen}
+                data={importYoutubeData}
+                closeModal={closeImportYoutubePopup}
+            /> 
         </>
     )
 }

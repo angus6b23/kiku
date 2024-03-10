@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux'
 export interface RemoveButtonProps {}
 
 export default function RemoveButton(): ReactElement {
-    const { t } = useTranslation()
+    const { t } = useTranslation(['playlist'])
     const dispatch = useDispatch()
     const handleClearPlaylist = () => {
         f7.dialog.confirm(

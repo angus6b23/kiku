@@ -47,6 +47,7 @@
         "localforage": "^1.10.0",
         "material-icons": "^1.13.12",
         "nanoid": "^5.0.2",
+        "papaparse": "^5.4.1",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

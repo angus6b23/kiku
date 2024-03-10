@@ -1,15 +1,15 @@
 {
-    "Details": "Details",
-    "Replace-Playlist-Prompt": "This will clear the current playlist. Are you sure to proceed?",
-    "Replace-current-playlist": "Replace current playlist",
-    "Browse-playlist": "Browse playlist",
-    "Add-all-to-playlist": "Add all to playlist",
-    "Already-on-playlist": "Already on playlist",
-    "Add-to-playlist": "Add to playlist",
-    "Add-to-next-song": "Add to next song",
-    "Copy-Link": "Copy Link",
-    "Open-link": "Open link",
-    "No-search-results": "No search results",
-    "Search-something-on-the-search-bar": "Search something on the search bar",
-    "Search-Results": "Search Results"
+  "Details": "Details",
+  "Replace-Playlist-Prompt": "This will clear the current playlist. Are you sure to proceed?",
+  "Replace-current-playlist": "Replace current playlist",
+  "Browse-playlist": "Browse playlist",
+  "Add-all-to-playlist": "Add all to playlist",
+  "Already-on-playlist": "Already on playlist",
+  "Add-to-playlist": "Add to playlist",
+  "Add-to-next-song": "Add to next song",
+  "Copy-Link": "Copy Link",
+  "Open-link": "Open link",
+  "No-search-results": "No search results",
+  "Search-something-on-the-search-bar": "Search something on the search bar",
+  "Search-Results": "Search Results"
 }

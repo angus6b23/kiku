@@ -18,16 +18,14 @@ import { nanoid } from 'nanoid'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     newLocalPlaylist,
-    newPlaylist,
-    selectLocalPlaylist,
     setPlaylistItem,
 } from '@/store/localPlaylistReducers'
 import { getPlayitem } from '@/js/fetchInfo'
 import { selectConfig } from '@/store/globalConfig'
 import { Store, useCustomContext } from '@/store/reactContext'
-import { selectPlaylist } from '@/store/playlistReducers'
 import { Playitem } from '@/typescript/interfaces'
 import { AnyAction } from '@reduxjs/toolkit'
+import presentToast from '@/components/Toast'
 
 export interface ImportPopupProps {
     // type: 'freetube' | 'youtube'
@@ -39,7 +37,6 @@ export interface ImportPopupProps {
 export default function ImportPopup(props: ImportPopupProps): ReactElement {
     const { t } = useTranslation(['playlist', 'common'])
     const config = useSelector(selectConfig)
-    const localPlaylist = useSelector(selectLocalPlaylist)
     const { innertube } = useCustomContext(Store)
     const dispatch = useDispatch()
     const [importPlaylist, setImportPlaylist] = useState(props.data)
@@ -76,7 +73,10 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
     const handleImport = async () => {
         const selectedPlaylist = importPlaylist?.filter(
             (ftPlaylist) => ftPlaylist.checked
-        ) as FreetubePlaylist[]
+        ) as FreetubePlaylist[];
+        let itemCount  =  0
+        let errorCount = 0 
+
         for (const ftPlaylist of selectedPlaylist) {
             const newPlaylistId = await dispatch(
                 newLocalPlaylist(
@@ -98,7 +98,10 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
                     items: playItems as Playitem[],
                 })
             )
+            itemCount += playItems.length
+            errorCount += playItemsPromise.length - playItems.length
         }
+        presentToast('info', t('playlist:Import-toast', {playlist: selectedPlaylist.length, item:itemCount, error: errorCount}))
         props.closeModal()
     }
 
