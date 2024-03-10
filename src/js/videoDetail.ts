@@ -8,6 +8,7 @@ import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { CompactVideo } from 'youtubei.js/dist/src/parser/nodes'
 import striptags from 'striptags'
+import {autoFallback} from '@/js/autoFallback'
 
 interface InvidiousDetails {
     title: string
@@ -296,32 +297,6 @@ export async function getVideoDetail(
     id: string,
     instances: Instance[],
     innertube: Innertube | null
-): Promise<VideoDetails> {
-    let res: Error | VideoDetails
-    if (instances.length === 0) {
-        throw new Error('error on handle search')
-    }
-
-    if (instances[0].enabled === false) {
-        return await getVideoDetail(id, instances.slice(1), innertube)
-    }
-
-    switch (instances[0].type) {
-        case 'local':
-            res = await videoDetailInner(id, innertube)
-            break
-        case 'invidious':
-            res = await videoDetailInv(id, instances[0].url)
-            break
-        case 'piped':
-            res = await videoDetailPiped(id, instances[0].url)
-            break
-        default:
-            throw new Error('Unknown instance in handle Search')
-    }
-    if (res instanceof Error) {
-        presentToast('error', 'video detail > ' + res.message)
-        return await getVideoDetail(id, instances.slice(1), innertube)
-    }
-    return res
+): Promise<VideoDetails | Error> {
+    return await autoFallback<VideoDetails>(id, videoDetailInner, videoDetailInv, videoDetailPiped, instances, innertube as Innertube, 'Get Video Details')
 }

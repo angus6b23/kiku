@@ -10,6 +10,7 @@ import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { PlaylistVideo } from 'youtubei.js/dist/src/parser/nodes'
+import {autoFallback} from './autoFallback'
 
 const playlistInner = async (id: string, innertube: Innertube | null) => {
     try {
@@ -120,32 +121,14 @@ export async function handleGetPlaylist(
     id: string,
     instances: Instance[],
     innertube: Innertube | null
-): Promise<PlaylistData> {
-    let res: Error | PlaylistData
-    if (instances.length === 0) {
-        throw new Error('error on handle search')
-    }
-
-    if (instances[0].enabled === false) {
-        return await handleGetPlaylist(id, instances.slice(1), innertube)
-    }
-
-    switch (instances[0].type) {
-        case 'local':
-            res = await playlistInner(id, innertube)
-            break
-        case 'invidious':
-            res = await playlistInv(id, instances[0].url)
-            break
-        case 'piped':
-            res = await playlistPiped(id, instances[0].url)
-            break
-        default:
-            throw new Error('Unknown instance in handle Search')
-    }
-    if (res instanceof Error) {
-        presentToast('error', 'get playlist > ' + res.message)
-        return await handleGetPlaylist(id, instances.slice(1), innertube)
-    }
-    return res
+): Promise<PlaylistData | Error> {
+    return await autoFallback<PlaylistData>(
+        id,
+        playlistInner,
+        playlistInv,
+        playlistPiped,
+        instances,
+        innertube as Innertube,
+        'Get Playlist'
+    )
 }

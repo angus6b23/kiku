@@ -4,6 +4,7 @@ import axios from 'axios'
 import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import { convertSecond } from '@/utils/format'
 import { Thumbnail } from 'youtubei.js/dist/src/parser/misc'
+import {autoFallback} from './autoFallback'
 
 interface PipedAudio {
     url: string
@@ -295,30 +296,6 @@ const getPlayitem: (
     instances: Instance[],
     innertube: Innertube | null
 ) => Promise<Playitem | Error> = async (id, instances, innertube) => {
-    let res: Playitem | Error
-    if (instances.length === 0){
-        return new Error(`unable to fetch info from ${id}`)
-    }
-    if (instances[0].enabled === false) {
-        return await getPlayitem(id, instances.slice(1), innertube)
-    }
-    switch (instances[0].type) {
-        case 'invidious':
-            res = await fetchBasicInv(id, instances[0].url)
-            break
-        case 'piped':
-            res = await fetchBasicPiped(id, instances[0].url)
-            break
-        case 'local':
-            res = await fetchBasicInner(id, innertube)
-            break
-        default:
-            throw new Error('unknown instance type in fetch info')
-    }
-    if (res instanceof Error) {
-        console.error(res)
-        return await getPlayitem(id, instances.slice(1), innertube)
-    }
-    return res
+    return await autoFallback<Playitem>(id, fetchBasicInner, fetchBasicInv, fetchBasicPiped, instances, innertube as Innertube, 'Get Basic Info')
 }
 export { getPlayitem }

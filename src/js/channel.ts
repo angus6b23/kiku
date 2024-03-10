@@ -1,4 +1,3 @@
-import presentToast from '@/components/Toast'
 import { Instance, PlaylistResult, VideoResult } from '@/typescript/interfaces'
 import Innertube from 'youtubei.js/agnostic'
 import {
@@ -25,6 +24,7 @@ import {
     extractPipedVideos,
 } from '@/utils/extractResults'
 import { getInstanceLists } from '@/utils/storeAccess'
+import {autoFallback} from './autoFallback'
 
 interface VideoContinuationRes {
     videos: VideoResult[]
@@ -218,38 +218,11 @@ export async function fetchChannelDetails(
     instances: Instance[],
     innertube: Innertube | null
 ): Promise<ChannelData | Error | undefined> {
-    let res: ChannelData | Error
-    if (id === '') {
+    if (id === ''){
         return undefined
+    } else {
+        return await autoFallback<ChannelData>(id, channelInner, channelInv, channelPiped, instances, innertube as Innertube, 'Get Channel')
     }
-    if (instances.length === 0) {
-        throw new Error('error on handle search')
-    }
-
-    if (instances[0].enabled === false) {
-        return await fetchChannelDetails(id, instances.slice(1), innertube)
-    }
-
-    switch (instances[0].type) {
-        case 'local':
-            res = await channelInner(id, innertube)
-            break
-        case 'invidious':
-            res = await channelInv(id, instances[0].url)
-            break
-        case 'piped':
-            res = await channelPiped(id, instances[0].url)
-            break
-        default:
-            throw new Error('Unknown instance in handle Search')
-    }
-
-    if (res instanceof Error) {
-        console.error(res)
-        presentToast('error', res.message)
-        return await fetchChannelDetails(id, instances.slice(1), innertube)
-    }
-    return res
 }
 
 const channelVideoContinuationInner = async (

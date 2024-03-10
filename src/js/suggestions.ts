@@ -1,6 +1,7 @@
 import { Instance } from '@/typescript/interfaces'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
+import {autoFallback} from './autoFallback'
 
 export async function suggestInv(
     keyword: string,
@@ -75,35 +76,6 @@ export async function handleSuggest(
     keyword: string,
     instances: Instance[],
     innertube: Innertube | null
-): Promise<string[]> {
-    let res: string[] | Error
-    if (instances.length === 0) {
-        console.error('no more instances')
-        return []
-    }
-    // console.log(instances)
-    if (instances[0].enabled === false) {
-        return handleSuggest(keyword, instances.slice(1), innertube)
-    }
-
-    switch (instances[0].type) {
-        case 'local':
-            res = await suggestInner(keyword, innertube)
-            break
-        case 'invidious':
-            res = await suggestInv(keyword, instances[0].url)
-            break
-        case 'piped':
-            res = await suggestPiped(keyword, instances[0].url)
-            break
-        default:
-            throw new Error('Unexpected switch in handleSuggest')
-    }
-
-    if (res instanceof Error) {
-        console.error(res.message)
-        return handleSuggest(keyword, instances.slice(1), innertube)
-    } else {
-        return res as string[]
-    }
+): Promise<string[] | Error> {
+    return await autoFallback(keyword, suggestInner, suggestInv, suggestPiped, instances, innertube as Innertube, 'Search auto-suggest')
 }
