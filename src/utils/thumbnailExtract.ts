@@ -57,3 +57,23 @@ export const generatePipedThumbnail = (url: string) => {
         { ...thumbnail, quality: 'medium' },
     ]
 }
+
+export const selectAuthorThumbnailInv = (
+    thumbnails: {
+        url: string
+        width: number
+        height: number
+    }[]
+) => {
+    const largestThumbnail = thumbnails.reduce(
+        (acc, cur) => {
+            if (cur.width > acc.width) {
+                return cur
+            } else {
+                return acc
+            }
+        },
+        { url: '', width: -Infinity, height: -Infinity }
+    )
+    return largestThumbnail.url
+}

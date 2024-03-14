@@ -14,11 +14,14 @@ export default function AddPlaylistButton(): ReactElement {
         f7.dialog.prompt(
             t('playlist:Please-input-name-of-the-new-playlist'),
             (name) => {
-                if (name){
+                if (name) {
                     dispatch(newPlaylist(name))
                     presentToast('success', t('playlist:Playlist-Added'))
                 } else {
-                    presentToast('error', t('playlist:Playlist-name-cannot-be-empty'))
+                    presentToast(
+                        'error',
+                        t('playlist:Playlist-name-cannot-be-empty')
+                    )
                 }
             }
         )

@@ -1,7 +1,7 @@
 import { Instance } from '@/typescript/interfaces'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
-import {autoFallback} from './autoFallback'
+import { autoFallback } from './autoFallback'
 
 export async function suggestInv(
     keyword: string,
@@ -77,5 +77,13 @@ export async function handleSuggest(
     instances: Instance[],
     innertube: Innertube | null
 ): Promise<string[] | Error> {
-    return await autoFallback(keyword, suggestInner, suggestInv, suggestPiped, instances, innertube as Innertube, 'Search auto-suggest')
+    return await autoFallback(
+        keyword,
+        suggestInner,
+        suggestInv,
+        suggestPiped,
+        instances,
+        innertube as Innertube,
+        'Search auto-suggest'
+    )
 }

@@ -1,6 +1,6 @@
-import { Instance } from "@/typescript/interfaces";
-import Innertube from "youtubei.js/agnostic";
-import presentToast from "@/components/Toast";
+import { Instance } from '@/typescript/interfaces'
+import Innertube from 'youtubei.js/agnostic'
+import presentToast from '@/components/Toast'
 
 export async function autoFallback<T>(
     payload: string,
@@ -13,10 +13,20 @@ export async function autoFallback<T>(
 ): Promise<T | Error> {
     let res: Error | T
     if (instances.length === 0) {
-        return new Error(`Failed while performing ${type}: All instances / api returned error`)
+        return new Error(
+            `Failed while performing ${type}: All instances / api returned error`
+        )
     }
     if (instances[0].enabled === false) {
-        return await autoFallback(payload, localHandler, invidiousHandler, pipedHandler, instances.slice(1), innertube, type)
+        return await autoFallback(
+            payload,
+            localHandler,
+            invidiousHandler,
+            pipedHandler,
+            instances.slice(1),
+            innertube,
+            type
+        )
     }
 
     switch (instances[0].type) {
@@ -34,7 +44,15 @@ export async function autoFallback<T>(
     }
     if (res instanceof Error) {
         presentToast('error', `${type} > ` + res.message)
-        return await autoFallback(payload, localHandler, invidiousHandler, pipedHandler, instances.slice(1), innertube, type)
+        return await autoFallback(
+            payload,
+            localHandler,
+            invidiousHandler,
+            pipedHandler,
+            instances.slice(1),
+            innertube,
+            type
+        )
     }
     return res
 }

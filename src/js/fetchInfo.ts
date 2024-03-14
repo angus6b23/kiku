@@ -4,7 +4,7 @@ import axios from 'axios'
 import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import { convertSecond } from '@/utils/format'
 import { Thumbnail } from 'youtubei.js/dist/src/parser/misc'
-import {autoFallback} from './autoFallback'
+import { autoFallback } from './autoFallback'
 
 interface PipedAudio {
     url: string
@@ -296,6 +296,14 @@ const getPlayitem: (
     instances: Instance[],
     innertube: Innertube | null
 ) => Promise<Playitem | Error> = async (id, instances, innertube) => {
-    return await autoFallback<Playitem>(id, fetchBasicInner, fetchBasicInv, fetchBasicPiped, instances, innertube as Innertube, 'Get Basic Info')
+    return await autoFallback<Playitem>(
+        id,
+        fetchBasicInner,
+        fetchBasicInv,
+        fetchBasicPiped,
+        instances,
+        innertube as Innertube,
+        'Get Basic Info'
+    )
 }
 export { getPlayitem }

@@ -26,6 +26,7 @@ import { Store, useCustomContext } from '@/store/reactContext'
 import { Playitem } from '@/typescript/interfaces'
 import { AnyAction } from '@reduxjs/toolkit'
 import presentToast from '@/components/Toast'
+import './ImportYoutubePopup.css'
 
 export interface ImportPopupProps {
     // type: 'freetube' | 'youtube'
@@ -73,9 +74,9 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
     const handleImport = async () => {
         const selectedPlaylist = importPlaylist?.filter(
             (ftPlaylist) => ftPlaylist.checked
-        ) as FreetubePlaylist[];
-        let itemCount  =  0
-        let errorCount = 0 
+        ) as FreetubePlaylist[]
+        let itemCount = 0
+        let errorCount = 0
 
         for (const ftPlaylist of selectedPlaylist) {
             const newPlaylistId = await dispatch(
@@ -101,7 +102,14 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
             itemCount += playItems.length
             errorCount += playItemsPromise.length - playItems.length
         }
-        presentToast('info', t('playlist:Import-toast', {playlist: selectedPlaylist.length, item:itemCount, error: errorCount}))
+        presentToast(
+            'info',
+            t('playlist:Import-toast', {
+                playlist: selectedPlaylist.length,
+                item: itemCount,
+                error: errorCount,
+            })
+        )
         props.closeModal()
     }
 

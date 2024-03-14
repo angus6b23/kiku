@@ -1,3 +1,4 @@
 {
-  "Are-you-sure-to-remove-the-playlist?": "你確定要移除播放清單嗎？"
+  "Are-you-sure-to-remove-the-playlist?": "你確定要移除播放清單嗎？",
+  "items-cannot-be-retrieved": "{{ count }} 個項目無法被取回"
 }

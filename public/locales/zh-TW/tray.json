@@ -1,4 +1,9 @@
 {
-    "Default-tooltip": "Kiku - Youtube 的音樂播放器",
-    "Now-Playing": "現正播放"
+  "Hide-Show": "顯示 / 隱藏視窗",
+  "Play-Pause": "播放 / 暫停",
+  "Next-song": "下一首曲目",
+  "Previous-song": "上一首曲目",
+  "Quit": "離開",
+  "Default-tooltip": "Kiku - Youtube 的音樂播放器",
+  "Now-Playing": "現正播放"
 }

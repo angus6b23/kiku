@@ -106,6 +106,7 @@ interface PlaylistResult {
     vidCount: number
 }
 interface VideoDetails extends VideoResult {
+    authorThumbnail: string
     description: string
     published: number
     keywords: string[]

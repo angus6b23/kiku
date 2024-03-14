@@ -10,10 +10,10 @@ const showFileDialog = async (type, extension) => {
             properties: ['openFile'],
             filters: [
                 { name: `${type} Playlist`, extensions: [extension] },
-                { name: 'All Files', extensions: ['*'] }
-            ]
+                { name: 'All Files', extensions: ['*'] },
+            ],
         })
-        if (playlistFile.canceled){
+        if (playlistFile.canceled) {
             return undefined
         }
         const fileContent = await fs.promises.readFile(
@@ -28,7 +28,7 @@ const showFileDialog = async (type, extension) => {
 }
 
 const pickFreetubePlaylist = async () => {
-    try{
+    try {
         const readFile = await showFileDialog('Freetube', 'db')
         if (readFile === undefined) {
             return undefined
@@ -45,7 +45,7 @@ const pickFreetubePlaylist = async () => {
 }
 
 const pickYoutubePlaylist = async () => {
-    try{
+    try {
         const readFile = await showFileDialog('Youtube', 'csv')
         if (readFile === undefined) {
             return undefined
@@ -53,8 +53,10 @@ const pickYoutubePlaylist = async () => {
             throw readFile
         } else {
             let ytPlaylists = Papa.parse(readFile)
-            ytPlaylists = ytPlaylists.data.map(([id, timeStamp], index) => index === 0 ? '' : id.trim()) // Extract data from csv, ignore first row for headers, only preserve ids (first field) for other rows
-            ytPlaylists = ytPlaylists.filter(id => id !== '') // Filter out rows with empty ids
+            ytPlaylists = ytPlaylists.data.map(([id, timeStamp], index) =>
+                index === 0 ? '' : id.trim()
+            ) // Extract data from csv, ignore first row for headers, only preserve ids (first field) for other rows
+            ytPlaylists = ytPlaylists.filter((id) => id !== '') // Filter out rows with empty ids
             return ytPlaylists
         }
     } catch (err) {

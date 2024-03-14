@@ -1,14 +1,15 @@
-import presentToast from '@/components/Toast'
 import { Instance, Thumbnail, VideoDetails } from '@/typescript/interfaces'
 import {
     extractInnertubeThumbnail,
     generatePipedThumbnail,
+    selectAuthorThumbnailInv,
 } from '@/utils/thumbnailExtract'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { CompactVideo } from 'youtubei.js/dist/src/parser/nodes'
 import striptags from 'striptags'
-import {autoFallback} from '@/js/autoFallback'
+import { autoFallback } from '@/js/autoFallback'
+import { channelThumbnailInner } from './channelThumbnail'
 
 interface InvidiousDetails {
     title: string
@@ -137,6 +138,7 @@ interface PipedDetails {
     uploadDate: string
     uploader: string
     uploaderUrl: string
+    uploaderAvatar: string
     uploaderVerified: boolean
     videoStreams: {
         bitrate: number
@@ -183,6 +185,7 @@ const videoDetailInv = async (id: string, baseUrl: string) => {
             videoId: data.videoId,
             author: data.author,
             authorId: data.authorId,
+            authorThumbnail: selectAuthorThumbnailInv(data.authorThumbnails),
             videoThumbnails: data.videoThumbnails,
             viewCount: data.viewCount,
             lengthSeconds: data.lengthSeconds,
@@ -232,13 +235,17 @@ const videoDetailInner = async (id: string, innertube: Innertube | null) => {
             videoId: res.basic_info.id as string,
             author: res.basic_info.author as string,
             authorId: res.basic_info.channel_id as string,
+            authorThumbnail: (await channelThumbnailInner(
+                res.basic_info.channel_id as string,
+                innertube as Innertube
+            )) as unknown as string,
             videoThumbnails: extractInnertubeThumbnail(thumbnails),
             viewCount: res.basic_info.view_count as number,
             lengthSeconds: res.basic_info.duration as number,
             description: res.basic_info.short_description as string,
             published: publishTime,
             keywords: [],
-            likeCount: res.basic_info.like_count,
+            likeCount: res.basic_info.like_count as number,
             genre: '',
             recommendedVideos: recommendedVideos,
         } as VideoDetails
@@ -277,6 +284,7 @@ const videoDetailPiped = async (id: string, baseUrl: string) => {
             videoId: id,
             author: data.uploader,
             authorId: authorId,
+            authorThumbnail: data.uploaderAvatar,
             videoThumbnails: generatePipedThumbnail(data.thumbnailUrl),
             viewCount: data.views,
             lengthSeconds: data.duration,
@@ -298,5 +306,13 @@ export async function getVideoDetail(
     instances: Instance[],
     innertube: Innertube | null
 ): Promise<VideoDetails | Error> {
-    return await autoFallback<VideoDetails>(id, videoDetailInner, videoDetailInv, videoDetailPiped, instances, innertube as Innertube, 'Get Video Details')
+    return await autoFallback<VideoDetails>(
+        id,
+        videoDetailInner,
+        videoDetailInv,
+        videoDetailPiped,
+        instances,
+        innertube as Innertube,
+        'Get Video Details'
+    )
 }

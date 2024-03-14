@@ -73,19 +73,20 @@ export default function ModifyPlaylistButton(): ReactElement {
         }
     }
     const handleImportYoutubePlaylist = async () => {
-        const res =  await ipcRenderer.invoke('pickYoutubePlaylist')
+        const res = await ipcRenderer.invoke('pickYoutubePlaylist')
         if (res instanceof Error) {
             presentToast('error', 'Import Google Playlist > ' + res.message)
         } else if (res) {
-            setImportYoutubeData(res);
-            setImportYoutubePopupOpen(true);
+            setImportYoutubeData(res)
+            setImportYoutubePopupOpen(true)
         }
     }
-    const [importFreetubePopupOpen, setImportFreetubePopupOpen] = useState(false)
+    const [importFreetubePopupOpen, setImportFreetubePopupOpen] =
+        useState(false)
     const [importYoutubePopupOpen, setImportYoutubePopupOpen] = useState(false)
-    const [importFreetubeData, setImportFreetubeData] = useState<FreetubePlaylist[] | null>(
-        null
-    )
+    const [importFreetubeData, setImportFreetubeData] = useState<
+        FreetubePlaylist[] | null
+    >(null)
     const [importYoutubeData, setImportYoutubeData] = useState<string>('')
 
     const closeImportFreetubePopup = () => {
@@ -158,11 +159,11 @@ export default function ModifyPlaylistButton(): ReactElement {
                 data={importFreetubeData}
                 closeModal={closeImportFreetubePopup}
             />
-            <ImportYoutubePopup  
+            <ImportYoutubePopup
                 opened={importYoutubePopupOpen}
                 data={importYoutubeData}
                 closeModal={closeImportYoutubePopup}
-            /> 
+            />
         </>
     )
 }

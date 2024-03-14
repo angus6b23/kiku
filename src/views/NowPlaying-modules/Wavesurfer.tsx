@@ -40,7 +40,7 @@ const useWavesurfer = (
 // Props are wavesurfer options.
 function WaveSurferPlayer(props: any) {
     const containerRef = useRef<HTMLDivElement>(null)
-    const wavesurfer = useWavesurfer(containerRef, props)
+    useWavesurfer(containerRef, props)
     return (
         <>
             <div ref={containerRef} style={{ minHeight: '120px' }} />

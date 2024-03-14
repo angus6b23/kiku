@@ -37,9 +37,9 @@
         "du": "^1.0.0",
         "electron-serve": "^1.2.0",
         "electron-squirrel-startup": "^1.0.0",
-        "framework7": "^8.3.0",
+        "framework7": "^8.3.2",
         "framework7-icons": "^5.0.5",
-        "framework7-react": "^8.3.0",
+        "framework7-react": "^8.3.2",
         "i18next": "^23.7.6",
         "i18next-browser-languagedetector": "^7.2.0",
         "i18next-fs-backend": "^2.3.0",
@@ -62,7 +62,7 @@
         "typescript": "^5.2.2",
         "vite-tsconfig-paths": "^4.2.1",
         "wavesurfer.js": "7.4.1",
-        "youtubei.js": "^7.0.0"
+        "youtubei.js": "^9.1.0"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^6.9.1",

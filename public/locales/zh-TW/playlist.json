@@ -10,7 +10,7 @@
   "Import-Playlist": "匯入播放清單",
   "Show-videos": "顯示影片",
   "Import-Selected": "匯入已選取的項目",
-  "items-cannot-be-retrieved": "{{ count }} 個項目無法被取回",
+  "items-cannot-be-retrieved_other": "無法取回 {{count}} 個項目",
   "Playlist-successfully-imported": "已成功匯入播放清單",
   "This-is-the-last-playlist": "這是最後一條播放清單",
   "Are-you-sure-to-remove-the-playlist": "你確定要移除此播放清單嗎？",

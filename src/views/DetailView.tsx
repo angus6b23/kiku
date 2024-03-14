@@ -14,6 +14,8 @@ import {
     f7,
     ListItem,
     List,
+    Tabs,
+    Tab,
 } from 'framework7-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectConfig } from '@/store/globalConfig'
@@ -60,6 +62,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
         }).format(date)
         return intlTime
     }
+
     const handleAddToPlaylist = (nextSong: boolean = false) => {
         // Helper function for adding song to playlist
         const sameId = playlist.filter(
@@ -156,204 +159,254 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                     {details !== undefined && details.title}
                 </NavTitle>
             </Navbar>
-            {/* Content when details not undefined */}
-            {details !== undefined && (
-                <>
-                    <Block className="grid grid-cols-6">
-                        <div className="col-span-3 p-6 flex items-center justify-center object-contain">
-                            <img src={highResImage?.url}></img>
-                        </div>
-                        <div className="col-span-3 flex flex-row flex-wrap justify-start items-center gap-6">
-                            <h3 className="text-2xl w-full">{details.title}</h3>
-                            <div>
-                                <Link
-                                    className="text-2xl underline w-full text-left"
-                                    href={`/channel/${details.authorId}`}
-                                >
-                                    {details.author}
-                                </Link>
-                            </div>
-                            <div className="grid grid-cols-6 w-full">
-                                <div className="col-span-2">
-                                    {t('video-detail:Duration')}
+            <Toolbar tabbar top>
+                <Link tabLink={`#info-${props.videoId}`} tabLinkActive>
+                    {t('video-detail:Information')}
+                </Link>
+                <Link tabLink={`#streams-${props.videoId}`}>
+                    {t('video-detail:Related-Streams')}
+                </Link>
+            </Toolbar>
+            <Tabs>
+                <Tab id={`info-${props.videoId}`} tabActive>
+                    {details !== undefined && (
+                        <>
+                            {/* Info Block */}
+                            <Block className="grid grid-cols-6">
+                                {/* Left Block for video thumbnail */}
+                                <div className="col-span-3 p-6 flex items-center justify-center object-contain">
+                                    <img src={highResImage?.url}></img>
                                 </div>
-                                <div className="col-span-4">
-                                    {convertSecond(details.lengthSeconds)}
-                                </div>
-                                {!isNaN(details.published) && (
-                                    <>
+                                {/* Right block for other details */}
+                                <div className="col-span-3 flex flex-row flex-wrap justify-start items-center gap-6">
+                                    {/* Video Title */}
+                                    <h3 className="text-2xl w-full">
+                                        {details.title}
+                                    </h3>
+                                    {/* Uploader or author details */}
+                                    <div>
+                                        <Link
+                                            className="flex gap-4 text-2xl underline w-full text-left"
+                                            href={`/channel/${details.authorId}`}
+                                        >
+                                            <img
+                                                src={details.authorThumbnail}
+                                                alt={`${details.author} avatar`}
+                                                className="h-16 w-16 object-contain rounded-2xl text-md no-underline"
+                                            />
+                                            {details.author}
+                                        </Link>
+                                    </div>
+                                    {/* Misc Video info */}
+                                    <div className="grid grid-cols-6 w-full">
                                         <div className="col-span-2">
-                                            {t('video-detail:Published-at')}
+                                            {t('video-detail:Duration')}
                                         </div>
                                         <div className="col-span-4">
-                                            {getIntlDate(details.published)}
+                                            {convertSecond(
+                                                details.lengthSeconds
+                                            )}
                                         </div>
-                                    </>
-                                )}
-                                {details.viewCount && (
-                                    <>
+                                        {!isNaN(details.published) && (
+                                            <>
+                                                <div className="col-span-2">
+                                                    {t(
+                                                        'video-detail:Published-at'
+                                                    )}
+                                                </div>
+                                                <div className="col-span-4">
+                                                    {getIntlDate(
+                                                        details.published
+                                                    )}
+                                                </div>
+                                            </>
+                                        )}
+                                        {details.viewCount && (
+                                            <>
+                                                <div className="col-span-2">
+                                                    {t('video-detail:Views')}
+                                                </div>
+                                                <div className="col-span-4">
+                                                    {longNumber(
+                                                        details.viewCount
+                                                    )}
+                                                </div>
+                                            </>
+                                        )}
                                         <div className="col-span-2">
-                                            {t('video-detail:Views')}
+                                            {t('video-detail:Likes')}
                                         </div>
                                         <div className="col-span-4">
-                                            {longNumber(details.viewCount)}
+                                            {longNumber(details.likeCount)}
                                         </div>
-                                    </>
-                                )}
-                                <div className="col-span-2">
-                                    {t('video-detail:Likes')}
+                                    </div>
+                                    {/* Buttons */}
+                                    <section className="flex flex-wrap gap-2">
+                                        <div className="flex gap-8 w-full">
+                                            <Button
+                                                fill
+                                                onClick={() =>
+                                                    handleAddToPlaylist(false)
+                                                }
+                                            >
+                                                <Icon
+                                                    f7="plus_rectangle_fill"
+                                                    className="mr-2 text-[1.2rem]"
+                                                />
+                                                {t(
+                                                    'search-result:Add-to-playlist'
+                                                )}
+                                            </Button>
+                                            <Button
+                                                fill
+                                                onClick={() =>
+                                                    handleAddToPlaylist(true)
+                                                }
+                                            >
+                                                <Icon
+                                                    f7="arrow_right_to_line"
+                                                    className="mr-2 text-[1.2rem]"
+                                                />
+                                                {t(
+                                                    'search-result:Add-to-next-song'
+                                                )}
+                                            </Button>
+                                        </div>
+                                        <div className="flex gap-8 w-full">
+                                            <Button
+                                                fill
+                                                popoverOpen=".copy-popover"
+                                            >
+                                                <Icon
+                                                    f7="doc_on_clipboard_fill"
+                                                    className="mr-2 text-[1.2rem]"
+                                                />
+                                                {t('search-result:Copy-Link')}
+                                            </Button>
+                                            <Button
+                                                fill
+                                                popoverOpen=".open-link-popover"
+                                            >
+                                                <Icon
+                                                    f7="link"
+                                                    className="mr-2 text-[1.2rem]"
+                                                />
+                                                {t('search-result:Open-link')}
+                                            </Button>
+                                        </div>
+                                    </section>
                                 </div>
-                                <div className="col-span-4">
-                                    {longNumber(details.likeCount)}
-                                </div>
-                            </div>
-                            {/* Buttons */}
-                            <section className="flex flex-wrap gap-2">
-                                <div className="flex gap-8 w-full">
-                                    <Button
-                                        fill
-                                        onClick={() =>
-                                            handleAddToPlaylist(false)
-                                        }
+                                {/* Video Description */}
+                                <h3 className="text-xl col-span-6 mb-2">
+                                    {t('video-detail:Description')}
+                                </h3>
+                                <p className="col-span-6 whitespace-pre-line">
+                                    {details.description}
+                                </p>
+                            </Block>
+                            {/* Popover for copy video link */}
+                            <Popover
+                                className="copy-popover"
+                                backdrop={false}
+                                arrow={false}
+                            >
+                                <List>
+                                    <ListItem
+                                        className="popover-close flex justify-start"
+                                        onClick={() => copyLink('youtube')}
+                                        link="#"
+                                        noChevron={true}
                                     >
-                                        <Icon
-                                            f7="plus_rectangle_fill"
-                                            className="mr-2 text-[1.2rem]"
-                                        />
-                                        {t('search-result:Add-to-playlist')}
-                                    </Button>
-                                    <Button
-                                        fill
-                                        onClick={() =>
-                                            handleAddToPlaylist(true)
-                                        }
+                                        <div className="flex justify-start">
+                                            <Icon
+                                                f7="square_arrow_up_fill"
+                                                className="mr-2 text-[1.2rem]"
+                                            />
+                                            <p>Youtube</p>
+                                        </div>
+                                    </ListItem>
+                                    <ListItem
+                                        className="popover-close"
+                                        onClick={() => copyLink('invidious')}
+                                        link="#"
+                                        noChevron={true}
                                     >
-                                        <Icon
-                                            f7="arrow_right_to_line"
-                                            className="mr-2 text-[1.2rem]"
-                                        />
-                                        {t('search-result:Add-to-next-song')}
-                                    </Button>
-                                </div>
-                                <div className="flex gap-8 w-full">
-                                    <Button fill popoverOpen=".copy-popover">
-                                        <Icon
-                                            f7="doc_on_clipboard_fill"
-                                            className="mr-2 text-[1.2rem]"
-                                        />
-                                        {t('search-result:Copy-Link')}
-                                    </Button>
-                                    <Button
-                                        fill
-                                        popoverOpen=".open-link-popover"
+                                        <div className="flex justify-start">
+                                            <Icon
+                                                f7="smiley_fill"
+                                                className="mr-2 text-[1.2rem]"
+                                            />
+                                            <p>Invidious</p>
+                                        </div>
+                                    </ListItem>
+                                </List>
+                            </Popover>
+                            {/* Popover for Opening video on browser */}
+                            <Popover
+                                className="open-link-popover"
+                                backdrop={false}
+                                arrow={false}
+                            >
+                                <List>
+                                    <ListItem
+                                        className="popover-close"
+                                        onClick={() => openLink('youtube')}
+                                        link="#"
+                                        noChevron={true}
                                     >
-                                        <Icon
-                                            f7="link"
-                                            className="mr-2 text-[1.2rem]"
-                                        />
-                                        {t('search-result:Open-link')}
-                                    </Button>
-                                </div>
-                            </section>
-                        </div>
-                        {/* Video Description */}
-                        <h3 className="text-xl col-span-6 mb-2">
-                            {t('video-detail:Description')}
-                        </h3>
-                        <p className="col-span-6 whitespace-pre-line">
-                            {details.description}
-                        </p>
-                    </Block>
-                    {/* Recommend Videos */}
+                                        <div className="flex justify-start">
+                                            <Icon
+                                                f7="square_arrow_up_fill"
+                                                className="mr-2 text-[1.2rem]"
+                                            />
+                                            <p>Youtube</p>
+                                        </div>
+                                    </ListItem>
+                                    <ListItem
+                                        className="popover-close"
+                                        onClick={() => openLink('invidious')}
+                                        link="#"
+                                        noChevron={true}
+                                    >
+                                        <div className="flex justify-start">
+                                            <Icon
+                                                f7="smiley_fill"
+                                                className="mr-2 text-[1.2rem]"
+                                            />
+                                            <p>Invidious</p>
+                                        </div>
+                                    </ListItem>
+                                </List>
+                            </Popover>
+                        </>
+                    )}
+                </Tab>
+                <Tab id={`streams-${props.videoId}`}>
                     <Block>
                         <BlockTitle className="text-xl">
-                            {t('video-detail:Relevant-Videos')}
+                                    {t('video-detail:Relevant-Videos')}
                         </BlockTitle>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                            {details.recommendedVideos.map((video) => {
-                                return (
-                                    <VideoResultCard
-                                        data={video}
-                                        key={nanoid()}
-                                    />
-                                )
-                            })}
-                        </div>
                     </Block>
-                    <Popover
-                        className="copy-popover"
-                        backdrop={false}
-                        arrow={false}
-                    >
-                        <List>
-                            <ListItem
-                                className="popover-close flex justify-start"
-                                onClick={() => copyLink('youtube')}
-                                link="#"
-                                noChevron={true}
-                            >
-                                <div className="flex justify-start">
-                                    <Icon
-                                        f7="square_arrow_up_fill"
-                                        className="mr-2 text-[1.2rem]"
-                                    />
-                                    <p>Youtube</p>
+                    {details !== undefined && (
+                        <>
+                            {/* Recommend Videos */}
+                            <Block>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                                    {details.recommendedVideos.map((video) => {
+                                        return (
+                                            <VideoResultCard
+                                                data={video}
+                                                key={nanoid()}
+                                            />
+                                        )
+                                    })}
                                 </div>
-                            </ListItem>
-                            <ListItem
-                                className="popover-close"
-                                onClick={() => copyLink('invidious')}
-                                link="#"
-                                noChevron={true}
-                            >
-                                <div className="flex justify-start">
-                                    <Icon
-                                        f7="smiley_fill"
-                                        className="mr-2 text-[1.2rem]"
-                                    />
-                                    <p>Invidious</p>
-                                </div>
-                            </ListItem>
-                        </List>
-                    </Popover>
-                    <Popover
-                        className="open-link-popover"
-                        backdrop={false}
-                        arrow={false}
-                    >
-                        <List>
-                            <ListItem
-                                className="popover-close"
-                                onClick={() => openLink('youtube')}
-                                link="#"
-                                noChevron={true}
-                            >
-                                <div className="flex justify-start">
-                                    <Icon
-                                        f7="square_arrow_up_fill"
-                                        className="mr-2 text-[1.2rem]"
-                                    />
-                                    <p>Youtube</p>
-                                </div>
-                            </ListItem>
-                            <ListItem
-                                className="popover-close"
-                                onClick={() => openLink('invidious')}
-                                link="#"
-                                noChevron={true}
-                            >
-                                <div className="flex justify-start">
-                                    <Icon
-                                        f7="smiley_fill"
-                                        className="mr-2 text-[1.2rem]"
-                                    />
-                                    <p>Invidious</p>
-                                </div>
-                            </ListItem>
-                        </List>
-                    </Popover>
-                </>
-            )}
+                            </Block>
+                        </>
+                    )}
+                </Tab>
+            </Tabs>
+            {/* Content when details not undefined */}
             {/* Toolbar placeholder */}
             <Toolbar bottom className="bg-transparent"></Toolbar>
         </Page>

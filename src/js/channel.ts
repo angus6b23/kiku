@@ -24,7 +24,7 @@ import {
     extractPipedVideos,
 } from '@/utils/extractResults'
 import { getInstanceLists } from '@/utils/storeAccess'
-import {autoFallback} from './autoFallback'
+import { autoFallback } from './autoFallback'
 
 interface VideoContinuationRes {
     videos: VideoResult[]
@@ -217,11 +217,19 @@ export async function fetchChannelDetails(
     id: string,
     instances: Instance[],
     innertube: Innertube | null
-): Promise<ChannelData | Error | undefined> {
-    if (id === ''){
-        return undefined
+): Promise<ChannelData | Error> {
+    if (id === '') {
+        return new Error('Channel id is empty')
     } else {
-        return await autoFallback<ChannelData>(id, channelInner, channelInv, channelPiped, instances, innertube as Innertube, 'Get Channel')
+        return await autoFallback<ChannelData>(
+            id,
+            channelInner,
+            channelInv,
+            channelPiped,
+            instances,
+            innertube as Innertube,
+            'Get Channel'
+        )
     }
 }
 

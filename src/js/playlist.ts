@@ -1,4 +1,3 @@
-import presentToast from '@/components/Toast'
 import { Instance, PlaylistData, VideoResult } from '@/typescript/interfaces'
 import {
     PipedVideo,
@@ -10,7 +9,7 @@ import { extractInnertubeThumbnail } from '@/utils/thumbnailExtract'
 import axios from 'axios'
 import Innertube from 'youtubei.js/agnostic'
 import { PlaylistVideo } from 'youtubei.js/dist/src/parser/nodes'
-import {autoFallback} from './autoFallback'
+import { autoFallback } from './autoFallback'
 
 const playlistInner = async (id: string, innertube: Innertube | null) => {
     try {

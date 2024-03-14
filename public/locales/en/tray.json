@@ -1,3 +1,9 @@
 {
-    "Default-tooltip": "Kiku - A Youtube music player"
+  "Hide-Show": "Show / Hide App",
+  "Play-Pause": "Play / Pause",
+  "Next-song": "Next song",
+  "Previous-song": "Previous song",
+  "Quit": "Quit",
+  "Default-tooltip": "Kiku - A Youtube music player",
+  "Now-Playing": "Now Playing"
 }

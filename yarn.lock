@@ -3411,15 +3411,15 @@ framework7-icons@^5.0.5:
   resolved "https://registry.yarnpkg.com/framework7-icons/-/framework7-icons-5.0.5.tgz#a067709755054c69c22318de94c92bca40f3a908"
   integrity sha512-bvHMLyujV9TFuudehd3ORZ/EvNp19Ir3ckVzYAOf3MkLymHba/9oHLsgopCh0x5UsrYZUpkrE+fd7ggj5y4wRw==
 
-framework7-react@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/framework7-react/-/framework7-react-8.3.0.tgz#26cd0d3513ca07dc3a78d4115ca19f23a5ff14db"
-  integrity sha512-NkBPWA2ENyLKE9CDAqXsLikZ2SbPtFkcnDCm4f/xUkMNUrW9lwgo3oj4TTlICiNvLrELoXroXoyUa5LS4fwwrA==
+framework7-react@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/framework7-react/-/framework7-react-8.3.2.tgz#02cf660903110fb0f4e8dffb295161ed58cae03b"
+  integrity sha512-TTzt2Nb2EGSJzxT7lovfEllLGCzzg9gq9t4BGgI0IxOSi6YLiCxFuCezIQPWvbT6T2CxOnpK+MMAss9IwubuNw==
 
-framework7@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/framework7/-/framework7-8.3.0.tgz#61e428b5d82e8e3e9f987b1a9fadd8bee175f81f"
-  integrity sha512-b2Z0JgO5cWN5x25QvfBEfT925UefCWsFdxVpzHyk31b8JH1hJD4Q01nt6s8EevpYSqWWwZGHiom7o62Yvx4zLA==
+framework7@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/framework7/-/framework7-8.3.2.tgz#dc529eb31c2a1ff1e7f6818438b9a35ac0fd9dfb"
+  integrity sha512-FTaT1AWvQx0ADa1TDh0cTdKWg/saVqlbVGSRHyCcfmBqOAve4L+JoGgbQMqOqoPjY4ZziY7yRzr0Rn3obWsO7A==
   dependencies:
     dom7 "^4.0.6"
     htm "^3.1.1"
@@ -7320,10 +7320,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-youtubei.js@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/youtubei.js/-/youtubei.js-7.0.0.tgz#1a3590e7f5c500c7f50d1edf99d1d763916799a7"
-  integrity sha512-z87cv6AAjj0c98BkD0qTJvBDTF2DdT+FntJUjmi+vHY2EV+CepeYQAE/eLsdhGvCb6LrNBgGVwVUzXpHYi8NoA==
+youtubei.js@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/youtubei.js/-/youtubei.js-9.1.0.tgz#bcf154c9fa21d3c8c1d00a5e10360d0a065c660e"
+  integrity sha512-C5GBJ4LgnS6vGAUkdIdQNOFFb5EZ1p3xBvUELNXmIG3Idr6vxWrKNBNy8ClZT3SuDVXaAJqDgF9b5jvY8lNKcg==
   dependencies:
     jintr "^1.1.0"
     tslib "^2.5.0"
