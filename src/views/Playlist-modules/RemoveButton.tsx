@@ -30,16 +30,14 @@ export default function RemoveButton(): ReactElement {
             <Button
                 popoverOpen=".remove-popover"
                 tooltip={t('playlist:Remove-Items')}
-                className="m-0"
-            >
+                className="m-0">
                 <Icon f7="trash" className="text-[1.5rem]"></Icon>
             </Button>
             <Popover className="remove-popover" backdrop={false} arrow={false}>
                 <List className="cursor-pointer">
                     <ListItem
                         onClick={() => dispatch(clearErrorItems())}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon
                                 f7="flag_slash"
@@ -50,8 +48,7 @@ export default function RemoveButton(): ReactElement {
                     </ListItem>
                     <ListItem
                         onClick={() => dispatch(clearPlayedItems())}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon
                                 f7="flowchart_fill"
@@ -62,8 +59,7 @@ export default function RemoveButton(): ReactElement {
                     </ListItem>
                     <ListItem
                         onClick={handleClearPlaylist}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon f7="xmark" className="mr-4 text-[1.2rem]" />
                             <p>{t('playlist:Clear-playlist')}</p>

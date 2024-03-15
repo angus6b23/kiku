@@ -41,8 +41,7 @@ function ClassicLayout(): ReactElement {
                 )}
                 <a
                     className="text-lg flex mt-4 items-center justify-center cursor-pointer"
-                    onClick={nowPlayingFunctions.handleChangeTimestampStyle}
-                >
+                    onClick={nowPlayingFunctions.handleChangeTimestampStyle}>
                     <p>{nowPlayingFunctions.audioTimestamp}</p>
                 </a>
                 <div className="w-full flex justify-center gap-6">
@@ -53,8 +52,7 @@ function ClassicLayout(): ReactElement {
                                 'backward',
                                 seekDuration
                             )
-                        }
-                    >
+                        }>
                         <Icon
                             className="text-6xl"
                             f7={`gobackward_${seekDuration}`}
@@ -63,14 +61,14 @@ function ClassicLayout(): ReactElement {
                     <Button
                         className="h-32 w-32"
                         onClick={() => nowPlayingFunctions.handlePrevSong()}
-                        disabled={nowPlayingFunctions.isFirstSong()}
-                    >
+                        disabled={nowPlayingFunctions.isFirstSong()}>
                         <Icon className="text-6xl" f7="backward_end_fill" />
                     </Button>
                     <Button
                         className="h-32 w-32"
-                        onClick={() => nowPlayingFunctions.togglePlayFunction()}
-                    >
+                        onClick={() =>
+                            nowPlayingFunctions.togglePlayFunction()
+                        }>
                         {playerState.status === 'playing' ? (
                             <Icon className="text-6xl" f7="pause_fill" />
                         ) : (
@@ -80,8 +78,7 @@ function ClassicLayout(): ReactElement {
                     <Button
                         className="h-32 w-32"
                         onClick={() => nowPlayingFunctions.handleNextSong()}
-                        disabled={nowPlayingFunctions.isLastSong()}
-                    >
+                        disabled={nowPlayingFunctions.isLastSong()}>
                         <Icon className="text-6xl" f7="forward_end_fill" />
                     </Button>
                     <Button
@@ -91,8 +88,7 @@ function ClassicLayout(): ReactElement {
                                 'forward',
                                 seekDuration
                             )
-                        }
-                    >
+                        }>
                         <Icon
                             className="text-6xl"
                             f7={`goforward_${seekDuration}`}

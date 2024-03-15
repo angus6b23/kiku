@@ -22,8 +22,7 @@ export default function PlayingSlider(props: PlayingSliderProps): ReactElement {
                         value={props.audio.currentTime}
                         onRangeChanged={handleSliderChange}
                         label={true}
-                        formatLabel={formatLabel}
-                    ></Range>
+                        formatLabel={formatLabel}></Range>
                 )}
             </div>
         </>

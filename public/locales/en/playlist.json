@@ -13,6 +13,8 @@
   "items-cannot-be-retrieved_one": "{{count}} item cannot be retrieved",
   "items-cannot-be-retrieved_other": "{{count}} items cannot be retrieved",
   "Playlist-successfully-imported": "Playlist successfully imported",
+  "Please-input-playlist-name": "Please input playlist name",
+  "Playlist-Name": "Playlist Name",
   "This-is-the-last-playlist": "This is the last playlist",
   "Are-you-sure-to-remove-the-playlist": "Are you sure to remove the playlist?",
   "Please-input-the-new-name-for-playlist": "Please input the new name for playlist",
@@ -23,7 +25,6 @@
   "Import-Freetube-playlist": "Import Freetube playlist (.db)",
   "Import-Google-playlist": "Import Youtube playlist (.csv)",
   "Reorder-items": "Reorder items",
-  "Scroll-to-current-playing": "Scroll to current playing",
   "Randomize-items": "Randomize items",
   "Shuffle-unplayed-items": "Shuffle unplayed items",
   "Shuffle-all-items": "Shuffle all items",
@@ -31,5 +32,8 @@
   "Clear-playlist": "Clear playlist",
   "Remove-Items": "Remove Items",
   "Clear-Error-items": "Clear Error items",
-  "Clear-played-items": "Clear played items"
+  "Clear-played-items": "Clear played items",
+  "Search-in-current-playlist": "Search in current playlist",
+  "Scroll-to-current-playing": "Scroll to current playing",
+  "Search": "Search"
 }

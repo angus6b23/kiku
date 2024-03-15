@@ -10,11 +10,11 @@ import RemoveButton from './RemoveButton'
 import RandomButton from './RandomButton'
 import ModifyPlaylistButton from './ModifyPlaylistButton'
 import AddPlaylistButton from './AddPlaylistButton'
+import SearchButton from './SearchButton'
 
 export interface PlaylistControlBarProps {
     sortEnabled: boolean
     toggleSort: () => void
-    scrollToPlaying: () => void
 }
 
 export default function PlaylistControlBar(
@@ -46,13 +46,11 @@ export default function PlaylistControlBar(
                             closeOnSelect: true,
                         }}
                         title={getCurrentPlaylistName()}
-                        className="playlist-select"
-                    >
+                        className="playlist-select">
                         <select
                             name="local-playlist"
                             defaultValue={localPlaylist.currentPlaylistId}
-                            onChange={handlePlaylistChange}
-                        >
+                            onChange={handlePlaylistChange}>
                             {localPlaylist.playlists.map((playlist) => (
                                 <option value={playlist.id} key={playlist.id}>
                                     {playlist.name}
@@ -74,21 +72,13 @@ export default function PlaylistControlBar(
                     fill={props.sortEnabled}
                     tooltip={t('playlist:Reorder-items')}
                     className="m-0"
-                    onClick={props.toggleSort}
-                >
+                    onClick={props.toggleSort}>
                     <Icon
                         f7="arrow_up_arrow_down"
-                        className="text-[1.2rem]"
-                    ></Icon>
+                        className="text-[1.2rem]"></Icon>
                 </Button>
                 {/* Button for scroll to current playing item */}
-                <Button
-                    tooltip={t('playlist:Scroll-to-current-playing')}
-                    className="m-0"
-                    onClick={props.scrollToPlaying}
-                >
-                    <Icon f7="music_note_list" className="text-[1.2rem]"></Icon>
-                </Button>
+                <SearchButton />
             </div>
         </>
     )

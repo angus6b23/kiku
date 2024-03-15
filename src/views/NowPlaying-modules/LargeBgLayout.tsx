@@ -25,8 +25,7 @@ function LargeBgLayout(): ReactElement {
                 className="min-h-page h-full w-full my-0 bg-cover bg-center p-0"
                 style={{
                     backgroundImage: `url("${playerState.currentPlaying?.thumbnailURL}")`,
-                }}
-            >
+                }}>
                 <section
                     className={clsx(
                         'w-full min-h-page h-full backdrop-blur-md bg-gradient-to-t mx-0 my-0 pt-16 px-6',
@@ -36,8 +35,7 @@ function LargeBgLayout(): ReactElement {
                             'from-white/80 to-white/20':
                                 config.ui.theme === 'light',
                         }
-                    )}
-                >
+                    )}>
                     <div className="w-full 2xl:h-80 lg:h-64 md:h-48 h-36">
                         <img
                             className="object-contain h-full w-full drop-shadow-xl"
@@ -49,8 +47,7 @@ function LargeBgLayout(): ReactElement {
                             className="text-2xl text-center"
                             style={{
                                 textShadow: '0px 0px 5px var(--f7-md-surface)',
-                            }}
-                        >
+                            }}>
                             {playerState.currentPlaying?.title}
                         </h5>
                     </div>
@@ -67,8 +64,9 @@ function LargeBgLayout(): ReactElement {
                         style={{
                             textShadow: '0px 0px 5px var(--f7-md-surface)',
                         }}
-                        onClick={nowPlayingFunctions.handleChangeTimestampStyle}
-                    >
+                        onClick={
+                            nowPlayingFunctions.handleChangeTimestampStyle
+                        }>
                         <p>{nowPlayingFunctions.audioTimestamp}</p>
                     </a>
                     <div className="w-full flex justify-center gap-6">
@@ -79,8 +77,7 @@ function LargeBgLayout(): ReactElement {
                                     'backward',
                                     seekDuration
                                 )
-                            }
-                        >
+                            }>
                             <Icon
                                 className="text-6xl"
                                 f7={`gobackward_${seekDuration}`}
@@ -89,16 +86,14 @@ function LargeBgLayout(): ReactElement {
                         <Button
                             className="h-32 w-32"
                             onClick={() => nowPlayingFunctions.handlePrevSong()}
-                            disabled={nowPlayingFunctions.isFirstSong()}
-                        >
+                            disabled={nowPlayingFunctions.isFirstSong()}>
                             <Icon className="text-6xl" f7="backward_end_fill" />
                         </Button>
                         <Button
                             className="h-32 w-32"
                             onClick={() =>
                                 nowPlayingFunctions.togglePlayFunction()
-                            }
-                        >
+                            }>
                             {playerState.status === 'playing' ? (
                                 <Icon className="text-6xl" f7="pause_fill" />
                             ) : (
@@ -108,8 +103,7 @@ function LargeBgLayout(): ReactElement {
                         <Button
                             className="h-32 w-32"
                             onClick={() => nowPlayingFunctions.handleNextSong()}
-                            disabled={nowPlayingFunctions.isLastSong()}
-                        >
+                            disabled={nowPlayingFunctions.isLastSong()}>
                             <Icon className="text-6xl" f7="forward_end_fill" />
                         </Button>
                         <Button
@@ -119,8 +113,7 @@ function LargeBgLayout(): ReactElement {
                                     'forward',
                                     seekDuration
                                 )
-                            }
-                        >
+                            }>
                             <Icon
                                 className="text-6xl"
                                 f7={`goforward_${seekDuration}`}

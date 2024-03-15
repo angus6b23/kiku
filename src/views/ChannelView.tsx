@@ -135,8 +135,7 @@ export default function ChannelView(props: ChannelViewProps): ReactElement {
                                         raised
                                         fill
                                         className="w-1/2"
-                                        onClick={handleVideoContinuation}
-                                    >
+                                        onClick={handleVideoContinuation}>
                                         <Icon
                                             f7="chevron_down_circle"
                                             className="mr-2"

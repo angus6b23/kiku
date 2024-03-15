@@ -187,8 +187,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                     <div>
                                         <Link
                                             className="flex gap-4 text-2xl underline w-full text-left"
-                                            href={`/channel/${details.authorId}`}
-                                        >
+                                            href={`/channel/${details.authorId}`}>
                                             <img
                                                 src={details.authorThumbnail}
                                                 alt={`${details.author} avatar`}
@@ -247,8 +246,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                                 fill
                                                 onClick={() =>
                                                     handleAddToPlaylist(false)
-                                                }
-                                            >
+                                                }>
                                                 <Icon
                                                     f7="plus_rectangle_fill"
                                                     className="mr-2 text-[1.2rem]"
@@ -261,8 +259,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                                 fill
                                                 onClick={() =>
                                                     handleAddToPlaylist(true)
-                                                }
-                                            >
+                                                }>
                                                 <Icon
                                                     f7="arrow_right_to_line"
                                                     className="mr-2 text-[1.2rem]"
@@ -275,8 +272,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                         <div className="flex gap-8 w-full">
                                             <Button
                                                 fill
-                                                popoverOpen=".copy-popover"
-                                            >
+                                                popoverOpen=".copy-popover">
                                                 <Icon
                                                     f7="doc_on_clipboard_fill"
                                                     className="mr-2 text-[1.2rem]"
@@ -285,8 +281,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                             </Button>
                                             <Button
                                                 fill
-                                                popoverOpen=".open-link-popover"
-                                            >
+                                                popoverOpen=".open-link-popover">
                                                 <Icon
                                                     f7="link"
                                                     className="mr-2 text-[1.2rem]"
@@ -308,15 +303,13 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                             <Popover
                                 className="copy-popover"
                                 backdrop={false}
-                                arrow={false}
-                            >
+                                arrow={false}>
                                 <List>
                                     <ListItem
                                         className="popover-close flex justify-start"
                                         onClick={() => copyLink('youtube')}
                                         link="#"
-                                        noChevron={true}
-                                    >
+                                        noChevron={true}>
                                         <div className="flex justify-start">
                                             <Icon
                                                 f7="square_arrow_up_fill"
@@ -329,8 +322,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                         className="popover-close"
                                         onClick={() => copyLink('invidious')}
                                         link="#"
-                                        noChevron={true}
-                                    >
+                                        noChevron={true}>
                                         <div className="flex justify-start">
                                             <Icon
                                                 f7="smiley_fill"
@@ -345,15 +337,13 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                             <Popover
                                 className="open-link-popover"
                                 backdrop={false}
-                                arrow={false}
-                            >
+                                arrow={false}>
                                 <List>
                                     <ListItem
                                         className="popover-close"
                                         onClick={() => openLink('youtube')}
                                         link="#"
-                                        noChevron={true}
-                                    >
+                                        noChevron={true}>
                                         <div className="flex justify-start">
                                             <Icon
                                                 f7="square_arrow_up_fill"
@@ -366,8 +356,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                                         className="popover-close"
                                         onClick={() => openLink('invidious')}
                                         link="#"
-                                        noChevron={true}
-                                    >
+                                        noChevron={true}>
                                         <div className="flex justify-start">
                                             <Icon
                                                 f7="smiley_fill"
@@ -384,7 +373,7 @@ export default function DetailView(props: DetailViewProps): ReactElement {
                 <Tab id={`streams-${props.videoId}`}>
                     <Block>
                         <BlockTitle className="text-xl">
-                                    {t('video-detail:Relevant-Videos')}
+                            {t('video-detail:Relevant-Videos')}
                         </BlockTitle>
                     </Block>
                     {details !== undefined && (

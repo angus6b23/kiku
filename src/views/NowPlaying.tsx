@@ -164,8 +164,7 @@ export default function NowPlaying(): ReactElement {
                 <div
                     ref={nowPlayingRef}
                     tabIndex={-1}
-                    onKeyDown={handleKeyPress}
-                >
+                    onKeyDown={handleKeyPress}>
                     <NowPlayingContext.Provider value={nowPlayingFunctions}>
                         {config.nowPlaying.layout === 'classic' ? (
                             <ClassicLayout />

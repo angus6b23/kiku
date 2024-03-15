@@ -141,8 +141,7 @@ export default function SearchResults(props: SearchResultsProps): ReactElement {
                                 raised
                                 fill
                                 className="w-1/2"
-                                onClick={handleLoadMore}
-                            >
+                                onClick={handleLoadMore}>
                                 <Icon
                                     f7="chevron_down_circle"
                                     className="mr-2"

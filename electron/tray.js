@@ -57,7 +57,9 @@ const init = async ({ win, root, quitApp }) => {
         // t('tray:Now-Playing')
         const newTooltip = await t(`tray:${status}`, lang)
         tray.setToolTip(newTooltip)
-        const newTrayMenu = Menu.buildFromTemplate(await generateTrayMenuTemplate(newLang))
+        const newTrayMenu = Menu.buildFromTemplate(
+            await generateTrayMenuTemplate(newLang)
+        )
         tray.setContextMenu(newTrayMenu)
     })
 

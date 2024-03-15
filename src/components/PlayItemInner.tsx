@@ -110,8 +110,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                                 item.status === 'playing'
                                     ? { color: 'var(--f7-theme-color)' }
                                     : {}
-                            }
-                        >
+                            }>
                             {item.title}
                         </p>
                         <p className="lg:text-md text-sm font-semibold">
@@ -129,8 +128,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                                     .router.navigate(
                                         `/details/${props.item.id}`
                                     )
-                            }}
-                        >
+                            }}>
                             <Icon
                                 className="text-lg -translate-y-1"
                                 f7="info"
@@ -139,8 +137,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                         <Button
                             className="w-8 h-8 flex justify-center items-center"
                             tooltip={t('playlist:Save-to-drive')}
-                            onClick={(e) => handleItemDownload(e, item)}
-                        >
+                            onClick={(e) => handleItemDownload(e, item)}>
                             <Icon
                                 className="text-lg -translate-y-1"
                                 f7="floppy_disk"
@@ -152,8 +149,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                             onClick={(e) => {
                                 e.stopPropagation()
                                 handleItemRemoval(item)
-                            }}
-                        >
+                            }}>
                             <Icon
                                 className="text-lg -translate-y-1"
                                 f7="xmark"
@@ -171,8 +167,7 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
                                             status: 'pending',
                                         })
                                     )
-                                }}
-                            >
+                                }}>
                                 <Icon
                                     className="text-lg -translate-y-1"
                                     f7="arrow_clockwise"

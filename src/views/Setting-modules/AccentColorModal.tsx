@@ -52,8 +52,7 @@ export default function AccentColorModal(
                                     style={{ backgroundColor: hex }}
                                     onClick={() =>
                                         handlePrimaryColorChange(hex)
-                                    }
-                                ></div>
+                                    }></div>
                             )
                         })}
                     </div>
@@ -69,8 +68,7 @@ export default function AccentColorModal(
                             }
                             colorPickerParams={{
                                 targetEl: '#color-theme-picker-color',
-                            }}
-                        >
+                            }}>
                             <div
                                 slot="media"
                                 id="color-theme-picker-color"
@@ -79,8 +77,7 @@ export default function AccentColorModal(
                                     height: '28px',
                                     borderRadius: '4px',
                                     background: 'var(--f7-theme-color)',
-                                }}
-                            ></div>
+                                }}></div>
                         </ListInput>
                     </List>
                 </Block>

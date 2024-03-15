@@ -39,8 +39,7 @@ export default function StorageSetting(): ReactElement {
                 <ListItem
                     checkbox
                     checked={config.storage.enalbeBlobStorage}
-                    onChange={() => dispatch(toggleBlobStorage())}
-                >
+                    onChange={() => dispatch(toggleBlobStorage())}>
                     {t('setting:Store-audio-files-on-disk')}
                 </ListItem>
                 <ListItem>
@@ -49,8 +48,7 @@ export default function StorageSetting(): ReactElement {
                         <input
                             className="mr-2 w-16 bg-transparent border-b-[1px] border-[--f7-md-on-surface] text-[--f7-md-on-surface] focus:border-[--f7-theme-color] focus:border-b-2 w-50 text-center"
                             value={config.storage.blobStorageSize}
-                            onChange={handleStorageChange}
-                        ></input>
+                            onChange={handleStorageChange}></input>
                         MB
                     </div>
                 </ListItem>

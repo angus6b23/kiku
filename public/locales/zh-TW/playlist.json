@@ -12,6 +12,8 @@
   "Import-Selected": "匯入已選取的項目",
   "items-cannot-be-retrieved_other": "無法取回 {{count}} 個項目",
   "Playlist-successfully-imported": "已成功匯入播放清單",
+  "Please-input-playlist-name": "請輸入播放清單名稱",
+  "Playlist-Name": "播放清單名稱",
   "This-is-the-last-playlist": "這是最後一條播放清單",
   "Are-you-sure-to-remove-the-playlist": "你確定要移除此播放清單嗎？",
   "Please-input-the-new-name-for-playlist": "請輸入播放清單的新名字",
@@ -22,7 +24,6 @@
   "Import-Freetube-playlist": "匯入Freetube 播放清單(.db)",
   "Import-Google-playlist": "匯入Youtube 播放清單(.csv)",
   "Reorder-items": "手動排列項目",
-  "Scroll-to-current-playing": "滾動到現正播放的項目",
   "Randomize-items": "隨機打亂",
   "Shuffle-unplayed-items": "隨機打亂未播放項目",
   "Shuffle-all-items": "隨機打亂所有項目",
@@ -30,5 +31,8 @@
   "Clear-playlist": "清空播放清單",
   "Remove-Items": "移除項目",
   "Clear-Error-items": "移除錯誤項目",
-  "Clear-played-items": "移除已播放項目"
+  "Clear-played-items": "移除已播放項目",
+  "Search-in-current-playlist": "",
+  "Scroll-to-current-playing": "滾動到現正播放的項目",
+  "Search": "搜尋"
 }

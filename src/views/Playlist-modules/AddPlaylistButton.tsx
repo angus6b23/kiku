@@ -31,8 +31,7 @@ export default function AddPlaylistButton(): ReactElement {
             <Button
                 className="m-0"
                 tooltip={t('playlist:New-Playlist')}
-                onClick={handleNewPlaylist}
-            >
+                onClick={handleNewPlaylist}>
                 <Icon className="text-[1.5rem]" f7="plus" />
             </Button>
         </>

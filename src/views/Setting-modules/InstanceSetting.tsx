@@ -203,16 +203,14 @@ export default function InstanceSetting(): ReactElement {
                     sortable
                     sortableEnabled
                     dividers
-                    onSortableSort={handleInstanceSort}
-                >
+                    onSortableSort={handleInstanceSort}>
                     {instances.map((instance) => {
                         return (
                             <ListItem
                                 key={instance.type}
                                 checkbox
                                 checked={instance.enabled}
-                                onChange={() => handleInstanceCheck(instance)}
-                            >
+                                onChange={() => handleInstanceCheck(instance)}>
                                 <div>
                                     {/* Instance Type indicator */}
                                     <p>{instance.type}</p>
@@ -232,8 +230,7 @@ export default function InstanceSetting(): ReactElement {
                                                         e.target.value,
                                                         instance.type
                                                     )
-                                                }
-                                            ></input>
+                                                }></input>
                                         </div>
                                     )}
                                 </div>
@@ -245,13 +242,11 @@ export default function InstanceSetting(): ReactElement {
                     <ListItem
                         title={t('setting:Youtube-Language')}
                         smartSelect
-                        smartSelectParams={{ openIn: 'popup' }}
-                    >
+                        smartSelectParams={{ openIn: 'popup' }}>
                         <select
                             name="yt-lang"
                             defaultValue={config.instance.lang}
-                            onChange={handlei18nChange}
-                        >
+                            onChange={handlei18nChange}>
                             {ytLangs.map((lang) => {
                                 const intlLanguage = new Intl.DisplayNames(
                                     [config.ui.lang],
@@ -268,13 +263,11 @@ export default function InstanceSetting(): ReactElement {
                     <ListItem
                         title={t('setting:Youtube-Region')}
                         smartSelect
-                        smartSelectParams={{ openIn: 'popup' }}
-                    >
+                        smartSelectParams={{ openIn: 'popup' }}>
                         <select
                             name="yt-region"
                             defaultValue={config.instance.location}
-                            onChange={handlei18nChange}
-                        >
+                            onChange={handlei18nChange}>
                             {ytRegions.map((region) => {
                                 const intlRegion = new Intl.DisplayNames(
                                     [config.ui.lang],
@@ -296,8 +289,7 @@ export default function InstanceSetting(): ReactElement {
                     fill
                     onClick={() =>
                         shell.openExternal('https://api.invidious.io/')
-                    }
-                >
+                    }>
                     <Icon
                         f7="arrow_up_right_square"
                         className="mr-2 text-[1.2rem]"
@@ -310,8 +302,7 @@ export default function InstanceSetting(): ReactElement {
                         shell.openExternal(
                             'https://github.com/TeamPiped/Piped/wiki/Instances'
                         )
-                    }
-                >
+                    }>
                     <Icon
                         f7="arrow_up_right_square"
                         className="mr-2 text-[1.2rem]"

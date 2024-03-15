@@ -51,8 +51,7 @@ export default function HomePage(): ReactElement {
                         <View
                             id="page-router"
                             url="/"
-                            className="h-page"
-                        ></View>
+                            className="h-page"></View>
                     </Tab>
                     <Tab tabActive={tab === 'setting'}>
                         <Setting />

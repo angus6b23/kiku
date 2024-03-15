@@ -32,8 +32,7 @@ export default function Setting(): ReactElement {
                         className="text-xl"
                         accordionItem
                         accordionItemOpened
-                        title={t('setting:Instance-Configuration')}
-                    >
+                        title={t('setting:Instance-Configuration')}>
                         {/* Instance Config Content */}
                         <AccordionContent>
                             <InstanceSetting />
@@ -44,8 +43,7 @@ export default function Setting(): ReactElement {
                         className="text-xl"
                         accordionItem
                         accordionItemOpened
-                        title={t('setting:UI-Preference')}
-                    >
+                        title={t('setting:UI-Preference')}>
                         <AccordionContent>
                             {/* Global UI Block */}
                             <UISetting />
@@ -55,8 +53,7 @@ export default function Setting(): ReactElement {
                         className="text-xl"
                         accordionItem
                         accordionItemOpened
-                        title={t('setting:Storage-Setting')}
-                    >
+                        title={t('setting:Storage-Setting')}>
                         <AccordionContent>
                             <StorageSetting />
                         </AccordionContent>

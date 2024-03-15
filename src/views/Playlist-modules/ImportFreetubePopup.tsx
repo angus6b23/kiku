@@ -141,16 +141,14 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
                                             after={`${
                                                 playlist.videos.length
                                             } ${t('common:videos')}`}
-                                            key={nanoid()}
-                                        >
+                                            key={nanoid()}>
                                             <div slot="footer">
                                                 <ListItem
                                                     accordionItem
                                                     title={t(
                                                         'playlist:Show-videos'
                                                     )}
-                                                    className="-ml-4"
-                                                >
+                                                    className="-ml-4">
                                                     <AccordionContent>
                                                         <Block>
                                                             {playlist.videos.map(
@@ -159,8 +157,7 @@ export default function ImportPopup(props: ImportPopupProps): ReactElement {
                                                                         <ListItem
                                                                             key={
                                                                                 video.videoId
-                                                                            }
-                                                                        >
+                                                                            }>
                                                                             {
                                                                                 video.title
                                                                             }

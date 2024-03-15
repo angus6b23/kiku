@@ -61,26 +61,22 @@ export default function UISetting(): ReactElement {
                     <ListItem
                         title={t('setting:Language')}
                         smartSelect
-                        smartSelectParams={{ openIn: 'popup' }}
-                    >
+                        smartSelectParams={{ openIn: 'popup' }}>
                         <select
                             name="language"
                             defaultValue={config.ui.lang}
-                            onChange={handleLocaleChange}
-                        >
+                            onChange={handleLocaleChange}>
                             {languageOptions()}
                         </select>
                     </ListItem>
                     <ListItem
                         smartSelect
                         smartSelectParams={{ openIn: 'sheet' }}
-                        title={t('setting:Theme')}
-                    >
+                        title={t('setting:Theme')}>
                         <select
                             name="theme"
                             defaultValue={config.ui.theme}
-                            onChange={handleThemeChange}
-                        >
+                            onChange={handleThemeChange}>
                             <option value="light">{t('setting:Light')}</option>
                             <option value="dark">{t('setting:Dark')}</option>
                         </select>
@@ -88,15 +84,13 @@ export default function UISetting(): ReactElement {
                     <ListItem
                         link
                         popupOpen=".accent-modal"
-                        title={t('setting:Primary-color')}
-                    >
+                        title={t('setting:Primary-color')}>
                         <div className="flex gap-2 items-center">
                             <div
                                 className="w-8 h-8 rounded-md"
                                 style={{
                                     backgroundColor: config.ui.accentColor,
-                                }}
-                            ></div>
+                                }}></div>
                             <p>{config.ui.accentColor}</p>
                         </div>
                     </ListItem>
@@ -119,13 +113,11 @@ export default function UISetting(): ReactElement {
                     <ListItem
                         title={t('setting:Seek-Time')}
                         smartSelect
-                        smartSelectParams={{ openIn: 'popup' }}
-                    >
+                        smartSelectParams={{ openIn: 'popup' }}>
                         <select
                             name="seekDuration"
                             defaultValue={config.nowPlaying.seekDuration}
-                            onChange={handleNowPlayingChange}
-                        >
+                            onChange={handleNowPlayingChange}>
                             <option value={10}>10</option>
                             <option value={15}>15</option>
                             <option value={30}>30</option>
@@ -150,8 +142,7 @@ export default function UISetting(): ReactElement {
                                     )}
                                     onClick={() =>
                                         handleChangeLayout('classic')
-                                    }
-                                >
+                                    }>
                                     <img
                                         className="w-full"
                                         src="/images/layout-classic.png"
@@ -161,8 +152,7 @@ export default function UISetting(): ReactElement {
                                             'text-[var(--f7-md-surface)]':
                                                 config.nowPlaying.layout ===
                                                 'classic',
-                                        })}
-                                    >
+                                        })}>
                                         {t('setting:Classic')}
                                     </p>
                                 </div>
@@ -177,8 +167,7 @@ export default function UISetting(): ReactElement {
                                     )}
                                     onClick={() =>
                                         handleChangeLayout('large-background')
-                                    }
-                                >
+                                    }>
                                     <img
                                         className="w-full object-contain"
                                         src="/images/layout-bg.png"
@@ -188,8 +177,7 @@ export default function UISetting(): ReactElement {
                                             'text-[var(--f7-md-surface)]':
                                                 config.nowPlaying.layout ===
                                                 'large-background',
-                                        })}
-                                    >
+                                        })}>
                                         {t('setting:Large-Background')}
                                     </p>
                                 </div>
@@ -199,8 +187,7 @@ export default function UISetting(): ReactElement {
                     <ListItem
                         checkbox
                         checked={config.nowPlaying.showTimeline}
-                        onChange={() => dispatch(toggleTimeline())}
-                    >
+                        onChange={() => dispatch(toggleTimeline())}>
                         <h1 className="text-lg my-4">
                             {t('setting:Show-Timeline-in-wavesurfer')}
                         </h1>

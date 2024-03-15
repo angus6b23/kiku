@@ -104,8 +104,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                                 setIconText(t('search-result:Browse-playlist'))
                             }
                             onMouseLeave={() => setIconText('')}
-                            href={`/playlist/${props.data.playlistId}`}
-                        >
+                            href={`/playlist/${props.data.playlistId}`}>
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"
                                 f7="list_bullet_below_rectangle"
@@ -126,8 +125,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                             onMouseLeave={() => setIconText('')}
                             onClick={() =>
                                 handleAddAlltoPlaylist(props.data.playlistId)
-                            }
-                        >
+                            }>
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"
                                 f7="play_fill"
@@ -143,8 +141,7 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                             onMouseLeave={() => setIconText('')}
                             onClick={() =>
                                 handleReplacePlaylist(props.data.playlistId)
-                            }
-                        >
+                            }>
                             <Icon
                                 className="text-lg lg:text-2xl xl:text-4xl"
                                 f7="arrow_right_to_line"
@@ -160,16 +157,14 @@ export default function PlaylistResultCard(props: SearchResultProps) {
                 {/* Video Title Here */}
                 <Link
                     href={`/playlist/${props.data.playlistId}`}
-                    className="mt-2  line-clamp-2"
-                >
+                    className="mt-2  line-clamp-2">
                     {props.data.title}
                 </Link>
                 {/* Author and views info here */}
                 <div className="flex flex-wrap gap-2">
                     <Link
                         className="underline"
-                        href={`/channel/${props.data.authorId}`}
-                    >
+                        href={`/channel/${props.data.authorId}`}>
                         {props.data.author}
                     </Link>
                 </div>

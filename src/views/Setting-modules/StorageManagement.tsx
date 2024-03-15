@@ -280,16 +280,14 @@ export default function StorageManagement(
                                     <div className="data-table-actions">
                                         <Button
                                             fill
-                                            onClick={handleAddSelected}
-                                        >
+                                            onClick={handleAddSelected}>
                                             {t(
                                                 'storage:Add-entries-to-current-playlist'
                                             )}
                                         </Button>
                                         <Button
                                             fill
-                                            onClick={handleRemoveSelected}
-                                        >
+                                            onClick={handleRemoveSelected}>
                                             {t(
                                                 'storage:Remove-selected-entries'
                                             )}
@@ -305,16 +303,14 @@ export default function StorageManagement(
                                     <div className="data-table-actions">
                                         <Button
                                             fill
-                                            onClick={handleRemoveNonExist}
-                                        >
+                                            onClick={handleRemoveNonExist}>
                                             {t(
                                                 'storage:Remove-non-existent-entries'
                                             )}
                                         </Button>
                                         <Button
                                             fill
-                                            onClick={handleRemoveUnhandled}
-                                        >
+                                            onClick={handleRemoveUnhandled}>
                                             {t(
                                                 'storage:Remove-unhandled-entries'
                                             )}
@@ -357,8 +353,7 @@ export default function StorageManagement(
                                                     ? 'sortable-asc'
                                                     : 'sortable-desc'
                                             }`}
-                                            onClick={() => sortBy('title')}
-                                        >
+                                            onClick={() => sortBy('title')}>
                                             {t('storage:Title')}
                                         </th>
                                         <th
@@ -370,8 +365,7 @@ export default function StorageManagement(
                                                     ? 'sortable-asc'
                                                     : 'sortable-desc'
                                             }`}
-                                            onClick={() => sortBy('id')}
-                                        >
+                                            onClick={() => sortBy('id')}>
                                             {t('storage:Video-Id')}
                                         </th>
                                         <th
@@ -383,8 +377,7 @@ export default function StorageManagement(
                                                     ? 'sortable-asc'
                                                     : 'sortable-desc'
                                             }`}
-                                            onClick={() => sortBy('create')}
-                                        >
+                                            onClick={() => sortBy('create')}>
                                             {t('storage:Created-on')}
                                         </th>
                                         <th
@@ -397,8 +390,9 @@ export default function StorageManagement(
                                                     ? 'sortable-asc'
                                                     : 'sortable-desc'
                                             }`}
-                                            onClick={() => sortBy('lastAccess')}
-                                        >
+                                            onClick={() =>
+                                                sortBy('lastAccess')
+                                            }>
                                             {t('storage:Last-access')}
                                         </th>
                                         <th
@@ -410,8 +404,7 @@ export default function StorageManagement(
                                                     ? 'sortable-asc'
                                                     : 'sortable-desc'
                                             }`}
-                                            onClick={() => sortBy('exist')}
-                                        >
+                                            onClick={() => sortBy('exist')}>
                                             {t('storage:File-exist')}
                                         </th>
                                     </tr>

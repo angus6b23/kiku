@@ -1,4 +1,4 @@
-import React, { useRef, type ReactElement, useState } from 'react'
+import React, { useRef, type ReactElement, useState, useEffect } from 'react'
 import { Block, List, ListItem, Navbar } from 'framework7-react'
 import { Playitem } from '@/typescript/interfaces'
 import { useSelector, useDispatch } from 'react-redux'
@@ -7,6 +7,7 @@ import { play, selectPlayer } from '@/store/playerReducers'
 import PlayItemInner from '@/components/PlayItemInner'
 import PlaylistControlBar from '@/views/Playlist-modules/PlaylistControlBar'
 import { useTranslation } from 'react-i18next'
+import { Store } from '@/store/reactContext'
 
 export interface PlayListProps {}
 
@@ -19,8 +20,10 @@ export default function PlayList(): ReactElement {
     const playlist = useSelector(selectPlaylist)
     const dispatch = useDispatch()
     const playingRef = useRef<HTMLElement>(null)
+    const searchRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation(['common', 'playlist'])
     const [sortEnabled, setSortEnabled] = useState(false)
+    const [search, setSearch] = useState('')
 
     const generateItemClass = (item: Playitem) => {
         if (item.downloadStatus === 'pending') {
@@ -28,7 +31,7 @@ export default function PlayList(): ReactElement {
         } else if (item.downloadStatus === 'downloading') {
             return 'animate-pulse cursor-default'
         }
-        return 'cursor-pointer'
+        return 'cursor-pointer relative'
     }
 
     const handleSelectSong = (item: Playitem) => {
@@ -57,6 +60,16 @@ export default function PlayList(): ReactElement {
             })
         }
     }
+
+    useEffect(() => {
+        if (searchRef.current !== null) {
+            searchRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            })
+        }
+    }, [search])
+
     // Disabled due to strange behaviour
     // useEffect(() => {
     //     if (playingRef.current != null && config.ui.autoScroll){
@@ -68,11 +81,16 @@ export default function PlayList(): ReactElement {
             <Navbar title={t('common:Playlist')} />
             {/* Control bar */}
             <Block className="sticky top-0 z-10 m-0 bg-[--f7-md-surface-1]">
-                <PlaylistControlBar
-                    sortEnabled={sortEnabled}
-                    toggleSort={toggleSort}
-                    scrollToPlaying={scrollToPlaying}
-                />
+                <Store.Provider
+                    value={{
+                        setSearch: setSearch,
+                        scrollToPlaying: scrollToPlaying,
+                    }}>
+                    <PlaylistControlBar
+                        sortEnabled={sortEnabled}
+                        toggleSort={toggleSort}
+                    />
+                </Store.Provider>
             </Block>
             {/* Playlist Starts here */}
             <List
@@ -81,17 +99,20 @@ export default function PlayList(): ReactElement {
                 outline
                 dividers
                 strong
-                className="mt-2"
-                onSortableSort={handleSortMove}
-            >
+                className="mt-2 overflow-x-hidden"
+                onSortableSort={handleSortMove}>
                 {playlist.map((item) => (
                     <ListItem
                         key={item.id}
                         className={generateItemClass(item)}
                         onClick={() => handleSelectSong(item)}
                         badge={item.downloadStatus === 'error' ? '!' : ''}
-                        badgeColor="red"
-                    >
+                        badgeColor="red">
+                        {search === item.id && (
+                            <div
+                                className="absolute w-full h-full border-2 border-[--f7-md-primary] animate-small-ping"
+                                ref={searchRef}></div>
+                        )}
                         {item.status === 'playing' && <span ref={playingRef} />}
                         <PlayItemInner item={item} />
                     </ListItem>

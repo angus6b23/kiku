@@ -100,20 +100,17 @@ export default function ModifyPlaylistButton(): ReactElement {
             <Button
                 className="m-0"
                 popoverOpen=".playlist-popover"
-                tooltip={t('playlist:More-playlist-options')}
-            >
+                tooltip={t('playlist:More-playlist-options')}>
                 <Icon className="text-[1.5rem]" f7="ellipsis_vertical" />
             </Button>
             <Popover
                 className="playlist-popover"
                 backdrop={false}
-                arrow={false}
-            >
+                arrow={false}>
                 <List className="cursor-pointer">
                     <ListItem
                         onClick={handleRemovePlaylist}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon f7="minus" className="mr-4 text-[1.2rem]" />
                             <p>{t('playlist:Remove-playlist')}</p>
@@ -121,8 +118,7 @@ export default function ModifyPlaylistButton(): ReactElement {
                     </ListItem>
                     <ListItem
                         onClick={handleRenamePlaylist}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon f7="pencil" className="mr-4 text-[1.2rem]" />
                             <p>{t('playlist:Rename-playlist')}</p>
@@ -130,8 +126,7 @@ export default function ModifyPlaylistButton(): ReactElement {
                     </ListItem>
                     <ListItem
                         onClick={handleImportFreetubePlaylist}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon
                                 f7="arrow_turn_right_down"
@@ -142,8 +137,7 @@ export default function ModifyPlaylistButton(): ReactElement {
                     </ListItem>
                     <ListItem
                         onClick={handleImportYoutubePlaylist}
-                        className="popover-close"
-                    >
+                        className="popover-close">
                         <div className="flex justify-start">
                             <Icon
                                 f7="arrow_turn_right_down"

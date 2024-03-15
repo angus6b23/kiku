@@ -34,8 +34,7 @@ export default function ToolbarPlayer(props: ToolbarPlayerProps): ReactElement {
                         />
                         <p
                             className="ml-4 cursor-pointer line-clamp-1"
-                            onClick={props.showNowPlaying}
-                        >
+                            onClick={props.showNowPlaying}>
                             {playerState.currentPlaying.title}
                         </p>
                     </div>

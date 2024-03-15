@@ -13,7 +13,7 @@ const get = async (string, lang = 'en') => {
     // split the string into namespace and key
     const splited = string.split(':')
     if (splited.length > 1) {
-        [namespace, key] = splited
+        ;[namespace, key] = splited
     } else {
         namespace = 'translation'
         key = splited[0]
@@ -21,16 +21,19 @@ const get = async (string, lang = 'en') => {
 
     // use the files in public foler in dev mode
     if (process.env.NODE_ENV === 'development') {
-         targetFile = path.join(
+        targetFile = path.join(
             __dirname,
             `../public/locales/${lang}/${namespace}.json`
         )
     } else {
-        targetFile = path.join(__dirname, `../dist/locales/${lang}/${namespace}.json`)
+        targetFile = path.join(
+            __dirname,
+            `../dist/locales/${lang}/${namespace}.json`
+        )
     }
     try {
         let translations
-        if (cache.has(`${lang}:${namespace}`)){
+        if (cache.has(`${lang}:${namespace}`)) {
             translations = cache.get(`${lang}:${namespace}`)
         } else {
             const targetRes = await fs.promises.readFile(targetFile)
@@ -38,7 +41,7 @@ const get = async (string, lang = 'en') => {
             cache.set(`${lang}:${namespace}`, translations)
         }
         // Read the json file of corresponding lang and namespace, then parse the json file
-        // If the key is found, simply return the value, otherwise return the key value if the lang is en, fallback to en if the lang is not en 
+        // If the key is found, simply return the value, otherwise return the key value if the lang is en, fallback to en if the lang is not en
         const res = translations[key]
         if (res) {
             return translations[key]

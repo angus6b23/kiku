@@ -90,8 +90,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                     )
                                 }
                                 onMouseLeave={() => setIconText('')}
-                                onClick={handleAddToPlaylist}
-                            >
+                                onClick={handleAddToPlaylist}>
                                 <Icon
                                     className="text-lg lg:text-2xl xl:text-4xl"
                                     f7="plus_rectangle_fill"
@@ -110,8 +109,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                     )
                                 }
                                 onMouseLeave={() => setIconText('')}
-                                onClick={handleAddToNextSong}
-                            >
+                                onClick={handleAddToNextSong}>
                                 <Icon
                                     className="text-lg lg:text-2xl xl:text-4xl"
                                     f7="arrow_right_to_line"
@@ -123,8 +121,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                                     setIconText(t('search-result:Details'))
                                 }
                                 onMouseLeave={() => setIconText('')}
-                                href={`/details/${props.data.videoId}`}
-                            >
+                                href={`/details/${props.data.videoId}`}>
                                 <Icon
                                     className="text-lg lg:text-2xl xl:text-4xl"
                                     f7="info_circle"
@@ -142,8 +139,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                 <Link
                     animate={false}
                     onClick={handleAddToPlaylist}
-                    className="mt-2  line-clamp-2"
-                >
+                    className="mt-2  line-clamp-2">
                     {props.data.title}
                 </Link>
                 {/* Author and views info here */}
@@ -151,8 +147,7 @@ export default function VideoResultCard(props: VideoResultCardProps) {
                     <Link
                         className="underline"
                         target="_self"
-                        href={`/channel/${props.data.authorId}`}
-                    >
+                        href={`/channel/${props.data.authorId}`}>
                         {props.data.author}
                     </Link>
                     {props.data.viewCount !== undefined && (

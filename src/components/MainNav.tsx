@@ -161,8 +161,7 @@ const MainNav = (props: MainNavProps) => {
             name="MainNav"
             onPageInit={onPageInit}
             onPageBeforeRemove={onPageBeforeRemove}
-            className="h-28 overflow-visible z-50"
-        >
+            className="h-28 overflow-visible z-50">
             {/* Top Navbar */}
             <Subnavbar inner={false} className="flex p-2">
                 <div className="flex items-center w-24">
@@ -185,20 +184,17 @@ const MainNav = (props: MainNavProps) => {
                 <Segmented strong>
                     <Button
                         active={props.tab === 'now-playing'}
-                        onClick={() => props.setTab('now-playing')}
-                    >
+                        onClick={() => props.setTab('now-playing')}>
                         {t('common:Now-Playing')}
                     </Button>
                     <Button
                         active={props.tab === 'main'}
-                        onClick={() => props.setTab('main')}
-                    >
+                        onClick={() => props.setTab('main')}>
                         {t('common:Search-Result')}
                     </Button>
                     <Button
                         active={props.tab === 'setting'}
-                        onClick={() => props.setTab('setting')}
-                    >
+                        onClick={() => props.setTab('setting')}>
                         {t('common:Setting')}
                     </Button>
                 </Segmented>

@@ -28,8 +28,7 @@ export default function ChannelResultCard(props: ChannelResultCardProps) {
                     {/* Overlays */}
                     <a
                         className="absolute w-full h-full hidden group-hover:flex bg-black/60 backdrop-blur-sm flex-wrap justify-center items-center"
-                        href={`/channel/${props.data.authorId}`}
-                    >
+                        href={`/channel/${props.data.authorId}`}>
                         <Icon
                             className="text-lg lg:text-2xl xl:text-4xl w-full"
                             f7="music_albums"
@@ -47,8 +46,7 @@ export default function ChannelResultCard(props: ChannelResultCardProps) {
                 {/* ChannelTitle Title Here */}
                 <Link
                     href={`/channel/${props.data.authorId}`}
-                    className="mt-2  line-clamp-2 underline"
-                >
+                    className="mt-2  line-clamp-2 underline">
                     {props.data.author}
                 </Link>
             </article>

@@ -103,8 +103,7 @@ const MyApp = () => {
                             audio: audio,
                             innertube: innertube,
                             instanceList: instances,
-                        }}
-                    >
+                        }}>
                         <InnerTube />
                         <Worker />
                         <AudioWatcher />
@@ -112,8 +111,7 @@ const MyApp = () => {
                         <Panel
                             className="min-w-60 w-1/3 lg:w-1/4"
                             right
-                            visibleBreakpoint={640}
-                        >
+                            visibleBreakpoint={640}>
                             <View>
                                 <Page>
                                     <PlayList />
