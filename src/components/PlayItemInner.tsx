@@ -13,6 +13,7 @@ import { getNextSong } from '@/utils/songControl'
 import { setSong, stop } from '@/store/playerReducers'
 import presentToast from './Toast'
 import { useTranslation } from 'react-i18next'
+import AudioBars from './AudioBars'
 
 export interface PlayItemInnerProps {
     item: Playitem
@@ -98,7 +99,11 @@ export default function PlayItemInner(props: PlayItemInnerProps): ReactElement {
 
     return (
         <>
-            <div className="grid grid-cols-3">
+            {
+                item.status === 'playing' &&
+                    <AudioBars />
+            }
+            <div className="grid grid-cols-3 z-20">
                 <div className="col-span-1 p-2 flex items-center justify-center">
                     <img className="object-cover" src={item.thumbnailURL} />
                 </div>
